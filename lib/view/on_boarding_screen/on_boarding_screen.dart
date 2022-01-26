@@ -9,7 +9,7 @@ class OnBoardingScreen extends StatelessWidget {
 
   OnBoardingScreen({
     Key? key,
-    this.status = false,
+    this.status = true,
   }) : super(key: key);
 
   OnBoardingScreenController controller = Get.put(OnBoardingScreenController());

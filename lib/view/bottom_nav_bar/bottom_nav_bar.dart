@@ -59,9 +59,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     child: Image.asset(
                       'assets/images/Favorite.png',
                       height: 25,
-                      color: widget.currentIndex == 0
-                          ? kSecondaryColor
-                          : kDarkGreyColor,
+                      color: widget.currentIndex == 0 ? kSecondaryColor : kDarkGreyColor,
                     ),
                   ),
                   label: 'События',
@@ -72,9 +70,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     child: Image.asset(
                       'assets/images/Vector (16).png',
                       height: 25,
-                      color: widget.currentIndex == 1
-                          ? kSecondaryColor
-                          : kDarkGreyColor,
+                      color: widget.currentIndex == 1 ? kSecondaryColor : kDarkGreyColor,
                     ),
                   ),
                   label: 'Избранное',
@@ -85,9 +81,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     child: Image.asset(
                       'assets/images/Add Logo.png',
                       height: 25,
-                      color: widget.currentIndex == 2
-                          ? kSecondaryColor
-                          : kDarkGreyColor,
+                      color: widget.currentIndex == 2 ? kSecondaryColor : kDarkGreyColor,
                     ),
                   ),
                   label: 'Добавить',
@@ -98,9 +92,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     child: Image.asset(
                       'assets/images/Map Logo.png',
                       height: 25,
-                      color: widget.currentIndex == 3
-                          ? kSecondaryColor
-                          : kDarkGreyColor,
+                      color: widget.currentIndex == 3 ? kSecondaryColor : kDarkGreyColor,
                     ),
                   ),
                   label: 'Карта',
@@ -110,7 +102,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
           widget.guestUser == true
               ? GestureDetector(
-                  onTap: () => Get.offAll(() => const User()),
+                  onTap: () => Get.offAll(() => const Authentication()),
                   child: SizedBox(
                     height: 65,
                     width: Get.width,

@@ -8,9 +8,10 @@ import 'package:pet_geo/view/on_boarding_screen/on_boarding_4.dart';
 import 'package:pet_geo/view/on_boarding_screen/on_boarding_5.dart';
 import 'package:pet_geo/view/settings/settings.dart';
 import 'package:pet_geo/view/user/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoardingScreenController extends GetxController {
-  var pageController = PageController();
+  PageController pageController = PageController();
   RxInt currentIndex = 0.obs;
   final RxList pages = [
     const Onboarding1(),
@@ -20,27 +21,12 @@ class OnBoardingScreenController extends GetxController {
     const Onboarding5(),
   ].obs;
 
-  void lastPage(bool? onBoardingStatus) {
+  void lastPage(bool? onBoardingStatus) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     if (currentIndex.value == 4 && onBoardingStatus == true) {
-      Future.delayed(
-        const Duration(
-          seconds: 2,
-        ),
-        () => Get.offAll(() => const User()),
-      );
-      if (kDebugMode) {
-        print(onBoardingStatus.toString());
-      }
-    } else {
-      currentIndex.value == 4
-          ? Future.delayed(
-              const Duration(
-                seconds: 2,
-              ),
-              () => Get.off(() => Settings()),
-            )
-          // ignore: avoid_print
-          : print('index is not last');
+      Get.offAll(() => const Authentication());
+      prefs.setBool("first_time", false);
     }
     update();
   }

@@ -56,7 +56,7 @@ class PetGeo extends StatelessWidget {
       getPages: [
         GetPage(name: '/splash_screen', page: () => const SplashScreen()),
         GetPage(name: '/on_boarding_screen', page: () => OnBoardingScreen()),
-        GetPage(name: '/user', page: () => const User()),
+        GetPage(name: '/user', page: () => const Authentication()),
         GetPage(name: '/bottom_nav_bar', page: () => BottomNavBar()),
         GetPage(name: '/map_page_main', page: () => MapPageMain()),
         GetPage(name: '/place_an_add', page: () => const PlaceAnAdd()),
@@ -64,17 +64,12 @@ class PetGeo extends StatelessWidget {
         GetPage(name: '/found_a_pet', page: () => FoundAPet()),
         GetPage(name: '/events_feed', page: () => const EventsFeed()),
         GetPage(name: '/profile_image', page: () => const ProfileImage()),
-        GetPage(
-            name: '/pet_geo_guest_profile', page: () => const PetGeoGuestProfile()),
-        GetPage(
-            name: '/user_profile_with_offer_help',
-            page: () => UserProfileWithOferHelp()),
+        GetPage(name: '/pet_geo_guest_profile', page: () => const PetGeoGuestProfile()),
+        GetPage(name: '/user_profile_with_offer_help', page: () => UserProfileWithOferHelp()),
         GetPage(name: '/pets_profile', page: () => const PetsProfile()),
         GetPage(name: '/settings', page: () => Settings()),
         GetPage(name: '/animal_communities', page: () => AnimalCommunities()),
-        GetPage(
-            name: '/pet_news_community_profile',
-            page: () => const PetNewsCommunityProfile()),
+        GetPage(name: '/pet_news_community_profile', page: () => const PetNewsCommunityProfile()),
         GetPage(name: '/offer_help', page: () => const OfferHelp()),
         GetPage(name: '/likes', page: () => Likes()),
         GetPage(name: '/comments', page: () => const Comments()),
@@ -82,8 +77,7 @@ class PetGeo extends StatelessWidget {
         GetPage(name: '/friends', page: () => Friends()),
         GetPage(name: '/about_us', page: () => AboutUs()),
         GetPage(name: '/privacy_policy', page: () => PrivacyPolicy()),
-        GetPage(
-            name: '/terms_and_conditions', page: () => TermsAndConditions()),
+        GetPage(name: '/terms_and_conditions', page: () => TermsAndConditions()),
         GetPage(name: '/bonus_space', page: () => BonusSpace()),
       ],
     );

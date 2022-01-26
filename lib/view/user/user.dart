@@ -7,14 +7,14 @@ import 'package:pet_geo/view/widget/logo.dart';
 
 import 'login.dart';
 
-class User extends StatefulWidget {
-  const User({Key? key}) : super(key: key);
+class Authentication extends StatefulWidget {
+  const Authentication({Key? key}) : super(key: key);
 
   @override
-  State<User> createState() => _UserState();
+  State<Authentication> createState() => _AuthenticationState();
 }
 
-class _UserState extends State<User> with SingleTickerProviderStateMixin {
+class _AuthenticationState extends State<Authentication> with SingleTickerProviderStateMixin {
   final MapController _mapController = Get.put(MapController());
   late TabController _tabController;
   var currentTab = 0;

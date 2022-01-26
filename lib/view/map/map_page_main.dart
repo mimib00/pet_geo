@@ -54,8 +54,7 @@ class MapPageMain extends StatelessWidget {
                 ),
               ),
               title: ColorFiltered(
-                colorFilter:
-                    const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
                 child: textLogo(24),
               ),
               actions: [
@@ -63,9 +62,7 @@ class MapPageMain extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () => logic.showSearch(),
                     child: Image.asset(
-                      logic.search == true
-                          ? 'assets/images/Vector (16).png'
-                          : 'assets/images/Serach.png',
+                      logic.search == true ? 'assets/images/Vector (16).png' : 'assets/images/Serach.png',
                       height: logic.search == true ? 23 : 37,
                       color: kPrimaryColor,
                     ),
@@ -91,14 +88,11 @@ class MapPageMain extends StatelessWidget {
                 preferredSize: const Size(0, 0),
                 child: TabBar(
                   onTap: (index) {
-                    guestUser == true
-                        ? Get.offAll(() => const User())
-                        : () {};
+                    guestUser == true ? Get.offAll(() => const Authentication()) : () {};
                   },
                   indicatorColor: kPrimaryColor,
                   indicatorWeight: 5.0,
-                  indicatorPadding:
-                  const EdgeInsets.symmetric(horizontal: 15),
+                  indicatorPadding: const EdgeInsets.symmetric(horizontal: 15),
                   labelColor: kPrimaryColor,
                   unselectedLabelColor: kPrimaryColor,
                   unselectedLabelStyle: const TextStyle(
@@ -114,9 +108,9 @@ class MapPageMain extends StatelessWidget {
                   tabs: tabs
                       .map(
                         (e) => Tab(
-                      child: Text(e),
-                    ),
-                  )
+                          child: Text(e),
+                        ),
+                      )
                       .toList(),
                 ),
               ),
