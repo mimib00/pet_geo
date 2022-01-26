@@ -13,6 +13,9 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
+
+  firebase_core: ^1.11.0
+
   get:
   flutter_switch: ^0.3.2
   step_progress_indicator: ^1.0.1

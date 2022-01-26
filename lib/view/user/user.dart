@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:pet_geo/controller/map_controller/map_controller.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/user/sign_up.dart';
 import 'package:pet_geo/view/widget/logo.dart';
@@ -15,7 +13,7 @@ class Authentication extends StatefulWidget {
 }
 
 class _AuthenticationState extends State<Authentication> with SingleTickerProviderStateMixin {
-  final MapController _mapController = Get.put(MapController());
+  // final MapController _mapController = Get.put(MapController());
   late TabController _tabController;
   var currentTab = 0;
 
@@ -26,7 +24,7 @@ class _AuthenticationState extends State<Authentication> with SingleTickerProvid
     _tabController.addListener(() {
       setState(() {
         currentTab = _tabController.index;
-        _mapController.filterResultMapPins = true;
+        // _mapController.filterResultMapPins = true;
       });
     });
   }
@@ -58,23 +56,6 @@ class _AuthenticationState extends State<Authentication> with SingleTickerProvid
             ),
           ],
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 15, bottom: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: () => Get.back(),
-                  child: Image.asset(
-                    'assets/images/Close .png',
-                    height: 28,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -121,6 +102,11 @@ class _AuthenticationState extends State<Authentication> with SingleTickerProvid
                         ),
                         color: kSecondaryColor,
                       ),
+                      onTap: (index) {
+                        setState(() {
+                          currentTab = index;
+                        });
+                      },
                       tabs: const [
                         Text(
                           'Уже есть аккаунт',

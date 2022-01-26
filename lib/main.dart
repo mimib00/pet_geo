@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/view/about_us/about_us.dart';
@@ -27,7 +28,11 @@ import 'package:pet_geo/view/user/user.dart';
 import 'package:pet_geo/view/user_profile/user_profile_profile_image/profile_image.dart';
 import 'package:pet_geo/view/user_profile/user_profile_with_offer_help.dart';
 
-void main() => runApp((const PetGeo()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const PetGeo());
+}
 
 class PetGeo extends StatelessWidget {
   const PetGeo({Key? key}) : super(key: key);

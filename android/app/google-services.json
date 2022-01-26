@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "578573263163",
+    "project_id": "p3t-ge0",
+    "storage_bucket": "p3t-ge0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578573263163:android:aa1e914bcd1825456c171e",
+        "android_client_info": {
+          "package_name": "com.pet.geo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "578573263163-nnj08jbjob5j78kiiureoa62gj1if49f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnNA_fMdymakbWGlalVhRZ19Srgjeu5ZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "578573263163-nnj08jbjob5j78kiiureoa62gj1if49f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
