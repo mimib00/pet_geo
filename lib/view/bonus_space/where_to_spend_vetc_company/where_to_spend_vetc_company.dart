@@ -7,7 +7,7 @@ import 'package:pet_geo/view/widget/my_text.dart';
 class WhereToSpendVetcCompany extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-   WhereToSpendVetcCompany({Key? key}) : super(key: key);
+  WhereToSpendVetcCompany({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -86,7 +86,8 @@ class Fields extends StatelessWidget {
   var hintText;
   TextEditingController? textEditingController;
 
-  Fields({Key? key,
+  Fields({
+    Key? key,
     this.hintText,
     this.textEditingController,
   }) : super(key: key);

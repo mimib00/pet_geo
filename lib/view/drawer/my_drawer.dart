@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_geo/controller/auth_controller.dart';
 import 'package:pet_geo/view/animal_communities/animal_communities.dart';
 import 'package:pet_geo/view/bonus_space/bonus_space.dart';
 import 'package:pet_geo/view/bottom_sheets/logout.dart';
@@ -14,8 +15,15 @@ import 'package:pet_geo/view/settings/settings.dart';
 import 'package:pet_geo/view/user_profile/user_profile_from_drawer.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
-class MyDrawer extends StatelessWidget {
+class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);
+
+  @override
+  State<MyDrawer> createState() => _MyDrawerState();
+}
+
+class _MyDrawerState extends State<MyDrawer> {
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +48,7 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
             title: MyText(
-              text: 'Иван Иванов',
+              text: authController.user.value!.email,
               size: 15,
               color: kDarkGreyColor,
             ),

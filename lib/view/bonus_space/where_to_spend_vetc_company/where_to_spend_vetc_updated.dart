@@ -13,7 +13,7 @@ import 'package:pet_geo/view/widget/my_text.dart';
 class WhereToSpendVetcUpdated extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-   WhereToSpendVetcUpdated({Key? key}) : super(key: key);
+  WhereToSpendVetcUpdated({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -88,8 +88,8 @@ class _TilesState extends State<Tiles> {
       trailing: GestureDetector(
         onTap: () {
           Get.to(
-                () => BonusSpaceSpecificPost(
-             showGreyPin: true,
+            () => BonusSpaceSpecificPost(
+              showGreyPin: true,
             ),
           );
         },

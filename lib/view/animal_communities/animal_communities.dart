@@ -11,7 +11,7 @@ import 'package:pet_geo/view/widget/search_box.dart';
 class AnimalCommunities extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-   AnimalCommunities({Key? key}) : super(key: key);
+  AnimalCommunities({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

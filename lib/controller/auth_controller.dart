@@ -40,7 +40,15 @@ class AuthController extends GetxController {
   }
 
   getUserData(String uid) async {
-    try {} catch (e) {
+    try {
+      // fetch the data
+      _userRef.doc(uid).get().then((snapshot) {
+        if (!snapshot.exists) throw "User doesn't exist, Please register";
+
+        user.value = Users.fromMap(snapshot.data()!, id: uid);
+        update();
+      });
+    } catch (e) {
       Get.snackbar(
         "Error",
         e.toString(),
@@ -75,7 +83,25 @@ class AuthController extends GetxController {
     }
   }
 
-  login() async {}
+  login(String email, String password) async {
+    try {
+      // login user
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      if (currentUser == null) return;
+
+      // fetch user data from firestore
+      getUserData(currentUser!.uid);
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+  }
 
   logout() async {
     try {

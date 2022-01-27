@@ -11,7 +11,7 @@ import 'chat_screen.dart';
 class ChatHead extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-   ChatHead({Key? key}) : super(key: key);
+  ChatHead({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

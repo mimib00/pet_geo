@@ -11,10 +11,11 @@ import 'package:pet_geo/view/widget/search_box.dart';
 // ignore: must_be_immutable
 class SpecificPost extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-  bool? showBluePin, showGreenPin,showGreyPin;
+  bool? showBluePin, showGreenPin, showGreyPin;
   VoidCallback? bluePinOnTap;
 
-  SpecificPost({Key? key,
+  SpecificPost({
+    Key? key,
     this.showGreenPin = false,
     this.showBluePin = false,
     this.showGreyPin = false,
@@ -44,22 +45,19 @@ class SpecificPost extends StatelessWidget {
               ),
             ),
             title: ColorFiltered(
-              colorFilter:
-              const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
               child: textLogo(24),
             ),
             actions: [
               Center(
                 child: GestureDetector(
                   onTap: () => Get.off(
-                        () => BottomNavBar(
+                    () => BottomNavBar(
                       currentIndex: 3,
                     ),
                   ),
                   child: Image.asset(
-                    logic.search == true
-                        ? 'assets/images/Vector (16).png'
-                        : 'assets/images/Serach.png',
+                    logic.search == true ? 'assets/images/Vector (16).png' : 'assets/images/Serach.png',
                     height: logic.search == true ? 23 : 37,
                     color: kPrimaryColor,
                   ),
@@ -103,8 +101,7 @@ class SpecificPost extends StatelessWidget {
           body: Stack(
             children: [
               Container(
-                margin:
-                const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Stack(
                   children: [
                     ClipRRect(
@@ -118,37 +115,37 @@ class SpecificPost extends StatelessWidget {
                     ),
                     showGreenPin == true
                         ? Positioned(
-                      left: Get.width * 0.160,
-                      top: Get.height * 0.2,
-                      child: GestureDetector(
-                        onTap: () => Get.back(),
-                        child: Image.asset(
-                          'assets/images/Group 98.png',
-                          height: 72,
-                        ),
-                      ),
-                    )
+                            left: Get.width * 0.160,
+                            top: Get.height * 0.2,
+                            child: GestureDetector(
+                              onTap: () => Get.back(),
+                              child: Image.asset(
+                                'assets/images/Group 98.png',
+                                height: 72,
+                              ),
+                            ),
+                          )
                         : const SizedBox(),
                     showBluePin == true
                         ? Positioned(
-                      right: Get.width * 0.22,
-                      top: Get.height * 0.325,
-                      child: GestureDetector(
-                        onTap: bluePinOnTap ?? () => Get.back(),
-                        child: Image.asset(
-                          'assets/images/Group 99.png',
-                          height: 72,
-                        ),
-                      ),
-                    )
+                            right: Get.width * 0.22,
+                            top: Get.height * 0.325,
+                            child: GestureDetector(
+                              onTap: bluePinOnTap ?? () => Get.back(),
+                              child: Image.asset(
+                                'assets/images/Group 99.png',
+                                height: 72,
+                              ),
+                            ),
+                          )
                         : const SizedBox(),
                   ],
                 ),
               ),
               logic.search == true
                   ? SearchBox(
-                hintText: 'Что хотите найти?',
-              )
+                      hintText: 'Что хотите найти?',
+                    )
                   : const SizedBox(),
             ],
           ),

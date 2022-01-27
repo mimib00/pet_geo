@@ -6,7 +6,7 @@ import 'package:pet_geo/view/widget/my_text.dart';
 class TermsAndConditions extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-   TermsAndConditions({Key? key}) : super(key: key);
+  TermsAndConditions({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

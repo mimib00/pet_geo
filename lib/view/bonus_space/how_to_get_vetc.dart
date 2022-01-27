@@ -7,7 +7,7 @@ import 'package:pet_geo/view/widget/my_text.dart';
 class HowToGetVetc extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-   HowToGetVetc({Key? key}) : super(key: key);
+  HowToGetVetc({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,8 @@ class HowToGetVetcTiles extends StatelessWidget {
   // ignore: prefer_typing_uninitialized_variables
   var title;
 
-  HowToGetVetcTiles({Key? key,
+  HowToGetVetcTiles({
+    Key? key,
     this.title,
   }) : super(key: key);
 

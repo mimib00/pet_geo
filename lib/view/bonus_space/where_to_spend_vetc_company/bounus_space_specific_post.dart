@@ -15,7 +15,8 @@ class BonusSpaceSpecificPost extends StatelessWidget {
   bool? showBluePin, showGreenPin, showGreyPin;
   VoidCallback? onBluePinTap, onGreenPinTap, onGreyPinTap;
 
-  BonusSpaceSpecificPost({Key? key,
+  BonusSpaceSpecificPost({
+    Key? key,
     this.showGreenPin = false,
     this.showBluePin = false,
     this.showGreyPin = false,
@@ -47,8 +48,7 @@ class BonusSpaceSpecificPost extends StatelessWidget {
               ),
             ),
             title: ColorFiltered(
-              colorFilter:
-                  const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
               child: textLogo(24),
             ),
             actions: [
@@ -60,9 +60,7 @@ class BonusSpaceSpecificPost extends StatelessWidget {
                     ),
                   ),
                   child: Image.asset(
-                    logic.search == true
-                        ? 'assets/images/Vector (16).png'
-                        : 'assets/images/Serach.png',
+                    logic.search == true ? 'assets/images/Vector (16).png' : 'assets/images/Serach.png',
                     height: logic.search == true ? 23 : 37,
                     color: kPrimaryColor,
                   ),
@@ -106,8 +104,7 @@ class BonusSpaceSpecificPost extends StatelessWidget {
           body: Stack(
             children: [
               Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Stack(
                   children: [
                     ClipRRect(
@@ -181,8 +178,7 @@ class BonusSpaceSpecificPost extends StatelessWidget {
                                         Expanded(
                                           flex: 3,
                                           child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(9),
+                                            borderRadius: BorderRadius.circular(9),
                                             child: Image.asset(
                                               'assets/images/download 2.png',
                                               fit: BoxFit.cover,
@@ -193,18 +189,13 @@ class BonusSpaceSpecificPost extends StatelessWidget {
                                         Expanded(
                                           flex: 7,
                                           child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 15),
+                                            padding: const EdgeInsets.only(left: 15),
                                             child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     MyText(
                                                       text: 'Партнер 1',
@@ -214,8 +205,7 @@ class BonusSpaceSpecificPost extends StatelessWidget {
                                                       fontFamily: 'Roboto',
                                                     ),
                                                     GestureDetector(
-                                                      onTap: () => logic
-                                                          .hideGreyPinPopUp(),
+                                                      onTap: () => logic.hideGreyPinPopUp(),
                                                       child: const Icon(
                                                         Icons.close,
                                                         color: kDarkGreyColor,
@@ -230,8 +220,7 @@ class BonusSpaceSpecificPost extends StatelessWidget {
                                                       text: 'Адрес: ',
                                                       color: kDarkGreyColor,
                                                       size: 12,
-                                                      weight:
-                                                          FontWeight.w700,
+                                                      weight: FontWeight.w700,
                                                       fontFamily: 'Roboto',
                                                     ),
                                                     MyText(
@@ -251,8 +240,7 @@ class BonusSpaceSpecificPost extends StatelessWidget {
                                                       text: 'Тел.: ',
                                                       color: kDarkGreyColor,
                                                       size: 12,
-                                                      weight:
-                                                          FontWeight.w700,
+                                                      weight: FontWeight.w700,
                                                       fontFamily: 'Roboto',
                                                     ),
                                                     MyText(

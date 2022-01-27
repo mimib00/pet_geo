@@ -6,7 +6,7 @@ import 'package:pet_geo/view/widget/my_text.dart';
 class AboutUs extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-   AboutUs({Key? key}) : super(key: key);
+  AboutUs({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

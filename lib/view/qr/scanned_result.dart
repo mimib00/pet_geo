@@ -7,7 +7,7 @@ import 'package:pet_geo/view/widget/my_text.dart';
 class ScannedResult extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-   ScannedResult({Key? key}) : super(key: key);
+  ScannedResult({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,8 @@ class PayForServiceyTiles extends StatelessWidget {
   // ignore: prefer_typing_uninitialized_variables
   var petImg, title, subtitle;
   VoidCallback? onTap;
-  PayForServiceyTiles({Key? key,
+  PayForServiceyTiles({
+    Key? key,
     this.petImg,
     this.title,
     this.subtitle,
