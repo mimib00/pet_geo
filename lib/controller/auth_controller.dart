@@ -39,7 +39,7 @@ class AuthController extends GetxController {
     });
   }
 
-  getUserData(String uid) async {
+  void getUserData(String uid) async {
     try {
       // fetch the data
       _userRef.doc(uid).get().then((snapshot) {
@@ -60,7 +60,8 @@ class AuthController extends GetxController {
     }
   }
 
-  createUser(String email, String password) async {
+  /// creates a user in Authentication and then add him to database.
+  void createUser(String email, String password) async {
     try {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
 
@@ -72,6 +73,7 @@ class AuthController extends GetxController {
         user.value = Users.fromMap(data, id: credential.user!.uid);
       });
     } catch (e) {
+      Get.back();
       Get.snackbar(
         "Error",
         e.toString(),
@@ -83,7 +85,8 @@ class AuthController extends GetxController {
     }
   }
 
-  login(String email, String password) async {
+  /// log a user in then get his data from database.
+  void login(String email, String password) async {
     try {
       // login user
       await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -92,6 +95,7 @@ class AuthController extends GetxController {
       // fetch user data from firestore
       getUserData(currentUser!.uid);
     } catch (e) {
+      Get.back();
       Get.snackbar(
         "Error",
         e.toString(),
@@ -103,10 +107,15 @@ class AuthController extends GetxController {
     }
   }
 
-  logout() async {
+  /// log a user out
+  void logout() {
     try {
-      await _auth.signOut();
+      _auth.signOut().then((value) {
+        user.value = null;
+        Get.back();
+      });
     } catch (e) {
+      Get.back();
       Get.snackbar(
         "Error",
         e.toString(),

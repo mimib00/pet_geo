@@ -14,9 +14,6 @@ import 'package:pet_geo/view/widget/my_text.dart';
 class Login extends GetWidget<AuthController> {
   Login({Key? key}) : super(key: key);
 
-  var value = false;
-  Color buttonColor = kLightOrangeColor;
-
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
@@ -61,10 +58,18 @@ class Login extends GetWidget<AuthController> {
               height: 20,
             ),
             MyButton(
-              btnBgColor: buttonColor,
+              btnBgColor: kLightOrangeColor,
               text: 'Войти'.toUpperCase(),
               onPressed: () {
                 if (formKey.currentState!.validate()) {
+                  Get.defaultDialog(
+                    title: "",
+                    titlePadding: EdgeInsets.zero,
+                    content: const Text(
+                      "Loading...",
+                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    ),
+                  );
                   controller.login(email.text.trim(), password.text.trim());
                 }
               },

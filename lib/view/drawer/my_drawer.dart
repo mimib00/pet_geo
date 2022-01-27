@@ -48,7 +48,7 @@ class _MyDrawerState extends State<MyDrawer> {
               ),
             ),
             title: MyText(
-              text: authController.user.value!.email,
+              text: authController.user.value!.name,
               size: 15,
               color: kDarkGreyColor,
             ),

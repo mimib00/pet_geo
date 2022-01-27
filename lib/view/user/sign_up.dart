@@ -71,6 +71,7 @@ class SignUp extends GetWidget<AuthController> {
               text: 'Войти'.toUpperCase(),
               onPressed: () {
                 if (formKey.currentState!.validate()) {
+                  Get.defaultDialog(content: const Text("Loading..."));
                   controller.createUser(email.text.trim(), password.text.trim());
                 }
               },

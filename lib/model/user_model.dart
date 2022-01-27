@@ -5,10 +5,21 @@ class Users {
   /// User's email
   final String email;
 
-  Users(this.id, this.email);
+  /// User's name
+  final String name;
+
+  Users({
+    this.id,
+    this.email = '',
+    this.name = '',
+  });
 
   /// Craetes A Users object from a map.
-  factory Users.fromMap(Map<String, dynamic> data, {String? id}) => Users(id, data["email"]);
+  factory Users.fromMap(Map<String, dynamic> data, {String? id}) => Users(
+        id: id,
+        email: data["email"],
+        name: data["name"],
+      );
 
   /// Creates a Map from a Users object.
   Map<String, dynamic> toMap() => {
