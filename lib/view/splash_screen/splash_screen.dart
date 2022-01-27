@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:pet_geo/controller/splash_screen_controller/splash_screen_controller.dart';
 import 'package:pet_geo/view/widget/logo.dart';
 import 'package:pet_geo/view/widget/my_text.dart';

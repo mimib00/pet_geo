@@ -15,6 +15,10 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   firebase_core: ^1.11.0
+  firebase_auth: ^3.3.5
+  cloud_firestore: ^3.1.6
+
+  fluttericon: ^2.0.0
 
   get:
   flutter_switch: ^0.3.2
@@ -24,6 +28,7 @@ dependencies:
   bordered_text: ^2.0.0
 
   shared_preferences: ^2.0.12
+  form_field_validator: ^1.1.0
   connectivity_plus: ^2.2.0
 
 dev_dependencies:

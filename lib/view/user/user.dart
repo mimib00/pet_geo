@@ -24,7 +24,6 @@ class _AuthenticationState extends State<Authentication> with SingleTickerProvid
     _tabController.addListener(() {
       setState(() {
         currentTab = _tabController.index;
-        // _mapController.filterResultMapPins = true;
       });
     });
   }
@@ -66,7 +65,7 @@ class _AuthenticationState extends State<Authentication> with SingleTickerProvid
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 35,
+                  height: 40,
                   margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
@@ -130,8 +129,8 @@ class _AuthenticationState extends State<Authentication> with SingleTickerProvid
             child: TabBarView(
               physics: const NeverScrollableScrollPhysics(),
               controller: _tabController,
-              children: const [
-                Login(),
+              children: [
+                const Login(),
                 SignUp(),
               ],
             ),

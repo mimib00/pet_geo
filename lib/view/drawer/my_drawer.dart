@@ -111,7 +111,7 @@ class MyDrawer extends StatelessWidget {
             icon: 'assets/images/Notification.png',
             iconSize: 32,
             title: 'Уведомления',
-            onTap: () => Get.to(() =>  Notifications()),
+            onTap: () => Get.to(() => Notifications()),
           ),
           DrawerTiles(
             icon: 'assets/images/Community.png',
@@ -143,7 +143,7 @@ class MyDrawer extends StatelessWidget {
           ListTile(
             contentPadding: const EdgeInsets.only(left: 40, top: 8, bottom: 5),
             onTap: () => Get.bottomSheet(
-              const Logout(),
+              Logout(),
               backgroundColor: kPrimaryColor,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -180,7 +180,8 @@ class DrawerTiles extends StatelessWidget {
   double? iconSize;
   VoidCallback? onTap;
 
-  DrawerTiles({Key? key,
+  DrawerTiles({
+    Key? key,
     this.icon,
     this.title,
     this.iconSize = 15.0,

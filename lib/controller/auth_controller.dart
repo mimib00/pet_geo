@@ -1,0 +1,83 @@
+// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pet_geo/model/user_model.dart';
+
+class AuthController extends GetxController {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final CollectionReference<Map<String, dynamic>> _userRef = FirebaseFirestore.instance.collection("users");
+
+  Rx<Users> user = Rx<Users>(Users("", ""));
+
+  /// Check if user exists in database and return true, or false
+  void userExist(String email) {
+    _userRef.where("email", isEqualTo: email).get().then((data) {
+      if (data.size > 0) {
+        Get.snackbar(
+          "Error",
+          "Email already exists",
+          snackPosition: SnackPosition.BOTTOM,
+          margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+          colorText: Colors.white,
+          backgroundColor: Colors.red[400],
+        );
+      }
+    });
+  }
+
+  getUserData(String uid) async {
+    try {} catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+  }
+
+  createUser(String email, String password) async {
+    try {
+      UserCredential credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+
+      if (credential.user == null) throw "Couldn't create user";
+      Map<String, dynamic> data = {
+        "email": credential.user!.email
+      };
+      _userRef.doc(credential.user!.uid).set(data).then((value) {
+        user.value = Users.fromMap(data, id: credential.user!.uid);
+      });
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+  }
+
+  login() async {}
+
+  logout() async {
+    try {
+      await _auth.signOut();
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+  }
+}

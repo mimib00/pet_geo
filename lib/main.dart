@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_geo/controller/bindings/auth_binding.dart';
 import 'package:pet_geo/view/about_us/about_us.dart';
 import 'package:pet_geo/view/about_us/privacy_policy/privacy_policy.dart';
 import 'package:pet_geo/view/about_us/terms_and_conditions/terms_and_conditions.dart';
@@ -34,12 +36,27 @@ void main() async {
   runApp(const PetGeo());
 }
 
-class PetGeo extends StatelessWidget {
+class PetGeo extends StatefulWidget {
   const PetGeo({Key? key}) : super(key: key);
+
+  @override
+  State<PetGeo> createState() => _PetGeoState();
+}
+
+class _PetGeoState extends State<PetGeo> {
+  @override
+  void initState() {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+      } else {}
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      initialBinding: AuthBinding(),
       debugShowMaterialGrid: false,
       debugShowCheckedModeBanner: false,
       title: 'Pet Geo',

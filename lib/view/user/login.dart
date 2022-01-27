@@ -5,6 +5,7 @@ import 'package:pet_geo/controller/user_controller/login_controller/login_contro
 import 'package:pet_geo/view/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/place_an_add/found_a_pet.dart';
+import 'package:pet_geo/view/widget/custom_text_field.dart';
 import 'package:pet_geo/view/widget/my_button.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 import 'package:pet_geo/view/widget/my_text_field.dart';
@@ -20,7 +21,7 @@ class _LoginState extends State<Login> {
   var value = false;
   Color buttonColor = kLightOrangeColor;
 
-  // late TextEditingController email;
+  TextEditingController email = TextEditingController();
   // late TextEditingController password;
 
   @override
@@ -30,23 +31,26 @@ class _LoginState extends State<Login> {
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
         physics: const BouncingScrollPhysics(),
         children: [
-          MyTextField(
-            onChanged: (value) {
-              setState(() {
-                value.length > 1
-                    ? buttonColor = kSecondaryColor
-                    : buttonColor = kLightOrangeColor;
-              });
-            },
-            lableText: 'Имя пользователя или e-mail',
+          // MyTextField(
+          //   onChanged: (value) {
+          //     setState(() {
+          //       value.length > 1
+          //           ? buttonColor = kSecondaryColor
+          //           : buttonColor = kLightOrangeColor;
+          //     });
+          //   },
+          //   lableText: 'Имя пользователя или e-mail',
+          //   hintText: 'IvanovIvan@pochta.ru',
+          // ),
+          CustomTextField(
+            controller: email,
             hintText: 'IvanovIvan@pochta.ru',
+            label: 'Имя пользователя или e-mail',
           ),
           MyTextField(
             onChanged: (value) {
               setState(() {
-                value.length > 1
-                    ? buttonColor = kSecondaryColor
-                    : buttonColor = kLightOrangeColor;
+                value.length > 1 ? buttonColor = kSecondaryColor : buttonColor = kLightOrangeColor;
                 if (kDebugMode) {
                   print(value);
                 }

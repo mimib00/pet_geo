@@ -1,128 +1,109 @@
-import 'package:flutter/foundation.dart';
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
+import 'package:pet_geo/controller/auth_controller.dart';
 import 'package:pet_geo/view/constant/constant.dart';
+import 'package:pet_geo/view/widget/custom_text_field.dart';
 import 'package:pet_geo/view/widget/my_button.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
-import 'package:pet_geo/view/widget/my_text_field.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+class SignUp extends GetWidget<AuthController> {
+  SignUp({Key? key}) : super(key: key);
 
-  @override
-  State<SignUp> createState() => _SignUpState();
-}
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController confirm = TextEditingController();
 
-class _SignUpState extends State<SignUp> {
-  var value = false;
-  var buttonColor = kLightOrangeColor;
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-        physics: const BouncingScrollPhysics(),
-        children: [
-          MyTextField(
-            onChanged: (value) {
-              setState(() {
-                value.length > 1
-                    ? buttonColor = kSecondaryColor
-                    : buttonColor = kLightOrangeColor;
-                if (kDebugMode) {
-                  print(value);
+      body: Form(
+        key: formKey,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+          physics: const BouncingScrollPhysics(),
+          children: [
+            CustomTextField(
+              controller: email,
+              hintText: 'IvanovIvan@pochta.ru',
+              label: 'Напишите e-mail',
+              validate: (txt) {
+                var emailValid = EmailValidator(errorText: 'Unvalid email address format').call(txt);
+                var isEmpty = RequiredValidator(errorText: 'Email is required').call(txt);
+                if (isEmpty == null) {
+                  if (emailValid == null) {
+                    // check if user exists.
+                    controller.userExist(email.text);
+                  } else {
+                    return emailValid;
+                  }
+                } else {
+                  return isEmpty;
                 }
-              });
-            },
-            lableText: 'Напишите e-mail',
-            hintText: 'IvanovIvan@pochta.ru',
-          ),
-          MyTextField(
-            obsecure: true,
-            lableText: 'Придумайте пароль',
-            hintText: '********',
-          ),
-          MyTextField(
-            obsecure: true,
-            lableText: 'Повторите пароль',
-            hintText: '********',
-          ),
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    value = !value;
-                  });
-                },
-                child: Container(
-                  width: 25,
-                  height: 25,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: kLightGreyColor,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                  child: Center(
-                    child: value == true
-                        ? Image.asset(
-                            'assets/images/check.png',
-                            height: 16.5,
-                          )
-                        : const SizedBox(),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: MyText(
-                  paddingLeft: 15.0,
-                  text: 'Запомнить меня',
-                  size: 12,
-                  weight: FontWeight.w600,
-                  color: kDarkGreyColor,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          MyButton(
-            btnBgColor: buttonColor,
-            text: 'Войти'.toUpperCase(),
-            onPressed: () {},
-          ),
-          GestureDetector(
-            onTap: () {},
-            child: Column(
-              children: [
-                SizedBox(
-                  height: Get.height * 0.05,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    MyText(
-                      text: 'Войти как',
-                      weight: FontWeight.w600,
-                      color: kInputBorderColor,
-                      align: TextAlign.end,
-                    ),
-                    MyText(
-                      text: ' Гость',
-                      weight: FontWeight.w600,
-                      color: kSecondaryColor,
-                      align: TextAlign.end,
-                    ),
-                  ],
-                ),
-              ],
+              },
             ),
-          ),
-        ],
+            CustomTextField(
+              controller: password,
+              obscureText: true,
+              hintText: '********',
+              label: 'Повторите пароль',
+              validate: MultiValidator([
+                RequiredValidator(errorText: 'Password is required'),
+                MinLengthValidator(8, errorText: 'Password must be at least 8 digits long'),
+              ]),
+            ),
+            CustomTextField(
+              controller: confirm,
+              obscureText: true,
+              hintText: '********',
+              label: 'Повторите пароль',
+              validate: (txt) => MatchValidator(errorText: 'passwords do not match').validateMatch(confirm.text.trim(), password.text),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            MyButton(
+              btnBgColor: kLightOrangeColor,
+              text: 'Войти'.toUpperCase(),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  controller.createUser(email.text.trim(), password.text.trim());
+                }
+              },
+            ),
+            GestureDetector(
+              onTap: () {},
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: Get.height * 0.05,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      MyText(
+                        text: 'Войти как',
+                        weight: FontWeight.w600,
+                        color: kInputBorderColor,
+                        align: TextAlign.end,
+                      ),
+                      MyText(
+                        text: ' Гость',
+                        weight: FontWeight.w600,
+                        color: kSecondaryColor,
+                        align: TextAlign.end,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/view/on_boarding_screen/on_boarding_1.dart';
 import 'package:pet_geo/view/on_boarding_screen/on_boarding_2.dart';
 import 'package:pet_geo/view/on_boarding_screen/on_boarding_3.dart';
 import 'package:pet_geo/view/on_boarding_screen/on_boarding_4.dart';
 import 'package:pet_geo/view/on_boarding_screen/on_boarding_5.dart';
-import 'package:pet_geo/view/settings/settings.dart';
 import 'package:pet_geo/view/user/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
