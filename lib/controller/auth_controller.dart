@@ -1,4 +1,6 @@
 // import 'package:firebase_auth/firebase_auth.dart';
+// ignore_for_file: prefer_final_fields
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +9,19 @@ import 'package:pet_geo/model/user_model.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
   final CollectionReference<Map<String, dynamic>> _userRef = FirebaseFirestore.instance.collection("users");
 
-  Rx<Users> user = Rx<Users>(Users("", ""));
+  Rx<User?> _currentUser = Rx<User?>(null);
+
+  Rx<Users?> user = Rx<Users?>(null);
+
+  User? get currentUser => _currentUser.value;
+
+  @override
+  void onInit() {
+    _currentUser.bindStream(_auth.authStateChanges());
+    super.onInit();
+  }
 
   /// Check if user exists in database and return true, or false
   void userExist(String email) {

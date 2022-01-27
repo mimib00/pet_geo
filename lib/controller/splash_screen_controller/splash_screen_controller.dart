@@ -3,12 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_geo/controller/auth_controller.dart';
 import 'package:pet_geo/view/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:pet_geo/view/on_boarding_screen/on_boarding_screen.dart';
+import 'package:pet_geo/view/root.dart';
 import 'package:pet_geo/view/user/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreenController extends GetxController {
+  final AuthController controller = Get.find<AuthController>();
   @override
   void onInit() {
     super.onInit();
@@ -19,11 +22,7 @@ class SplashScreenController extends GetxController {
         if (firstTime == null || firstTime == true) {
           Get.offAll(() => OnBoardingScreen());
         } else {
-          if (FirebaseAuth.instance.currentUser == null) {
-            Get.offAll(() => const Authentication());
-          } else {
-            Get.offAll(() => BottomNavBar());
-          }
+          Get.offAll(() => const Root());
         }
       } else {
         Get.defaultDialog(

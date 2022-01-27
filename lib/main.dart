@@ -36,22 +36,8 @@ void main() async {
   runApp(const PetGeo());
 }
 
-class PetGeo extends StatefulWidget {
+class PetGeo extends StatelessWidget {
   const PetGeo({Key? key}) : super(key: key);
-
-  @override
-  State<PetGeo> createState() => _PetGeoState();
-}
-
-class _PetGeoState extends State<PetGeo> {
-  @override
-  void initState() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user != null) {
-      } else {}
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
