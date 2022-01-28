@@ -1,0 +1,16 @@
+const Map<String, String> ru = {
+  "login_title": "Уже есть аккаунт",
+  "register_title": "Хочу зарегистрироваться",
+  "email_title": "Введите e-mail",
+  "password_title": "Пароль",
+  "confirm_password_title": "Повторите пароль",
+  "login": "Войти",
+  "register": "Войти",
+  "password_rest": "Забыли пароль?",
+  "login_as": "Войти как",
+  "guest": "Гость",
+  "settings_title": "Настройки",
+  "settings_language": "Язык",
+  "english": "Aнглийский",
+  "russian": "Pусский",
+};

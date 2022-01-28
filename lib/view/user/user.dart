@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/user/sign_up.dart';
 import 'package:pet_geo/view/widget/logo.dart';
@@ -106,14 +107,14 @@ class _AuthenticationState extends State<Authentication> with SingleTickerProvid
                           currentTab = index;
                         });
                       },
-                      tabs: const [
+                      tabs: [
                         Text(
-                          'Уже есть аккаунт',
+                          'login_title'.tr,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          'Хочу зарегистрироваться',
+                          "register_title".tr,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),

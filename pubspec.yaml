@@ -21,6 +21,7 @@ dependencies:
   fluttericon: ^2.0.0
 
   get:
+  get_storage:
   flutter_switch: ^0.3.2
   step_progress_indicator: ^1.0.1
   group_radio_button: ^1.1.0

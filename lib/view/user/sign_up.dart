@@ -30,7 +30,7 @@ class SignUp extends GetWidget<AuthController> {
             CustomTextField(
               controller: email,
               hintText: 'IvanovIvan@pochta.ru',
-              label: 'Напишите e-mail',
+              label: 'email_title'.tr,
               validate: (txt) {
                 var emailValid = EmailValidator(errorText: 'Unvalid email address format').call(txt);
                 var isEmpty = RequiredValidator(errorText: 'Email is required').call(txt);
@@ -50,7 +50,7 @@ class SignUp extends GetWidget<AuthController> {
               controller: password,
               obscureText: true,
               hintText: '********',
-              label: 'Повторите пароль',
+              label: 'password_title'.tr,
               validate: MultiValidator([
                 RequiredValidator(errorText: 'Password is required'),
                 MinLengthValidator(8, errorText: 'Password must be at least 8 digits long'),
@@ -60,7 +60,7 @@ class SignUp extends GetWidget<AuthController> {
               controller: confirm,
               obscureText: true,
               hintText: '********',
-              label: 'Повторите пароль',
+              label: 'confirm_password_title'.tr,
               validate: (txt) => MatchValidator(errorText: 'passwords do not match').validateMatch(confirm.text.trim(), password.text),
             ),
             const SizedBox(
@@ -68,7 +68,7 @@ class SignUp extends GetWidget<AuthController> {
             ),
             MyButton(
               btnBgColor: kLightOrangeColor,
-              text: 'Войти'.toUpperCase(),
+              text: 'register'.toUpperCase().tr,
               onPressed: () {
                 if (formKey.currentState!.validate()) {
                   Get.defaultDialog(content: const Text("Loading..."));
@@ -87,13 +87,13 @@ class SignUp extends GetWidget<AuthController> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       MyText(
-                        text: 'Войти как',
+                        text: 'login_as'.tr,
                         weight: FontWeight.w600,
                         color: kInputBorderColor,
                         align: TextAlign.end,
                       ),
                       MyText(
-                        text: ' Гость',
+                        text: ' guest'.tr,
                         weight: FontWeight.w600,
                         color: kSecondaryColor,
                         align: TextAlign.end,

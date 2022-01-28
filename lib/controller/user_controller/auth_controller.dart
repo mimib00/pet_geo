@@ -83,14 +83,13 @@ class AuthController extends GetxController {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
 
       if (credential.user == null) throw "Couldn't create user";
+
       Map<String, dynamic> data = {
         "email": credential.user!.email
       };
       _userRef.doc(credential.user!.uid).set(data).then((value) {
         user.value = Users.fromMap(data, id: credential.user!.uid);
       });
-      await _auth.signOut();
-      throw "Please confirm your email";
     } catch (e) {
       Get.back();
       Get.snackbar(
@@ -110,12 +109,6 @@ class AuthController extends GetxController {
       // login user
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       if (currentUser == null) return;
-
-      if (currentUser!.emailVerified == false) {
-        await _auth.signOut();
-        Get.back();
-        throw "Please confirm your email";
-      }
 
       // fetch user data from firestore
       getUserData(currentUser!.uid);
@@ -137,8 +130,8 @@ class AuthController extends GetxController {
     try {
       _auth.signOut().then((value) {
         user.value = null;
-        Get.back();
       });
+      Get.back();
     } catch (e) {
       Get.back();
       Get.snackbar(

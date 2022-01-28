@@ -1,0 +1,16 @@
+const Map<String, String> en = {
+  "login_title": "Already have an account",
+  "register_title": "I want to register",
+  "email_title": "Enter an e-mail",
+  "password_title": "Password",
+  "confirm_password_title": "Confirm password",
+  "login": "Login",
+  "register": "Register",
+  "password_rest": "Forgot your password?",
+  "login_as": "Login as",
+  "guest": "guest",
+  "settings_title": "Settings",
+  "settings_language": "Language",
+  "english": "English",
+  "russian": "Russian",
+};

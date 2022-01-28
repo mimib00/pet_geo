@@ -18,7 +18,7 @@ class Users {
   factory Users.fromMap(Map<String, dynamic> data, {String? id}) => Users(
         id: id,
         email: data["email"],
-        name: data["name"],
+        name: data["name"] ?? "",
       );
 
   /// Creates a Map from a Users object.
@@ -26,6 +26,7 @@ class Users {
         "id": id,
         "data": {
           "email": email,
+          "name": name,
         }
       };
 }

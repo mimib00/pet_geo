@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
 import 'package:pet_geo/view/widget/custom_app_bar_2.dart';
@@ -15,21 +17,15 @@ class _LanguageState extends State<Language> with SingleTickerProviderStateMixin
 
   late TabController _tabController;
 
-  var currentTab = 0;
-
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this, initialIndex: currentTab);
-    _tabController.addListener(() {
-      setState(() {
-        currentTab = _tabController.index;
-      });
-    });
+    _tabController = TabController(length: 2, vsync: this, initialIndex: Get.locale == const Locale("en") ? 0 : 1);
   }
 
   @override
   Widget build(BuildContext context) {
+    var lang = GetStorage().read("lang");
     return Scaffold(
       key: _key,
       drawer: const MyDrawer(),
@@ -38,7 +34,7 @@ class _LanguageState extends State<Language> with SingleTickerProviderStateMixin
         haveTitle: true,
         onTitleTap: () {},
         showSearch: () {},
-        title: 'Язык',
+        title: 'settings_language'.tr,
         globalKey: _key,
       ),
       body: Container(
@@ -62,6 +58,16 @@ class _LanguageState extends State<Language> with SingleTickerProviderStateMixin
                   splashColor: Colors.transparent,
                 ),
                 child: TabBar(
+                  onTap: (index) async {
+                    final box = GetStorage();
+                    if (index == 0) {
+                      Get.updateLocale(const Locale("en"));
+                      box.write("lang", "en");
+                    } else {
+                      Get.updateLocale(const Locale("ru"));
+                      box.write("lang", "ru");
+                    }
+                  },
                   controller: _tabController,
                   labelColor: kPrimaryColor,
                   labelStyle: const TextStyle(
@@ -76,21 +82,21 @@ class _LanguageState extends State<Language> with SingleTickerProviderStateMixin
                   unselectedLabelColor: kDarkGreyColor,
                   indicator: BoxDecoration(
                     borderRadius: BorderRadius.only(
-                      topLeft: currentTab == 0 ? const Radius.circular(50) : Radius.zero,
-                      bottomLeft: currentTab == 0 ? const Radius.circular(50) : Radius.zero,
-                      topRight: currentTab == 1 ? const Radius.circular(50) : Radius.zero,
-                      bottomRight: currentTab == 1 ? const Radius.circular(50) : Radius.zero,
+                      topLeft: lang == "en" ? const Radius.circular(50) : Radius.zero,
+                      bottomLeft: lang == "en" ? const Radius.circular(50) : Radius.zero,
+                      topRight: lang == "ru" ? const Radius.circular(50) : Radius.zero,
+                      bottomRight: lang == "ru" ? const Radius.circular(50) : Radius.zero,
                     ),
                     color: kSecondaryColor,
                   ),
-                  tabs: const [
+                  tabs: [
                     Text(
-                      'Русский',
+                      'english'.tr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      'Английский',
+                      'russian'.tr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

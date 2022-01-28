@@ -29,7 +29,7 @@ class Login extends GetWidget<AuthController> {
             CustomTextField(
               controller: email,
               hintText: 'IvanovIvan@pochta.ru',
-              label: 'Имя пользователя или e-mail',
+              label: 'email_title'.tr,
               validate: (txt) {
                 var emailValid = EmailValidator(errorText: 'Unvalid email address format').call(txt);
                 var isEmpty = RequiredValidator(errorText: 'Email is required').call(txt);
@@ -45,7 +45,7 @@ class Login extends GetWidget<AuthController> {
             CustomTextField(
               controller: password,
               hintText: '********',
-              label: 'Пароль',
+              label: 'password_title'.tr,
               obscureText: true,
               validate: MultiValidator([
                 RequiredValidator(errorText: 'Password is required'),
@@ -57,7 +57,7 @@ class Login extends GetWidget<AuthController> {
             ),
             MyButton(
               btnBgColor: kLightOrangeColor,
-              text: 'Войти'.toUpperCase(),
+              text: 'login'.toUpperCase().tr,
               onPressed: () {
                 if (formKey.currentState!.validate()) {
                   Get.defaultDialog(
@@ -74,7 +74,7 @@ class Login extends GetWidget<AuthController> {
             ),
             MyText(
               paddingTop: 25.0,
-              text: 'Забыли пароль?',
+              text: 'password_rest'.tr,
               weight: FontWeight.w600,
               color: kSecondaryColor,
               align: TextAlign.end,

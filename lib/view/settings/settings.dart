@@ -19,7 +19,7 @@ import 'notification_settings.dart';
 class Settings extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-   Settings({Key? key}) : super(key: key);
+  Settings({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class Settings extends StatelessWidget {
         haveTitle: true,
         onTitleTap: () {},
         showSearch: () {},
-        title: 'Настройки',
+        title: 'settings_title'.tr,
         globalKey: _key,
       ),
       body: ListView(
@@ -77,7 +77,7 @@ class Settings extends StatelessWidget {
             onTap: () => Get.to(() => PrivacyPolicy()),
           ),
           SettingsTiles(
-            title: 'Язык',
+            title: 'settings_language'.tr,
             onTap: () => Get.to(() => const Language()),
           ),
           SettingsTiles(

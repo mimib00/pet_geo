@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/controller/bindings/auth_binding.dart';
+import 'package:pet_geo/utils/translations.dart';
 import 'package:pet_geo/view/about_us/about_us.dart';
 import 'package:pet_geo/view/about_us/privacy_policy/privacy_policy.dart';
 import 'package:pet_geo/view/about_us/terms_and_conditions/terms_and_conditions.dart';
@@ -28,10 +29,12 @@ import 'package:pet_geo/view/stories/stories.dart';
 import 'package:pet_geo/view/user/user.dart';
 import 'package:pet_geo/view/user_profile/user_profile_profile_image/profile_image.dart';
 import 'package:pet_geo/view/user_profile/user_profile_with_offer_help.dart';
+import 'package:get_storage/get_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await GetStorage.init();
   runApp(const PetGeo());
 }
 
@@ -40,6 +43,7 @@ class PetGeo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(GetStorage().read("lang"));
     return GetMaterialApp(
       initialBinding: AuthBinding(),
       debugShowMaterialGrid: false,
@@ -60,6 +64,9 @@ class PetGeo extends StatelessWidget {
       ),
       themeMode: ThemeMode.light,
       initialRoute: '/splash_screen',
+      locale: GetStorage().read("lang") != null ? Locale(GetStorage().read("lang")) : const Locale("en"),
+      fallbackLocale: const Locale("en"),
+      translations: Translation(),
       getPages: [
         GetPage(name: '/splash_screen', page: () => const SplashScreen()),
         GetPage(name: '/on_boarding_screen', page: () => OnBoardingScreen()),

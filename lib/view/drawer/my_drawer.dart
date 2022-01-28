@@ -142,7 +142,7 @@ class _MyDrawerState extends State<MyDrawer> {
           DrawerTiles(
             icon: 'assets/images/Setting.png',
             iconSize: 32,
-            title: 'Настройки',
+            title: 'settings_title'.tr,
             onTap: () => Get.to(() => Settings()),
           ),
           const SizedBox(
