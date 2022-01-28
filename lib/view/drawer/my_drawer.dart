@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pet_geo/controller/auth_controller.dart';
+import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/view/animal_communities/animal_communities.dart';
 import 'package:pet_geo/view/bonus_space/bonus_space.dart';
 import 'package:pet_geo/view/bottom_sheets/logout.dart';

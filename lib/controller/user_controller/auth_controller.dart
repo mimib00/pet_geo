@@ -13,7 +13,7 @@ class AuthController extends GetxController {
 
   Rx<User?> _currentUser = Rx<User?>(null);
 
-  Rx<Users?> user = Rx<Users?>(null);
+  Rx<Users?> user = Users().obs;
 
   User? get currentUser => _currentUser.value;
 
@@ -39,6 +39,23 @@ class AuthController extends GetxController {
     });
   }
 
+  void saveUserData(Map<String, dynamic> data, String uid) async {
+    try {
+      await _userRef.doc(uid).update(data);
+      getUserData(uid);
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+  }
+
+  /// Fetches user's data from database.
   void getUserData(String uid) async {
     try {
       // fetch the data
@@ -72,6 +89,8 @@ class AuthController extends GetxController {
       _userRef.doc(credential.user!.uid).set(data).then((value) {
         user.value = Users.fromMap(data, id: credential.user!.uid);
       });
+      await _auth.signOut();
+      throw "Please confirm your email";
     } catch (e) {
       Get.back();
       Get.snackbar(
@@ -91,6 +110,12 @@ class AuthController extends GetxController {
       // login user
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       if (currentUser == null) return;
+
+      if (currentUser!.emailVerified == false) {
+        await _auth.signOut();
+        Get.back();
+        throw "Please confirm your email";
+      }
 
       // fetch user data from firestore
       getUserData(currentUser!.uid);

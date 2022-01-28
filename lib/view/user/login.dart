@@ -3,10 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
-import 'package:pet_geo/controller/auth_controller.dart';
-import 'package:pet_geo/controller/user_controller/login_controller/login_controller.dart';
+import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/view/constant/constant.dart';
-import 'package:pet_geo/view/place_an_add/found_a_pet.dart';
 import 'package:pet_geo/view/widget/custom_text_field.dart';
 import 'package:pet_geo/view/widget/my_button.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
@@ -81,44 +79,44 @@ class Login extends GetWidget<AuthController> {
               color: kSecondaryColor,
               align: TextAlign.end,
             ),
-            GetBuilder<LoginController>(
-                init: LoginController(),
-                builder: (logic) {
-                  return GestureDetector(
-                    onTap: () {
-                      logic.guestUser();
-                      Get.off(
-                        () => FoundAPet(
-                          guestUser: logic.isGuest,
-                        ),
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: Get.height * 0.05,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            MyText(
-                              text: 'Войти как',
-                              weight: FontWeight.w600,
-                              color: kInputBorderColor,
-                              align: TextAlign.end,
-                            ),
-                            MyText(
-                              text: ' Гость',
-                              weight: FontWeight.w600,
-                              color: kSecondaryColor,
-                              align: TextAlign.end,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }),
+            // GetBuilder<LoginController>(
+            //     init: LoginController(),
+            //     builder: (logic) {
+            //       return GestureDetector(
+            //         onTap: () {
+            //           logic.guestUser();
+            //           Get.off(
+            //             () => FoundAPet(
+            //               guestUser: logic.isGuest,
+            //             ),
+            //           );
+            //         },
+            //         child: Column(
+            //           children: [
+            //             SizedBox(
+            //               height: Get.height * 0.05,
+            //             ),
+            //             Row(
+            //               mainAxisAlignment: MainAxisAlignment.center,
+            //               children: [
+            //                 MyText(
+            //                   text: 'Войти как',
+            //                   weight: FontWeight.w600,
+            //                   color: kInputBorderColor,
+            //                   align: TextAlign.end,
+            //                 ),
+            //                 MyText(
+            //                   text: ' Гость',
+            //                   weight: FontWeight.w600,
+            //                   color: kSecondaryColor,
+            //                   align: TextAlign.end,
+            //                 ),
+            //               ],
+            //             ),
+            //           ],
+            //         ),
+            //       );
+            //     }),
           ],
         ),
       ),

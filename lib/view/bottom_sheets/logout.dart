@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pet_geo/controller/auth_controller.dart';
+import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
