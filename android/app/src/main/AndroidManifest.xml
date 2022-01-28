@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.pet_geo">
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
    <application
         android:label="pet_geo"
         android:icon="@mipmap/ic_launcher">
@@ -37,5 +38,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD2LP3W09gJIj7E7VwZLUDOkMBKjztA6iE"/>
     </application>
 </manifest>

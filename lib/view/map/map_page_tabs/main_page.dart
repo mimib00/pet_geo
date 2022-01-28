@@ -28,8 +28,8 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
   }
 
   List tabs = [
-    'Все',
-    'Избранное',
+    'all_title'.tr,
+    'fav_title'.tr,
   ];
 
   final List tabItems = [
@@ -84,18 +84,15 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                     ),
                     color: kSecondaryColor,
                   ),
-                  tabs: const [
-                    Text(
-                      'Все',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      'Избранное',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                  tabs: tabs
+                      .map(
+                        (e) => Text(
+                          e,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
             ),

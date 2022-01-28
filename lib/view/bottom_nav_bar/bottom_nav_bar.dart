@@ -112,7 +112,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       color: widget.currentIndex == 3 ? kSecondaryColor : kDarkGreyColor,
                     ),
                   ),
-                  label: 'Карта',
+                  label: 'map_title'.tr,
                 ),
               ],
             ),

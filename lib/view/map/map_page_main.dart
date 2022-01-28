@@ -18,8 +18,8 @@ class MapPageMain extends StatelessWidget {
   MapPageMain({Key? key, this.guestUser = false}) : super(key: key);
 
   List tabs = [
-    'Карта',
-    'Список',
+    'map_title'.tr,
+    'list_title'.tr,
   ];
 
   final List tabItems = [
@@ -122,6 +122,7 @@ class MapPageMain extends StatelessWidget {
             body: Stack(
               children: [
                 TabBarView(
+                  physics: const NeverScrollableScrollPhysics(),
                   children: tabItems
                       .map(
                         (e) => SizedBox(

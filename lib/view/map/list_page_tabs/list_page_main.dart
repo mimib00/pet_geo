@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/map/list_page_tabs/tabs/everything.dart';
 import 'package:pet_geo/view/map/list_page_tabs/tabs/favorites.dart';
@@ -26,8 +27,8 @@ class _ListPageMainState extends State<ListPageMain> with SingleTickerProviderSt
   }
 
   List tabs = [
-    'Все',
-    'Избранное',
+    'all_title'.tr,
+    'fav_title'.tr,
   ];
 
   final List tabItems = [

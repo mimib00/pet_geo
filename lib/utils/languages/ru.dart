@@ -13,4 +13,8 @@ const Map<String, String> ru = {
   "settings_language": "Язык",
   "english": "Aнглийский",
   "russian": "Pусский",
+  "map_title": "Карта",
+  "list_title": "Список",
+  "all_title": "Все",
+  "fav_title": "Избранное",
 };

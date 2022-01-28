@@ -22,6 +22,10 @@ dependencies:
 
   get:
   get_storage:
+
+  location: ^4.3.0
+  google_maps_flutter: ^2.1.1
+
   flutter_switch: ^0.3.2
   step_progress_indicator: ^1.0.1
   group_radio_button: ^1.1.0

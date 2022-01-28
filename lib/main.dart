@@ -43,7 +43,6 @@ class PetGeo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(GetStorage().read("lang"));
     return GetMaterialApp(
       initialBinding: AuthBinding(),
       debugShowMaterialGrid: false,
