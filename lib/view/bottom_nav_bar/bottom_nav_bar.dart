@@ -32,20 +32,6 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   final AuthController authController = Get.find<AuthController>();
-  @override
-  // void initState() {
-  //   if (authController.user.value!.name.isEmpty) {
-  //     Get.defaultDialog(
-  //       title: "Enter User Information",
-  //       titlePadding: EdgeInsets.zero,
-  //       content: const Text(
-  //         "Loading...",
-  //         style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-  //       ),
-  //     );
-  //   }
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +87,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       color: widget.currentIndex == 2 ? kSecondaryColor : kDarkGreyColor,
                     ),
                   ),
-                  label: 'Добавить',
+                  label: 'add_title'.tr,
                 ),
                 BottomNavigationBarItem(
                   icon: Padding(

@@ -1,4 +1,3 @@
-// import 'package:firebase_auth/firebase_auth.dart';
 // ignore_for_file: prefer_final_fields
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/model/user_model.dart';
+import 'package:pet_geo/view/widget/custom_text_field.dart';
+import 'package:phonenumbers/phonenumbers.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -21,6 +22,64 @@ class AuthController extends GetxController {
   void onInit() {
     _currentUser.bindStream(_auth.authStateChanges());
     super.onInit();
+  }
+
+  void isNewUser(Map<String, dynamic> data) {
+    try {
+      final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+      TextEditingController name = TextEditingController();
+      PhoneNumberEditingController phone = PhoneNumberEditingController();
+
+      if (data["name"] == null) {
+        Get.defaultDialog(
+          barrierDismissible: false,
+          title: "Enter your Information",
+          content: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                CustomTextField(
+                  hintText: "Name",
+                  label: "Name",
+                  controller: name,
+                  validate: (txt) {
+                    if (txt == null || txt.isEmpty) return "You must enter a name";
+                  },
+                ),
+                PhoneNumberField(
+                  controller: phone,
+                  countryCodeWidth: 50,
+                ),
+              ],
+            ),
+          ),
+          contentPadding: const EdgeInsets.all(10),
+          confirm: TextButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate() && phone.nationalNumber.isNotEmpty) {
+                Map<String, dynamic> data = {
+                  "name": name.text.trim(),
+                  "phone": "+${phone.country!.prefix}${phone.nationalNumber}"
+                };
+                saveUserData(data);
+              }
+            },
+            child: const Text("Submit"),
+            style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.black)),
+          ),
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
   }
 
   /// Check if user exists in database and return true, or false
@@ -39,10 +98,10 @@ class AuthController extends GetxController {
     });
   }
 
-  void saveUserData(Map<String, dynamic> data, String uid) async {
+  void saveUserData(Map<String, dynamic> data) async {
     try {
-      await _userRef.doc(uid).update(data);
-      getUserData(uid);
+      await _userRef.doc(_currentUser.value!.uid).update(data);
+      getUserData(_currentUser.value!.uid);
     } catch (e) {
       Get.snackbar(
         "Error",
@@ -61,7 +120,7 @@ class AuthController extends GetxController {
       // fetch the data
       _userRef.doc(uid).get().then((snapshot) {
         if (!snapshot.exists) throw "User doesn't exist, Please register";
-
+        isNewUser(snapshot.data()!);
         user.value = Users.fromMap(snapshot.data()!, id: uid);
         update();
       });
@@ -126,11 +185,9 @@ class AuthController extends GetxController {
   }
 
   /// log a user out
-  void logout() {
+  void logout() async {
     try {
-      _auth.signOut().then((value) {
-        user.value = null;
-      });
+      await _auth.signOut();
       Get.back();
     } catch (e) {
       Get.back();

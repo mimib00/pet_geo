@@ -39,41 +39,41 @@ class Settings extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 15),
         children: [
           SettingsTiles(
-            title: 'Сменить пароль',
+            title: 'change_password_title'.tr,
             onTap: () => Get.to(() => ChangePassword()),
           ),
           SettingsTiles(
-            title: 'Данные',
+            title: 'info_title'.tr,
             onTap: () => Get.to(() => const ProfileSettings()),
           ),
           SettingsTiles(
-            title: 'Уведомления',
+            title: 'notifications_title'.tr,
             onTap: () => Get.to(() => const NotificationSettings()),
           ),
           SettingsTiles(
-            title: 'Работа приложения',
+            title: 'app_op_title'.tr,
             onTap: () => Get.to(() => OnBoardingScreen(
                   status: false,
                 )),
           ),
           SettingsTiles(
-            title: 'О нас',
+            title: 'about_us_title'.tr,
             onTap: () => Get.to(() => AboutUs()),
           ),
           SettingsTiles(
-            title: 'Рейтинг приложения',
+            title: 'rating_title'.tr,
             onTap: () {},
           ),
           SettingsTiles(
-            title: 'Техподдержка',
+            title: 'support_title'.tr,
             onTap: () {},
           ),
           SettingsTiles(
-            title: 'Пользовательское соглашение',
+            title: 'terms_title'.tr,
             onTap: () => Get.to(() => TermsAndConditions()),
           ),
           SettingsTiles(
-            title: 'Политика безопасности',
+            title: 'policy_title'.tr,
             onTap: () => Get.to(() => PrivacyPolicy()),
           ),
           SettingsTiles(
@@ -81,7 +81,7 @@ class Settings extends StatelessWidget {
             onTap: () => Get.to(() => const Language()),
           ),
           SettingsTiles(
-            title: 'Удалить аккаунт',
+            title: 'delete_account_title'.tr,
             onTap: () => Get.bottomSheet(
               const DeleteAccount(),
               backgroundColor: kPrimaryColor,

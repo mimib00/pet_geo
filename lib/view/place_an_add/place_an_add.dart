@@ -36,7 +36,7 @@ class PlaceAnAdd extends StatelessWidget {
                 child: MyText(
                   size: 20,
                   color: kDarkGreyColor,
-                  text: 'Создание объявления',
+                  text: 'create_ad_title'.tr,
                   align: TextAlign.center,
                   weight: FontWeight.w700,
                 ),
@@ -68,9 +68,7 @@ class PlaceAnAdd extends StatelessWidget {
     return GetBuilder<PlaceAnAddController>(
       builder: (controller) {
         return ListTile(
-          tileColor: controller.currentIndex == index
-              ? kSecondaryColor
-              : kPrimaryColor,
+          tileColor: controller.currentIndex == index ? kSecondaryColor : kPrimaryColor,
           onTap: () {
             controller.currentCategory(index);
           },
@@ -95,9 +93,7 @@ class PlaceAnAdd extends StatelessWidget {
             text: title,
             weight: FontWeight.w600,
             size: 18,
-            color: controller.currentIndex == index
-                ? kPrimaryColor
-                : kDarkGreyColor,
+            color: controller.currentIndex == index ? kPrimaryColor : kDarkGreyColor,
           ),
         );
       },

@@ -11,12 +11,12 @@ class LostAPet extends StatelessWidget {
   Widget build(BuildContext context) {
     return PlaceAnAddWidget(
       categoryColor: kRedColor,
-      categoryName: 'Потерял питомца',
-        onTap: () => Get.off(
-              () => BottomNavBar(
-            currentIndex: 3,
-          ),
+      categoryName: 'lost_pet_title'.tr,
+      onTap: () => Get.off(
+        () => BottomNavBar(
+          currentIndex: 3,
         ),
+      ),
     );
   }
 }

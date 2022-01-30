@@ -21,7 +21,8 @@ class PlaceAnAddWidget extends StatelessWidget {
   bool? payment;
   VoidCallback? onTap;
 
-  PlaceAnAddWidget({Key? key,
+  PlaceAnAddWidget({
+    Key? key,
     this.categoryName,
     this.categoryColor = kGreenColor,
     this.petBreed,
@@ -86,8 +87,7 @@ class PlaceAnAddWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: Container(
-                  padding:
-                      const EdgeInsets.only(bottom: 15, left: 20, right: 5),
+                  padding: const EdgeInsets.only(bottom: 15, left: 20, right: 5),
                   decoration: const BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
@@ -131,8 +131,7 @@ class PlaceAnAddWidget extends StatelessWidget {
               ),
               Expanded(
                 child: Container(
-                  padding:
-                      const EdgeInsets.only(bottom: 15, left: 20, right: 5),
+                  padding: const EdgeInsets.only(bottom: 15, left: 20, right: 5),
                   decoration: const BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
@@ -257,8 +256,7 @@ class PlaceAnAddWidget extends StatelessWidget {
               ),
               Expanded(
                 child: Container(
-                  padding:
-                      const EdgeInsets.only(bottom: 7, left: 20, right: 5),
+                  padding: const EdgeInsets.only(bottom: 7, left: 20, right: 5),
                   decoration: const BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
@@ -353,7 +351,9 @@ class PlaceAnAddWidget extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            onPressed: onTap,
+            onPressed: () {
+              onTap!();
+            },
             child: MyText(
               text: 'Разместить объявление',
               size: 16,
@@ -373,7 +373,8 @@ class PlaceAnAddTextFields extends StatelessWidget {
   var hintText;
   TextEditingController? textEditingController;
 
-  PlaceAnAddTextFields({Key? key,
+  PlaceAnAddTextFields({
+    Key? key,
     this.hintText,
     this.textEditingController,
   }) : super(key: key);

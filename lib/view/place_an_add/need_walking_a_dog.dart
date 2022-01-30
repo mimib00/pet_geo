@@ -12,12 +12,12 @@ class NeedWalkingADog extends StatelessWidget {
     return PlaceAnAddWidget(
       payment: true,
       categoryColor: kYellowColor,
-      categoryName: 'Нужен выгул питомца',
-        onTap: () => Get.off(
-              () => BottomNavBar(
-            currentIndex: 3,
-          ),
+      categoryName: 'pet_walk_title'.tr,
+      onTap: () => Get.off(
+        () => BottomNavBar(
+          currentIndex: 3,
         ),
+      ),
     );
   }
 }

@@ -10,17 +10,16 @@ import 'package:pet_geo/view/place_an_add/offer_kennels.dart';
 import 'package:pet_geo/view/place_an_add/offer_walking_a_dog.dart';
 
 class PlaceAnAddController extends GetxController {
-  // ignore: prefer_typing_uninitialized_variables
-  var currentIndex;
+  var currentIndex = 0.obs;
   RxList addCategory = [
-    'Нашёл питомца',
-    'Потерял питомца',
-    'Отдам в добрые руки',
-    'Отдам на передержку',
-    'Возьму на передержку',
-    'Возьму в семью',
-    'Нужен выгул питомца',
-    'Могу погулять с питомцем',
+    'found_pet_title'.tr,
+    'lost_pet_title'.tr,
+    'family_pet_title'.tr,
+    'kennels_title'.tr,
+    'kennels_offer_title'.tr,
+    'adopt_title'.tr,
+    'pet_walk_title'.tr,
+    'pet_walk_offer_title'.tr,
   ].obs;
   RxList categoryColor = [
     kGreenColor,
@@ -34,7 +33,7 @@ class PlaceAnAddController extends GetxController {
   ].obs;
 
   void currentCategory(var index) {
-    currentIndex = index;
+    var currentIndex = index;
     switch (currentIndex) {
       case 0:
         {

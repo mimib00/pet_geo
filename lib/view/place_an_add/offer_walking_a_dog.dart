@@ -12,12 +12,12 @@ class OfferWalkingADog extends StatelessWidget {
     return PlaceAnAddWidget(
       payment: true,
       categoryColor: kBrownColor,
-      categoryName: 'Могу погулять с питомцем',
-        onTap: () => Get.off(
-              () => BottomNavBar(
-            currentIndex: 3,
-          ),
+      categoryName: 'pet_walk_offer_title'.tr,
+      onTap: () => Get.off(
+        () => BottomNavBar(
+          currentIndex: 3,
         ),
+      ),
     );
   }
 }

@@ -10,7 +10,8 @@ import 'package:pet_geo/view/place_an_add/place_an_add_widget.dart';
 class FoundAPet extends StatelessWidget {
   bool? guestUser;
 
-  FoundAPet({Key? key,
+  FoundAPet({
+    Key? key,
     this.guestUser = false,
   }) : super(key: key);
 
@@ -21,7 +22,7 @@ class FoundAPet extends StatelessWidget {
       builder: (mapController) {
         return PlaceAnAddWidget(
           categoryColor: kGreenColor,
-          categoryName: 'Нашёл питомца',
+          categoryName: 'found_pet_title'.tr,
           onTap: () {
             if (guestUser == true) {
               Get.to(

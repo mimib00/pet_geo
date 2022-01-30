@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pet_geo/view/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/place_an_add/place_an_add_widget.dart';
+
 class LookForKennels extends StatelessWidget {
   const LookForKennels({Key? key}) : super(key: key);
 
@@ -11,12 +12,12 @@ class LookForKennels extends StatelessWidget {
     return PlaceAnAddWidget(
       payment: true,
       categoryColor: kSkyBlueColor,
-      categoryName: 'Отдам на передержку',
-        onTap: () => Get.off(
-              () => BottomNavBar(
-            currentIndex: 3,
-          ),
+      categoryName: 'kennels_title'.tr,
+      onTap: () => Get.off(
+        () => BottomNavBar(
+          currentIndex: 3,
         ),
+      ),
     );
   }
 }

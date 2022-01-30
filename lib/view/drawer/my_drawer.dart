@@ -106,37 +106,37 @@ class _MyDrawerState extends State<MyDrawer> {
           DrawerTiles(
             icon: 'assets/images/Mail.png',
             iconSize: 30,
-            title: 'Сообщения',
+            title: 'messages_title'.tr,
             onTap: () => Get.to(() => ChatHead()),
           ),
           DrawerTiles(
             icon: 'assets/images/Friends.png',
             iconSize: 32,
-            title: 'Друзья',
+            title: 'friends_title'.tr,
             onTap: () => Get.to(() => Friends()),
           ),
           DrawerTiles(
             icon: 'assets/images/Notification.png',
             iconSize: 32,
-            title: 'Уведомления',
+            title: 'notifications_title'.tr,
             onTap: () => Get.to(() => Notifications()),
           ),
           DrawerTiles(
             icon: 'assets/images/Community.png',
             iconSize: 32,
-            title: 'Сообщества',
+            title: 'communities_title'.tr,
             onTap: () => Get.to(() => AnimalCommunities()),
           ),
           DrawerTiles(
             icon: 'assets/images/Charity.png',
             iconSize: 24,
-            title: 'Бонусный кабинет',
+            title: 'bonus_title'.tr,
             onTap: () => Get.to(() => BonusSpace()),
           ),
           DrawerTiles(
             icon: 'assets/images/QR.png',
             iconSize: 32,
-            title: 'QR-код',
+            title: 'qr_title'.tr,
             onTap: () => Get.to(() => ChooseToPay()),
           ),
           DrawerTiles(

@@ -11,12 +11,12 @@ class LookForAFamilyForMyPet extends StatelessWidget {
   Widget build(BuildContext context) {
     return PlaceAnAddWidget(
       categoryColor: kSkyBlueColor,
-      categoryName: 'Отдам в добрые руки',
-        onTap: () => Get.off(
-              () => BottomNavBar(
-            currentIndex: 3,
-          ),
+      categoryName: 'family_pet_title'.tr,
+      onTap: () => Get.off(
+        () => BottomNavBar(
+          currentIndex: 3,
         ),
+      ),
     );
   }
 }

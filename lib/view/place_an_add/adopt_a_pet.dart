@@ -10,14 +10,13 @@ class AdoptAPet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlaceAnAddWidget(
-      payment: true,
-      categoryColor: kSecondaryColor,
-      categoryName: 'Возьму в семью',
-      onTap: () => Get.off(
-            () => BottomNavBar(
-          currentIndex: 3,
-        ),
-      )
-    );
+        payment: true,
+        categoryColor: kSecondaryColor,
+        categoryName: 'adopt_title'.tr,
+        onTap: () => Get.off(
+              () => BottomNavBar(
+                currentIndex: 3,
+              ),
+            ));
   }
 }
