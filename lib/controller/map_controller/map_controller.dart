@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 
 class MapController extends GetxController {
   // New Code
@@ -52,10 +54,16 @@ class MapController extends GetxController {
         ),
       ),
     );
+    // addMyLocation(LatLng(locationData.latitude!, locationData.longitude!));
     update();
   }
 
-  void goToUserLocation() {}
+  void addMyLocation(LatLng latLng) {
+    AuthController authController = Get.find<AuthController>();
+    var user = authController.currentUser!;
+
+    Geofire.setLocation(user.uid, latLng.latitude, latLng.longitude);
+  }
 
   // Old Code
   bool? search = false, filterResultMapPins = true;

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/controller/bindings/auth_binding.dart';
 import 'package:pet_geo/utils/translations.dart';
@@ -45,6 +46,10 @@ class PetGeo extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       initialBinding: AuthBinding(),
+      onInit: () {
+        String pathToReference = "petAds";
+        Geofire.initialize(pathToReference);
+      },
       debugShowMaterialGrid: false,
       debugShowCheckedModeBanner: false,
       title: 'Pet Geo',

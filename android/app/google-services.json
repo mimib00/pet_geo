@@ -1,33 +1,34 @@
 {
   "project_info": {
-    "project_number": "578573263163",
-    "project_id": "p3t-ge0",
-    "storage_bucket": "p3t-ge0.appspot.com"
+    "project_number": "302733248222",
+    "firebase_url": "https://petgeo-6f1ef-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "petgeo-6f1ef",
+    "storage_bucket": "petgeo-6f1ef.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:578573263163:android:aa1e914bcd1825456c171e",
+        "mobilesdk_app_id": "1:302733248222:android:acbee8a3fe893c6875244f",
         "android_client_info": {
           "package_name": "com.pet.geo"
         }
       },
       "oauth_client": [
         {
-          "client_id": "578573263163-nnj08jbjob5j78kiiureoa62gj1if49f.apps.googleusercontent.com",
+          "client_id": "302733248222-n2duqg7ir1h7h54pde6fjpr84g0d30p9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCnNA_fMdymakbWGlalVhRZ19Srgjeu5ZE"
+          "current_key": "AIzaSyBgJESDoNmJBq4EjpYIr88znp8XRJyDQ7A"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "578573263163-nnj08jbjob5j78kiiureoa62gj1if49f.apps.googleusercontent.com",
+              "client_id": "302733248222-n2duqg7ir1h7h54pde6fjpr84g0d30p9.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
