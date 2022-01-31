@@ -10,7 +10,7 @@ class OfferKennels extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlaceAnAddWidget(
-      payment: true,
+      payment: false,
       categoryColor: kPurpleColor,
       categoryName: 'kennels_offer_title'.tr,
       onTap: () => Get.off(

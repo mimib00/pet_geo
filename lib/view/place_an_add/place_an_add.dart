@@ -26,8 +26,8 @@ class PlaceAnAdd extends StatelessWidget {
           child: textLogo(24),
         ),
       ),
-      body: GetBuilder<PlaceAnAddController>(
-        init: PlaceAnAddController(),
+      body: GetBuilder<PlaceAnAdController>(
+        init: PlaceAnAdController(),
         builder: (controller) => Column(
           children: [
             SizedBox(
@@ -48,7 +48,6 @@ class PlaceAnAdd extends StatelessWidget {
                   height: 1,
                   color: kLightGreyColor,
                 ),
-                shrinkWrap: true,
                 physics: const BouncingScrollPhysics(),
                 itemCount: controller.addCategory.length,
                 itemBuilder: (context, index) => placeAnAddTiles(
@@ -65,7 +64,7 @@ class PlaceAnAdd extends StatelessWidget {
   }
 
   Widget placeAnAddTiles(var index, String title, Color color) {
-    return GetBuilder<PlaceAnAddController>(
+    return GetBuilder<PlaceAnAdController>(
       builder: (controller) {
         return ListTile(
           tileColor: controller.currentIndex == index ? kSecondaryColor : kPrimaryColor,

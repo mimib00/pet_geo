@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_geo/controller/place_an_add_controller/place_an_add_controller.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
 // ignore: must_be_immutable
 class PetType extends StatelessWidget {
-  List petTypes = [
-    'Кошки',
-    'Собаки',
-    'Кролики',
-    'Птицы',
-    'Лошади',
-    'Другие',
-  ];
-
   PetType({Key? key}) : super(key: key);
 
+  PlaceAnAdController controller = Get.find<PlaceAnAdController>();
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -24,12 +17,15 @@ class PetType extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.only(bottom: 20, top: 20),
         itemBuilder: (context, index) => ListTile(
-          onTap: () => Get.back(),
+          onTap: () => {
+            controller.selectType(index),
+            Get.back()
+          },
           title: Center(
             child: MyText(
               size: 15,
               color: kDarkGreyColor,
-              text: petTypes[index],
+              text: controller.petTypes[index].tr,
             ),
           ),
         ),
@@ -37,7 +33,7 @@ class PetType extends StatelessWidget {
           height: 1,
           color: kLightGreyColor,
         ),
-        itemCount: petTypes.length,
+        itemCount: controller.petTypes.length,
       ),
     );
   }
