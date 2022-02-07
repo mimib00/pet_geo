@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:pet_geo/controller/place_an_add_controller/place_an_add_controller.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/widget/my_text.dart';

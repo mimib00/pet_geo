@@ -33,8 +33,8 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
   ];
 
   final List tabItems = [
-    const All(),
-    const All(),
+    All(),
+    All(),
   ];
 
   @override

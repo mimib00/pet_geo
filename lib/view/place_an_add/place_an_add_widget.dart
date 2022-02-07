@@ -256,7 +256,7 @@ class PlaceAnAddWidget extends StatelessWidget {
                             )
                           : PlaceAnAddTextFields(
                               controller: petColor,
-                              hintText: 'Окрас',
+                              hintText: 'color_title'.tr,
                             ),
                     ),
                     const SizedBox(width: 30),

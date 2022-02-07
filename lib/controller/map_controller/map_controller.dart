@@ -1,15 +1,23 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:pet_geo/controller/user_controller/auth_controller.dart';
+import 'package:pet_geo/model/ad_model.dart';
+import 'package:pet_geo/view/bottom_sheets/ad_infro.dart';
 
 class MapController extends GetxController {
+  RxBool showDetails = false.obs;
+  Ad? ad;
   // New Code
   Location location = Location();
   Rx<LatLng> latLng = const LatLng(55.7558, 37.6173).obs;
+
+  RxSet<Marker> markers = <Marker>{}.obs;
+
+  final CollectionReference<Map<String, dynamic>> _adRef = FirebaseFirestore.instance.collection("ads");
 
   Completer<GoogleMapController> ctrl = Completer();
 
@@ -54,15 +62,54 @@ class MapController extends GetxController {
         ),
       ),
     );
-    // addMyLocation(LatLng(locationData.latitude!, locationData.longitude!));
+
     update();
+    queryAllAds(latLng.value);
   }
 
-  void addMyLocation(LatLng latLng) {
-    AuthController authController = Get.find<AuthController>();
-    var user = authController.currentUser!;
+  void queryAllAds(LatLng _latLng) {
+    Geofire.queryAtLocation(_latLng.latitude, _latLng.longitude, 15)?.listen((map) {
+      if (map != null) {
+        var callBack = map['callBack'];
+        if (callBack == Geofire.onGeoQueryReady) {
+          for (var key in map['result']) {
+            getAdDetails(key);
+          }
+        }
+      }
+    });
+  }
 
-    Geofire.setLocation(user.uid, latLng.latitude, latLng.longitude);
+  void getAdDetails(String key) async {
+    try {
+      var res = await _adRef.doc(key).get();
+      var data = res.data();
+
+      if (data == null) throw "No ad data found";
+
+      // make the marker Set.
+      markers.add(
+        Marker(
+          markerId: MarkerId(res.id),
+          position: LatLng(data["location"]["lat"], data["location"]["long"]),
+          onTap: () {
+            ad = Ad.fromMap(data);
+            togglePanel(true);
+          },
+          consumeTapEvents: true,
+        ),
+      );
+      update();
+    } catch (e) {
+      print(e);
+    }
+
+    // print(res.data());
+  }
+
+  void togglePanel(bool status) {
+    showDetails.value = status;
+    update();
   }
 
   // Old Code

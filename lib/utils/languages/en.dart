@@ -58,5 +58,6 @@ const Map<String, String> en = {
   "little_title": "Little",
   "age_title": "Age",
   "camera_title": "Camera",
-  "gallery_title": "Photos from gallery"
+  "gallery_title": "Photos from gallery",
+  "color_title": "Color"
 };

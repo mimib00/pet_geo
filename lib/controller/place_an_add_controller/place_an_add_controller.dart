@@ -9,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_geo/controller/map_controller/map_controller.dart';
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
-import 'package:pet_geo/model/ad_model.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/place_an_add/adopt_a_pet.dart';
 import 'package:pet_geo/view/place_an_add/found_a_pet.dart';
