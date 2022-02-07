@@ -18,6 +18,14 @@ class AuthController extends GetxController {
 
   User? get currentUser => _currentUser.value;
 
+  List petImages = [
+    'assets/images/Depositphotos_3549727_xl-2015 1.png',
+    'assets/images/Depositphotos_37645053_ds 1.png',
+    'assets/images/Depositphotos_278797182_ds 1.png',
+    'assets/images/Depositphotos_28583659_ds 1.png',
+    'assets/images/Depositphotos_37645053_ds 1.png',
+  ];
+
   @override
   void onInit() {
     _currentUser.bindStream(_auth.authStateChanges());
@@ -45,6 +53,7 @@ class AuthController extends GetxController {
                   controller: name,
                   validate: (txt) {
                     if (txt == null || txt.isEmpty) return "You must enter a name";
+                    return null;
                   },
                 ),
                 PhoneNumberField(

@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field
+// ignore_for_file: unused_field, prefer_typing_uninitialized_variables
 
 import 'dart:io';
 
@@ -48,6 +48,7 @@ class PlaceAnAdController extends GetxController {
   XFile? get image => _image;
   RxString status = "".obs;
   final CollectionReference<Map<String, dynamic>> _adRef = FirebaseFirestore.instance.collection("ads");
+  final CollectionReference<Map<String, dynamic>> _userRef = FirebaseFirestore.instance.collection("users");
   final _storage = FirebaseStorage.instance.ref();
   var currentIndex;
   RxList addCategory = [
@@ -196,6 +197,41 @@ class PlaceAnAdController extends GetxController {
       _image = await _picker.pickImage(source: ImageSource.gallery);
     }
     update();
+  }
+
+  void uploadProfilePic() async {
+    try {
+      AuthController authController = Get.find<AuthController>();
+
+      status.value = "Uploading image";
+
+      if (_image == null) throw "You must choose an image for the profile";
+      var path = "user/${authController.user.value!.id!}/${DateTime.now().microsecondsSinceEpoch}";
+      TaskSnapshot snapshot = await _storage.child(path).putFile(File(_image!.path));
+      if (snapshot.state == TaskState.error || snapshot.state == TaskState.canceled) throw "There was an error durring upload";
+      if (snapshot.state == TaskState.success) {
+        status.value = "Finishing up";
+
+        var imageUrl = await snapshot.ref.getDownloadURL();
+        Map<String, dynamic> data = {
+          "photo": imageUrl,
+        };
+
+        await _userRef.doc(authController.user.value!.id!).update(data);
+        authController.getUserData(authController.user.value!.id!);
+        Get.back();
+      }
+    } catch (e) {
+      Get.back();
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
   }
 
   void restImage() {

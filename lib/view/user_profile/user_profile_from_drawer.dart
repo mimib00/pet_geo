@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
@@ -20,13 +21,7 @@ class UserProfileFromDrawer extends StatefulWidget {
 
 class _UserProfileFromDrawerState extends State<UserProfileFromDrawer> with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-  List petImages = [
-    'assets/images/Depositphotos_3549727_xl-2015 1.png',
-    'assets/images/Depositphotos_37645053_ds 1.png',
-    'assets/images/Depositphotos_278797182_ds 1.png',
-    'assets/images/Depositphotos_28583659_ds 1.png',
-    'assets/images/Depositphotos_37645053_ds 1.png',
-  ];
+
   var currentIndex = 0;
   late TabController tabController;
 
@@ -126,7 +121,7 @@ class _UserProfileFromDrawerState extends State<UserProfileFromDrawer> with Sing
                               shrinkWrap: true,
                               physics: const BouncingScrollPhysics(),
                               padding: const EdgeInsets.symmetric(horizontal: 2.5),
-                              itemCount: petImages.length,
+                              itemCount: controller.petImages.length,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) => GestureDetector(
                                 onTap: () => Get.to(() => const PetsProfile()),
@@ -137,7 +132,7 @@ class _UserProfileFromDrawerState extends State<UserProfileFromDrawer> with Sing
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(5),
                                         child: Image.asset(
-                                          petImages[index],
+                                          controller.petImages[index],
                                           height: 79,
                                           width: 79,
                                           fit: BoxFit.cover,
@@ -216,8 +211,11 @@ class _UserProfileFromDrawerState extends State<UserProfileFromDrawer> with Sing
                             ),
                           ),
                           GestureDetector(
+                            behavior: HitTestBehavior.opaque,
                             onTap: () => Get.bottomSheet(
-                              CameraOptions(),
+                              CameraOptions(
+                                profile: true,
+                              ),
                               backgroundColor: kPrimaryColor,
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
@@ -227,25 +225,57 @@ class _UserProfileFromDrawerState extends State<UserProfileFromDrawer> with Sing
                               ),
                               enableDrag: true,
                             ),
-                            child: Container(
-                              margin: const EdgeInsets.only(left: 15, top: 30),
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                color: kPrimaryColor,
-                                border: Border.all(
-                                  color: kLightGreyColor,
-                                  width: 3.0,
-                                ),
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              child: Center(
-                                child: Image.asset(
-                                  'assets/images/Group 30.png',
-                                  height: 45,
-                                ),
-                              ),
-                            ),
+                            child: controller.user.value!.photoUrl.isEmpty
+                                ? Container(
+                                    margin: const EdgeInsets.only(left: 15, top: 30),
+                                    height: 100,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      color: kPrimaryColor,
+                                      border: Border.all(
+                                        color: kLightGreyColor,
+                                        width: 3.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: Center(
+                                      child: Image.asset(
+                                        'assets/images/Group 30.png',
+                                        height: 45,
+                                      ),
+                                    ),
+                                  )
+                                : Container(
+                                    margin: const EdgeInsets.only(left: 15, top: 30),
+                                    height: 100,
+                                    width: 100,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: CachedNetworkImage(
+                                        imageUrl: controller.user.value!.photoUrl,
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) => Container(
+                                          margin: const EdgeInsets.only(left: 15, top: 30),
+                                          height: 100,
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            color: kPrimaryColor,
+                                            border: Border.all(
+                                              color: kLightGreyColor,
+                                              width: 3.0,
+                                            ),
+                                            borderRadius: BorderRadius.circular(100),
+                                          ),
+                                          child: Center(
+                                            child: Image.asset(
+                                              'assets/images/Group 30.png',
+                                              height: 45,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                           ),
                         ],
                       ),

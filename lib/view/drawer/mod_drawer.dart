@@ -86,7 +86,8 @@ class DrawerTiles extends StatelessWidget {
   double? iconSize;
   VoidCallback? onTap;
 
-  DrawerTiles({Key? key,
+  DrawerTiles({
+    Key? key,
     this.icon,
     this.title,
     this.iconSize = 15.0,

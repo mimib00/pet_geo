@@ -10,10 +10,14 @@ class CameraOptions extends StatelessWidget {
     'camera_title'.tr,
     'gallery_title'.tr,
   ];
+  bool profile;
 
-  CameraOptions({Key? key}) : super(key: key);
+  CameraOptions({
+    Key? key,
+    this.profile = false,
+  }) : super(key: key);
 
-  PlaceAnAdController controller = Get.find<PlaceAnAdController>();
+  PlaceAnAdController controller = Get.put<PlaceAnAdController>(PlaceAnAdController());
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +27,18 @@ class CameraOptions extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.only(bottom: 20, top: 20),
         itemBuilder: (context, index) => ListTile(
-          onTap: () => {
-            controller.getImage(options[index] == "camera_title".tr),
-            Get.back()
+          onTap: () {
+            if (profile) {
+              controller.getImage(options[index] == "camera_title".tr);
+              Get.defaultDialog(
+                title: "",
+                content: Obx(() => Text(controller.status.value)),
+              );
+              controller.uploadProfilePic();
+            } else {
+              controller.getImage(options[index] == "camera_title".tr);
+            }
+            Get.back();
           },
           title: Center(
             child: MyText(

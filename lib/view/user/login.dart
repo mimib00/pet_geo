@@ -40,6 +40,7 @@ class Login extends GetWidget<AuthController> {
                 } else {
                   return isEmpty;
                 }
+                return null;
               },
             ),
             CustomTextField(

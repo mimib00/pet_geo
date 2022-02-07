@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
@@ -38,15 +39,36 @@ class _MyDrawerState extends State<MyDrawer> {
           ),
           ListTile(
             onTap: () => Get.to(() => const UserProfileFromDrawer()),
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: Image.asset(
-                'assets/images/People PH.png',
-                height: 47,
-                width: 47,
-                fit: BoxFit.cover,
-              ),
-            ),
+            leading: authController.user.value!.photoUrl.isEmpty
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Image.asset(
+                      'assets/images/People PH.png',
+                      height: 47,
+                      width: 47,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Container(
+                    height: 47,
+                    width: 47,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: CachedNetworkImage(
+                        imageUrl: authController.user.value!.photoUrl,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: Image.asset(
+                            'assets/images/People PH.png',
+                            height: 47,
+                            width: 47,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
             title: MyText(
               text: authController.user.value!.name,
               size: 15,

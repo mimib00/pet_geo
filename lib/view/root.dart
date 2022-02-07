@@ -12,7 +12,6 @@ class Root extends GetWidget<AuthController> {
     return Obx(() {
       var user = Get.find<AuthController>().currentUser;
       if (user != null) {
-        Get.back();
         controller.getUserData(user.uid);
         return BottomNavBar(currentIndex: 3);
       } else {

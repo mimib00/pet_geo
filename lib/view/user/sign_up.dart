@@ -44,6 +44,7 @@ class SignUp extends GetWidget<AuthController> {
                 } else {
                   return isEmpty;
                 }
+                return null;
               },
             ),
             CustomTextField(

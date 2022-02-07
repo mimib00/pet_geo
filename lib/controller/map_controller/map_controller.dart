@@ -1,3 +1,5 @@
+// ignore_for_file: empty_catches
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:pet_geo/model/ad_model.dart';
-import 'package:pet_geo/view/bottom_sheets/ad_infro.dart';
 
 class MapController extends GetxController {
   RxBool showDetails = false.obs;
@@ -100,9 +101,7 @@ class MapController extends GetxController {
         ),
       );
       update();
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
 
     // print(res.data());
   }
