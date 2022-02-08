@@ -10,6 +10,7 @@ import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/friends/friends.dart';
 import 'package:pet_geo/view/notifications/notifications.dart';
 import 'package:pet_geo/view/pets_profile/add_new_pet_profile.dart';
+import 'package:pet_geo/view/pets_profile/new_pet.dart';
 import 'package:pet_geo/view/pets_profile/pets_profile.dart';
 import 'package:pet_geo/view/qr/choose_to_pay.dart';
 import 'package:pet_geo/view/settings/settings.dart';
@@ -49,7 +50,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       fit: BoxFit.cover,
                     ),
                   )
-                : Container(
+                : SizedBox(
                     height: 47,
                     width: 47,
                     child: ClipRRect(
@@ -94,26 +95,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: Image.asset(
-                    'assets/images/pexels-dominika-roseclay-2023384 1.png',
-                    height: 39,
-                    width: 39,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: Image.asset(
-                    'assets/images/Untitled.png',
-                    height: 39,
-                    width: 39,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
                   child: GestureDetector(
-                    onTap: () => Get.to(() => const AddNewPetsProfile()),
+                    onTap: () => Get.to(() => const NewPetScreen()),
                     child: Image.asset(
                       'assets/images/New Pet.png',
                       height: 39,

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:pet_geo/view/bottom_sheets/camera_options.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
-import 'package:pet_geo/view/filter/filter.dart';
 import 'package:pet_geo/view/widget/logo.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
@@ -16,13 +15,7 @@ class AddNewPetsProfile extends StatefulWidget {
 
 class _AddNewPetsProfileState extends State<AddNewPetsProfile> with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-  List petImages = [
-    'assets/images/Depositphotos_3549727_xl-2015 1.png',
-    'assets/images/Depositphotos_37645053_ds 1.png',
-    'assets/images/Depositphotos_278797182_ds 1.png',
-    'assets/images/Depositphotos_28583659_ds 1.png',
-    'assets/images/Depositphotos_37645053_ds 1.png',
-  ];
+
   var currentIndex = 0;
   late TabController tabController;
 
@@ -45,7 +38,6 @@ class _AddNewPetsProfileState extends State<AddNewPetsProfile> with SingleTicker
       resizeToAvoidBottomInset: false,
       key: _key,
       drawer: const MyDrawer(),
-      endDrawer: Filter(),
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 140,
@@ -114,7 +106,7 @@ class _AddNewPetsProfileState extends State<AddNewPetsProfile> with SingleTicker
                       ),
                       child: Center(
                         child: MyText(
-                          text: 'Готово',
+                          text: 'ready_title'.tr,
                           size: 12,
                           fontFamily: 'Roboto',
                           color: kPrimaryColor,

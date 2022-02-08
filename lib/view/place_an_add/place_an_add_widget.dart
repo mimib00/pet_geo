@@ -378,10 +378,6 @@ class PlaceAnAddWidget extends StatelessWidget {
                             }
                           },
                         ),
-                        // child: Image.asset(
-                        //   'assets/images/Icon photo.png',
-                        //   height: 77,
-                        // ),
                       ),
                     ),
                   ),

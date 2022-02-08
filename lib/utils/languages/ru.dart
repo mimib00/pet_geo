@@ -59,5 +59,9 @@ const Map<String, String> ru = {
   "age_title": "Возраст",
   "camera_title": "камера",
   "gallery_title": "фото и видео из галереи",
-  "color_title": "Окрас"
+  "color_title": "Окрас",
+  "ready_title": "Готово",
+  "add_pet_title": "Добавить нового питомца",
+  // "": "",
+  // "": ""
 };

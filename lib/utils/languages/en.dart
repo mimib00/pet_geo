@@ -59,5 +59,8 @@ const Map<String, String> en = {
   "age_title": "Age",
   "camera_title": "Camera",
   "gallery_title": "Photos from gallery",
-  "color_title": "Color"
+  "color_title": "Color",
+  "ready_title": "Ready",
+  "add_pet_title": "Add new pet",
+  // "": ""
 };
