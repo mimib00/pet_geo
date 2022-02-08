@@ -1,14 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Pet {
   final String? id;
   final String name;
   final String photoUrl;
   final String type;
   final String gender;
-  final double weight;
+  final int weight;
   final bool sterilization;
   final String color;
   final String birthYear;
-  final String ownerId;
+  final DocumentReference<Map<String, dynamic>>? ownerId;
   final List tagedPosts;
 
   Pet({
@@ -17,11 +19,11 @@ class Pet {
     this.photoUrl = '',
     this.type = '',
     this.gender = '',
-    this.weight = 0.0,
+    this.weight = 0,
     this.sterilization = false,
     this.color = '',
     this.birthYear = '',
-    this.ownerId = '',
+    this.ownerId,
     this.tagedPosts = const [],
   });
 

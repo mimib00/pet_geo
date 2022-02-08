@@ -35,7 +35,10 @@ class PetController extends GetxController {
   XFile? get image => _image;
   RxString status = "".obs;
 
+  RxList<Pet> pets = <Pet>[].obs;
+
   final CollectionReference<Map<String, dynamic>> _petRef = FirebaseFirestore.instance.collection("pets");
+  final CollectionReference<Map<String, dynamic>> _userRef = FirebaseFirestore.instance.collection("users");
   final _storage = FirebaseStorage.instance.ref();
 
   void selectGender(int index) => selectedGender.value = gender[index];
@@ -76,7 +79,7 @@ class PetController extends GetxController {
             "long": mapController.latLng.value.longitude,
           },
           "photo": imageUrl,
-          "owner_id": FirebaseFirestore.instance.collection("users").doc(authController.user.value!.id!),
+          "owner_id": _userRef.doc(authController.user.value!.id!),
           ...pet
         };
 
@@ -85,11 +88,12 @@ class PetController extends GetxController {
 
         // add pet to user
 
-        FirebaseFirestore.instance.collection("users").doc(authController.user.value!.id!).update({
+        _userRef.doc(authController.user.value!.id!).update({
           "pets": FieldValue.arrayUnion([
             _petRef.doc(doc.id)
           ])
         });
+        authController.getUserData(authController.user.value!.id!);
         Get.back();
         status.value = "";
       }
@@ -106,12 +110,34 @@ class PetController extends GetxController {
     }
   }
 
-  Future<Pet> getPets() async {
-    // get all pets
+  void getPets() async {
+    try {
+      pets.clear();
+      AuthController authController = Get.find<AuthController>();
 
-    // make model of each pet
+      // get all pets
+      var res = await _petRef.where("owner_id", isEqualTo: _userRef.doc(authController.user.value!.id!)).get();
+      var docs = res.docs;
 
-    //
-    return Pet();
+      // make model of each pet
+
+      for (var pet in docs) {
+        var temp = Pet.fromMap(pet.data(), id: pet.id);
+        pets.add(temp);
+      }
+
+      //
+
+    } catch (e) {
+      Get.back();
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
   }
 }

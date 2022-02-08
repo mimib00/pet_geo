@@ -326,7 +326,7 @@ class _NewPetScreenState extends State<NewPetScreen> with SingleTickerProviderSt
                     if (formKey.currentState!.validate()) {
                       Map<String, dynamic> data = {
                         "name": petNickName.text.trim(),
-                        "weight": petWeight.text.trim(),
+                        "weight": int.parse(petWeight.text.trim()),
                         "year": petAge.text.trim(),
                         "color": petColor.text.trim(),
                       };

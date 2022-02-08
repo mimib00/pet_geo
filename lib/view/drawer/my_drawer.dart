@@ -29,6 +29,12 @@ class _MyDrawerState extends State<MyDrawer> {
   final PetController petController = Get.put<PetController>(PetController());
 
   @override
+  void initState() {
+    petController.getPets();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -94,22 +100,44 @@ class _MyDrawerState extends State<MyDrawer> {
                 //     ),
                 //   ),
                 // ),
-                FutureBuilder(
-                  future: petController.getPets(),
-                  builder: (contxt, snapshot) => Container(),
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: GestureDetector(
-                    onTap: () => Get.to(() => const NewPetScreen()),
-                    child: Image.asset(
-                      'assets/images/New Pet.png',
-                      height: 39,
-                      width: 39,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+
+                Obx(() {
+                  return Row(
+                    children: [
+                      ...petController.pets
+                          .map(
+                            (pet) => GestureDetector(
+                              onTap: () {
+                                print(pet.name);
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: CachedNetworkImage(
+                                  imageUrl: petController.pets.first.photoUrl,
+                                  height: 39,
+                                  width: 39,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      const SizedBox(width: 5),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: GestureDetector(
+                          onTap: () => Get.to(() => const NewPetScreen()),
+                          child: Image.asset(
+                            'assets/images/New Pet.png',
+                            height: 39,
+                            width: 39,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
               ],
             ),
           ),
