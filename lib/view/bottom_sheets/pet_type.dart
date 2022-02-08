@@ -10,7 +10,7 @@ import '../../controller/pet_controller.dart';
 class PetType extends StatelessWidget {
   PetType({Key? key}) : super(key: key);
 
-  PlaceAnAdController controller = Get.find<PlaceAnAdController>();
+  PlaceAnAdController controller = Get.put<PlaceAnAdController>(PlaceAnAdController());
   PetController petController = Get.put<PetController>(PetController());
   @override
   Widget build(BuildContext context) {

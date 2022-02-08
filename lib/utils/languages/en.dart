@@ -62,5 +62,8 @@ const Map<String, String> en = {
   "color_title": "Color",
   "ready_title": "Ready",
   "add_pet_title": "Add new pet",
-  // "": ""
+  "weight_title": "Weight",
+  "year_title": "Year of birth",
+  "place_ad_title": "Place an ad",
+  "add_pet_btn_title": "Add a pet",
 };

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,8 +21,9 @@ class NewPetScreen extends StatefulWidget {
 
 class _NewPetScreenState extends State<NewPetScreen> with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  TextEditingController petBreed = TextEditingController();
+  TextEditingController petWeight = TextEditingController();
   TextEditingController petNickName = TextEditingController();
   TextEditingController petColor = TextEditingController();
   TextEditingController petAge = TextEditingController();
@@ -78,165 +81,274 @@ class _NewPetScreenState extends State<NewPetScreen> with SingleTickerProviderSt
           ),
         ),
       ),
-      body: Container(
-        width: Get.width,
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // image selector
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {},
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 10,
-                      bottom: 3,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Image.asset(
-                        'assets/images/Pet.png',
-                        height: 100,
-                        width: 100,
-                      ),
-                    ),
-                  ),
-                  const Positioned(
-                    bottom: 5,
-                    left: 50,
-                    child: Icon(
-                      Icons.add_a_photo_rounded,
-                      color: kInputBorderColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 15),
-            // pet info
+      body: SingleChildScrollView(
+        child: Container(
+          width: Get.width,
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+          child: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // image selector
+                GetBuilder<PetController>(
+                  builder: (petController) {
+                    if (petController.image == null) {
+                      return GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => petController.getImage(),
+                        child: Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 10,
+                                bottom: 3,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image.asset(
+                                  'assets/images/Pet.png',
+                                  height: 100,
+                                  width: 100,
+                                ),
+                              ),
+                            ),
+                            const Positioned(
+                              bottom: 5,
+                              left: 50,
+                              child: Icon(
+                                Icons.add_a_photo_rounded,
+                                color: kInputBorderColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(180),
+                            child: Image.file(
+                              File(petController.image!.path),
+                              height: 100,
+                              width: 100,
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => petController.removeImage(),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(180),
+                                  color: Colors.red,
+                                ),
+                                child: const Icon(
+                                  Icons.close_rounded,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                  },
+                ),
 
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.only(bottom: 15, left: 20, right: 5),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          width: 1,
-                          color: kInputBorderColor,
+                const SizedBox(height: 15),
+                // pet info
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(bottom: 15, left: 20, right: 5),
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              width: 1,
+                              color: kInputBorderColor,
+                            ),
+                          ),
+                        ),
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => Get.bottomSheet(
+                            PetType(),
+                            backgroundColor: kPrimaryColor,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15),
+                              ),
+                            ),
+                            enableDrag: true,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Obx(
+                                () {
+                                  return MyText(
+                                    text: controller.selectedAnimal.value.tr.toUpperCase(),
+                                    size: 12,
+                                    weight: FontWeight.w600,
+                                    color: kDarkGreyColor,
+                                  );
+                                },
+                              ),
+                              Image.asset(
+                                'assets/images/Polygon 2.png',
+                                height: 6,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () => Get.bottomSheet(
-                        PetType(),
-                        backgroundColor: kPrimaryColor,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15),
+                    const SizedBox(width: 30),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(bottom: 15, left: 20, right: 5),
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              width: 1,
+                              color: kInputBorderColor,
+                            ),
                           ),
                         ),
-                        enableDrag: true,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Obx(
-                            () {
-                              return MyText(
-                                text: controller.selectedAnimal.value.tr.toUpperCase(),
-                                size: 12,
-                                weight: FontWeight.w600,
-                                color: kDarkGreyColor,
-                              );
-                            },
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => Get.bottomSheet(
+                            Gender(),
+                            backgroundColor: kPrimaryColor,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15),
+                              ),
+                            ),
+                            enableDrag: true,
                           ),
-                          Image.asset(
-                            'assets/images/Polygon 2.png',
-                            height: 6,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Obx(
+                                () {
+                                  return MyText(
+                                    text: controller.selectedGender.value.tr.toUpperCase(),
+                                    size: 12,
+                                    weight: FontWeight.w600,
+                                    color: kDarkGreyColor,
+                                  );
+                                },
+                              ),
+                              Image.asset(
+                                'assets/images/Polygon 2.png',
+                                height: 6,
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                const SizedBox(width: 30),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.only(bottom: 15, left: 20, right: 5),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          width: 1,
-                          color: kInputBorderColor,
-                        ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: PlaceAnAddTextFields(
+                        controller: petWeight,
+                        hintText: 'weight_title'.tr,
+                        keyboardType: TextInputType.number,
+                        validate: (txt) {
+                          if (txt == null || txt.isEmpty) return "* requierd";
+                        },
                       ),
                     ),
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () => Get.bottomSheet(
-                        Gender(),
-                        backgroundColor: kPrimaryColor,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15),
-                          ),
-                        ),
-                        enableDrag: true,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Obx(
-                            () {
-                              return MyText(
-                                text: controller.selectedGender.value.tr.toUpperCase(),
-                                size: 12,
-                                weight: FontWeight.w600,
-                                color: kDarkGreyColor,
-                              );
-                            },
-                          ),
-                          Image.asset(
-                            'assets/images/Polygon 2.png',
-                            height: 6,
-                          ),
-                        ],
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    Expanded(
+                      child: PlaceAnAddTextFields(
+                        controller: petNickName,
+                        hintText: 'nickname_title'.tr,
+                        validate: (txt) {
+                          if (txt == null || txt.isEmpty) return "* requierd";
+                        },
                       ),
                     ),
+                  ],
+                ),
+                // const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: PlaceAnAddTextFields(
+                        controller: petAge,
+                        hintText: 'year_title'.tr,
+                        keyboardType: TextInputType.number,
+                        validate: (txt) {
+                          if (txt == null || txt.isEmpty) return "* requierd";
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    Expanded(
+                      child: PlaceAnAddTextFields(
+                        controller: petColor,
+                        hintText: 'color_title'.tr,
+                        validate: (txt) {
+                          if (txt == null || txt.isEmpty) return "* requierd";
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                // save button
+
+                MaterialButton(
+                  elevation: 0,
+                  highlightElevation: 0,
+                  height: 47,
+                  color: kSecondaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      Map<String, dynamic> data = {
+                        "name": petNickName.text.trim(),
+                        "weight": petWeight.text.trim(),
+                        "year": petAge.text.trim(),
+                        "color": petColor.text.trim(),
+                      };
+
+                      Get.defaultDialog(
+                        title: "",
+                        content: Obx(() => Text(controller.status.value)),
+                      );
+
+                      controller.addPet(data);
+                    }
+                  },
+                  child: MyText(
+                    text: 'add_pet_btn_title'.tr,
+                    size: 16,
+                    weight: FontWeight.w700,
+                    color: kPrimaryColor,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: PlaceAnAddTextFields(
-                    controller: petBreed,
-                    hintText: 'breed_title'.tr,
-                  ),
-                ),
-                const SizedBox(
-                  width: 30,
-                ),
-                Expanded(
-                  child: PlaceAnAddTextFields(
-                    controller: petNickName,
-                    hintText: 'nickname_title'.tr,
-                  ),
-                ),
-              ],
-            ),
-            // save button
-          ],
+          ),
         ),
       ),
     );

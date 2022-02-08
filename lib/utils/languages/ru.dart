@@ -62,6 +62,8 @@ const Map<String, String> ru = {
   "color_title": "Окрас",
   "ready_title": "Готово",
   "add_pet_title": "Добавить нового питомца",
-  // "": "",
-  // "": ""
+  "weight_title": "вес",
+  "year_title": "Год рождения",
+  "place_ad_title": "Разместить объявление",
+  "add_pet_btn_title": "Добавить питомца",
 };

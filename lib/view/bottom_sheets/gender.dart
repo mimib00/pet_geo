@@ -9,7 +9,7 @@ import '../../controller/pet_controller.dart';
 // ignore: must_be_immutable
 class Gender extends StatelessWidget {
   Gender({Key? key}) : super(key: key);
-  PlaceAnAdController controller = Get.find<PlaceAnAdController>();
+  PlaceAnAdController controller = Get.put<PlaceAnAdController>(PlaceAnAdController());
   PetController petController = Get.put<PetController>(PetController());
   @override
   Widget build(BuildContext context) {

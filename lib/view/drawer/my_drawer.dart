@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_geo/controller/pet_controller.dart';
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/view/animal_communities/animal_communities.dart';
 import 'package:pet_geo/view/bonus_space/bonus_space.dart';
@@ -9,7 +10,6 @@ import 'package:pet_geo/view/chat/chat_head.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/friends/friends.dart';
 import 'package:pet_geo/view/notifications/notifications.dart';
-import 'package:pet_geo/view/pets_profile/add_new_pet_profile.dart';
 import 'package:pet_geo/view/pets_profile/new_pet.dart';
 import 'package:pet_geo/view/pets_profile/pets_profile.dart';
 import 'package:pet_geo/view/qr/choose_to_pay.dart';
@@ -26,6 +26,7 @@ class MyDrawer extends StatefulWidget {
 
 class _MyDrawerState extends State<MyDrawer> {
   final AuthController authController = Get.find<AuthController>();
+  final PetController petController = Get.put<PetController>(PetController());
 
   @override
   Widget build(BuildContext context) {
@@ -81,17 +82,21 @@ class _MyDrawerState extends State<MyDrawer> {
             child: Wrap(
               spacing: 10.0,
               children: [
-                GestureDetector(
-                  onTap: () => Get.to(() => const PetsProfile()),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Image.asset(
-                      'assets/images/pexels-pixabay-33287 1.png',
-                      height: 39,
-                      width: 39,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                // GestureDetector(
+                //   onTap: () => Get.to(() => const PetsProfile()),
+                //   child: ClipRRect(
+                //     borderRadius: BorderRadius.circular(100),
+                //     child: Image.asset(
+                //       'assets/images/pexels-pixabay-33287 1.png',
+                //       height: 39,
+                //       width: 39,
+                //       fit: BoxFit.cover,
+                //     ),
+                //   ),
+                // ),
+                FutureBuilder(
+                  future: petController.getPets(),
+                  builder: (contxt, snapshot) => Container(),
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),

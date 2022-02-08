@@ -426,7 +426,7 @@ class PlaceAnAddWidget extends StatelessWidget {
                     }
                   },
                   child: MyText(
-                    text: 'Разместить объявление',
+                    text: 'place_ad_title'.tr,
                     size: 16,
                     weight: FontWeight.w700,
                     color: kPrimaryColor,
@@ -469,6 +469,7 @@ class PlaceAnAddTextFields extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
         validator: validate,
+        keyboardType: keyboardType,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(horizontal: 20),
           hintText: hintText.toUpperCase(),
