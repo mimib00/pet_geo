@@ -66,4 +66,8 @@ const Map<String, String> ru = {
   "year_title": "Год рождения",
   "place_ad_title": "Разместить объявление",
   "add_pet_btn_title": "Добавить питомца",
+  "kg_title": "кг",
+  "sterilization_title": "Стерилизация",
+  "no_title": "нет",
+  "yes_title": "Да",
 };

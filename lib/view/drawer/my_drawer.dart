@@ -88,19 +88,6 @@ class _MyDrawerState extends State<MyDrawer> {
             child: Wrap(
               spacing: 10.0,
               children: [
-                // GestureDetector(
-                //   onTap: () => Get.to(() => const PetsProfile()),
-                //   child: ClipRRect(
-                //     borderRadius: BorderRadius.circular(100),
-                //     child: Image.asset(
-                //       'assets/images/pexels-pixabay-33287 1.png',
-                //       height: 39,
-                //       width: 39,
-                //       fit: BoxFit.cover,
-                //     ),
-                //   ),
-                // ),
-
                 Obx(() {
                   return Row(
                     children: [
@@ -108,12 +95,22 @@ class _MyDrawerState extends State<MyDrawer> {
                           .map(
                             (pet) => GestureDetector(
                               onTap: () {
-                                print(pet.name);
+                                Get.to(
+                                  () => PetsProfile(
+                                    pet: pet,
+                                  ),
+                                );
                               },
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
                                 child: CachedNetworkImage(
                                   imageUrl: petController.pets.first.photoUrl,
+                                  placeholder: (conxt, url) => Image.asset(
+                                    'assets/images/Pet.png',
+                                    height: 39,
+                                    width: 39,
+                                    fit: BoxFit.cover,
+                                  ),
                                   height: 39,
                                   width: 39,
                                   fit: BoxFit.cover,

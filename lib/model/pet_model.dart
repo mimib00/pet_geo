@@ -12,6 +12,7 @@ class Pet {
   final String birthYear;
   final DocumentReference<Map<String, dynamic>>? ownerId;
   final List tagedPosts;
+  final Map<String, dynamic> location;
 
   Pet({
     this.id,
@@ -25,6 +26,7 @@ class Pet {
     this.birthYear = '',
     this.ownerId,
     this.tagedPosts = const [],
+    this.location = const {},
   });
 
   /// Craetes A Users object from a map.
@@ -40,6 +42,7 @@ class Pet {
         birthYear: data["year"] ?? "",
         ownerId: data["owner_id"] ?? "",
         tagedPosts: data["posts"] ?? [],
+        location: data["location"] ?? {},
       );
 
   /// Creates a Map from a Users object.
@@ -56,6 +59,7 @@ class Pet {
           "year": birthYear,
           "owner_id": ownerId,
           "posts": tagedPosts,
+          "location": location
         }
       };
 }

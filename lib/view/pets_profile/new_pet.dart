@@ -268,6 +268,7 @@ class _NewPetScreenState extends State<NewPetScreen> with SingleTickerProviderSt
                         keyboardType: TextInputType.number,
                         validate: (txt) {
                           if (txt == null || txt.isEmpty) return "* requierd";
+                          return null;
                         },
                       ),
                     ),
@@ -280,6 +281,7 @@ class _NewPetScreenState extends State<NewPetScreen> with SingleTickerProviderSt
                         hintText: 'nickname_title'.tr,
                         validate: (txt) {
                           if (txt == null || txt.isEmpty) return "* requierd";
+                          return null;
                         },
                       ),
                     ),
@@ -295,6 +297,7 @@ class _NewPetScreenState extends State<NewPetScreen> with SingleTickerProviderSt
                         keyboardType: TextInputType.number,
                         validate: (txt) {
                           if (txt == null || txt.isEmpty) return "* requierd";
+                          return null;
                         },
                       ),
                     ),
@@ -307,6 +310,7 @@ class _NewPetScreenState extends State<NewPetScreen> with SingleTickerProviderSt
                         hintText: 'color_title'.tr,
                         validate: (txt) {
                           if (txt == null || txt.isEmpty) return "* requierd";
+                          return null;
                         },
                       ),
                     ),

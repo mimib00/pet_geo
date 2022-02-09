@@ -1,5 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:pet_geo/model/pet_model.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
 import 'package:pet_geo/view/filter/filter.dart';
@@ -9,7 +12,11 @@ import 'package:pet_geo/view/widget/logo.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
 class PetsProfile extends StatefulWidget {
-  const PetsProfile({Key? key}) : super(key: key);
+  final Pet? pet;
+  const PetsProfile({
+    Key? key,
+    this.pet,
+  }) : super(key: key);
 
   @override
   State<PetsProfile> createState() => _PetsProfileState();
@@ -17,13 +24,7 @@ class PetsProfile extends StatefulWidget {
 
 class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-  List petImages = [
-    'assets/images/Depositphotos_3549727_xl-2015 1.png',
-    'assets/images/Depositphotos_37645053_ds 1.png',
-    'assets/images/Depositphotos_278797182_ds 1.png',
-    'assets/images/Depositphotos_28583659_ds 1.png',
-    'assets/images/Depositphotos_37645053_ds 1.png',
-  ];
+
   var currentIndex = 0;
   late TabController tabController;
 
@@ -90,7 +91,7 @@ class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStat
               onTap: () {},
               child: MyText(
                 paddingRight: 35.0,
-                text: 'Дружок',
+                text: widget.pet!.name.toUpperCase(),
                 size: 18,
                 fontFamily: 'Roboto',
                 color: kPrimaryColor,
@@ -126,79 +127,77 @@ class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStat
                   Card(
                     margin: const EdgeInsets.only(left: 5, right: 5, top: 5),
                     elevation: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Stack(
-                        alignment: Alignment.bottomLeft,
-                        children: [
-                          SizedBox(
-                            height: 180,
-                            width: Get.width,
-                            child: PageView(
-                              scrollDirection: Axis.horizontal,
-                              physics: const ClampingScrollPhysics(),
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(5),
-                                  child: GestureDetector(
-                                    onTap: () => Get.to(
-                                      () => SpecificPost(
-                                        showGreenPin: true,
-                                      ),
-                                    ),
-                                    child: Image.asset(
-                                      'assets/images/IMG_8247 1.png',
-                                      height: Get.height,
-                                      width: Get.width,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
+                    child: Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        SizedBox(
+                          height: 180,
+                          width: Get.width,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => Get.to(
+                                () => SpecificPost(
+                                  showGreenPin: true,
                                 ),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(5),
-                                  child: GestureDetector(
-                                    onTap: () => Get.to(
-                                      () => SpecificPost(
-                                        showBluePin: true,
-                                      ),
-                                    ),
-                                    child: Image.asset(
-                                      'assets/images/IMG_8247 1.png',
-                                      height: Get.height,
-                                      width: Get.width,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
+                              ),
+                              child: GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                  target: LatLng(widget.pet!.location["lat"], widget.pet!.location["long"]),
+                                  zoom: 14.4746,
                                 ),
-                              ],
+                                markers: {
+                                  Marker(
+                                    markerId: MarkerId(widget.pet!.id!),
+                                    position: LatLng(widget.pet!.location["lat"], widget.pet!.location["long"]),
+                                    consumeTapEvents: true,
+                                  ),
+                                },
+                                zoomControlsEnabled: false,
+                                scrollGesturesEnabled: false,
+                                rotateGesturesEnabled: false,
+                                zoomGesturesEnabled: false,
+                                tiltGesturesEnabled: false,
+                              ),
                             ),
                           ),
-                          Stack(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: Image.asset(
+                        ),
+                        Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10, bottom: 10),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(180),
+                                child: CachedNetworkImage(
+                                  imageUrl: widget.pet!.photoUrl,
+                                  placeholder: (conxt, url) => Image.asset(
                                     'assets/images/Pet.png',
                                     height: 100,
                                     width: 100,
+                                    fit: BoxFit.cover,
                                   ),
+                                  height: 100,
+                                  width: 100,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              Positioned(
-                                bottom: 6,
-                                right: 0,
-                                child: Image.asset(
-                                  'assets/images/Sign.png',
-                                  height: 25,
-                                  width: 25,
+                            ),
+                            Positioned(
+                              bottom: 10,
+                              right: 6,
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  color: widget.pet!.gender == "male_title" ? Colors.lightBlue : Colors.pink,
+                                  borderRadius: BorderRadius.circular(180),
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                   Card(
@@ -219,7 +218,7 @@ class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStat
                                   child: Row(
                                     children: [
                                       MyText(
-                                        text: 'Год рождения',
+                                        text: 'year_title'.tr,
                                         size: 12,
                                         weight: FontWeight.w700,
                                         fontFamily: 'Roboto',
@@ -227,7 +226,7 @@ class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStat
                                         paddingRight: 15,
                                       ),
                                       MyText(
-                                        text: '2020 г.',
+                                        text: widget.pet!.birthYear,
                                         size: 12,
                                         fontFamily: 'Roboto',
                                         color: kDarkGreyColor,
@@ -245,7 +244,7 @@ class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStat
                                   child: Row(
                                     children: [
                                       MyText(
-                                        text: 'Вес',
+                                        text: 'weight_title'.tr,
                                         size: 12,
                                         weight: FontWeight.w700,
                                         fontFamily: 'Roboto',
@@ -253,7 +252,7 @@ class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStat
                                         paddingRight: 15,
                                       ),
                                       MyText(
-                                        text: '5 кг.',
+                                        text: "${widget.pet!.weight} " + "kg_title".tr,
                                         size: 12,
                                         fontFamily: 'Roboto',
                                         color: kDarkGreyColor,
@@ -279,7 +278,7 @@ class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStat
                                   child: Row(
                                     children: [
                                       MyText(
-                                        text: 'Окрас',
+                                        text: 'color_title'.tr,
                                         size: 12,
                                         weight: FontWeight.w700,
                                         fontFamily: 'Roboto',
@@ -287,7 +286,7 @@ class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStat
                                         paddingRight: 15,
                                       ),
                                       MyText(
-                                        text: 'Бежевый',
+                                        text: widget.pet!.color,
                                         size: 12,
                                         fontFamily: 'Roboto',
                                         color: kDarkGreyColor,
@@ -305,7 +304,7 @@ class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStat
                                   child: Row(
                                     children: [
                                       MyText(
-                                        text: 'Стерилизация',
+                                        text: 'sterilization_title'.tr,
                                         size: 12,
                                         weight: FontWeight.w700,
                                         fontFamily: 'Roboto',
@@ -313,7 +312,7 @@ class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStat
                                         paddingRight: 15,
                                       ),
                                       MyText(
-                                        text: 'Да',
+                                        text: widget.pet!.sterilization ? "yes_title".tr : "no_title".tr,
                                         size: 12,
                                         fontFamily: 'Roboto',
                                         color: kDarkGreyColor,

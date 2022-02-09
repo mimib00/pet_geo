@@ -66,4 +66,8 @@ const Map<String, String> en = {
   "year_title": "Year of birth",
   "place_ad_title": "Place an ad",
   "add_pet_btn_title": "Add a pet",
+  "kg_title": "kg",
+  "sterilization_title": "Sterilization",
+  "no_title": "No",
+  "yes_title": "Yes",
 };
