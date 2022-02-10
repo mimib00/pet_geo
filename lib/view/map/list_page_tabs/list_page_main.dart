@@ -32,7 +32,7 @@ class _ListPageMainState extends State<ListPageMain> with SingleTickerProviderSt
   ];
 
   final List tabItems = [
-    const Everything(),
+    Everything(),
     const Favorites(),
   ];
 

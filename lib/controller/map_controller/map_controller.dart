@@ -17,6 +17,7 @@ class MapController extends GetxController {
   Rx<LatLng> latLng = const LatLng(55.7558, 37.6173).obs;
 
   RxSet<Marker> markers = <Marker>{}.obs;
+  RxSet<String> ads = <String>{}.obs;
 
   final CollectionReference<Map<String, dynamic>> _adRef = FirebaseFirestore.instance.collection("ads");
 
@@ -65,6 +66,7 @@ class MapController extends GetxController {
     );
 
     update();
+
     queryAllAds(latLng.value);
   }
 
@@ -74,11 +76,30 @@ class MapController extends GetxController {
         var callBack = map['callBack'];
         if (callBack == Geofire.onGeoQueryReady) {
           for (var key in map['result']) {
+            ads.add(key);
             getAdDetails(key);
           }
         }
       }
     });
+  }
+
+  Future<List<Map<String, dynamic>>> getAdList() async {
+    try {
+      List<Map<String, dynamic>> adverts = [];
+      for (var key in ads) {
+        var res = await _adRef.doc(key).get();
+        var data = res.data();
+
+        if (data == null) throw "No ad data found";
+
+        adverts.add(data);
+      }
+      return adverts;
+    } catch (e) {
+      print(e);
+    }
+    return [];
   }
 
   void getAdDetails(String key) async {
@@ -94,14 +115,17 @@ class MapController extends GetxController {
           markerId: MarkerId(res.id),
           position: LatLng(data["location"]["lat"], data["location"]["long"]),
           onTap: () {
-            ad = Ad.fromMap(data);
+            ad = Ad.fromMap(data, id: key);
             togglePanel(true);
           },
           consumeTapEvents: true,
         ),
       );
+
       update();
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
 
     // print(res.data());
   }
