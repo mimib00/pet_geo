@@ -96,9 +96,7 @@ class MapController extends GetxController {
         adverts.add(data);
       }
       return adverts;
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     return [];
   }
 
@@ -115,7 +113,7 @@ class MapController extends GetxController {
           markerId: MarkerId(res.id),
           position: LatLng(data["location"]["lat"], data["location"]["long"]),
           onTap: () {
-            ad = Ad.fromMap(data, id: key);
+            ad = Ad.fromMap(data);
             togglePanel(true);
           },
           consumeTapEvents: true,
@@ -123,11 +121,7 @@ class MapController extends GetxController {
       );
 
       update();
-    } catch (e) {
-      print(e);
-    }
-
-    // print(res.data());
+    } catch (e) {}
   }
 
   void togglePanel(bool status) {

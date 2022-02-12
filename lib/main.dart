@@ -10,7 +10,6 @@ import 'package:pet_geo/view/about_us/terms_and_conditions/terms_and_conditions.
 import 'package:pet_geo/view/animal_communities/animal_communities.dart';
 import 'package:pet_geo/view/bonus_space/bonus_space.dart';
 import 'package:pet_geo/view/bottom_nav_bar/bottom_nav_bar.dart';
-import 'package:pet_geo/view/comments/comments.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/events_feed/events_feed.dart';
 import 'package:pet_geo/view/friends/friends.dart';
@@ -90,7 +89,6 @@ class PetGeo extends StatelessWidget {
         GetPage(name: '/pet_news_community_profile', page: () => const PetNewsCommunityProfile()),
         GetPage(name: '/offer_help', page: () => const OfferHelp()),
         GetPage(name: '/likes', page: () => Likes()),
-        GetPage(name: '/comments', page: () => const Comments()),
         GetPage(name: '/stories', page: () => const Stories()),
         GetPage(name: '/friends', page: () => Friends()),
         GetPage(name: '/about_us', page: () => AboutUs()),

@@ -139,7 +139,7 @@ class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStat
                               behavior: HitTestBehavior.opaque,
                               onTap: () => Get.to(
                                 () => SpecificPost(
-                                  showGreenPin: true,
+                                  location: const {},
                                 ),
                               ),
                               child: GoogleMap(

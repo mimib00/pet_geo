@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:multiple_stream_builder/multiple_stream_builder.dart';
+import 'package:pet_geo/controller/map_controller/map_controller.dart';
+import 'package:pet_geo/model/ad_model.dart';
 import 'package:pet_geo/model/events_feed_model/events_feed_model.dart';
 import 'package:pet_geo/model/events_feed_model/save_post_model.dart';
 import 'package:pet_geo/model/events_feed_model/stories_model.dart';
@@ -10,6 +14,60 @@ import 'package:pet_geo/view/stories/create_story.dart';
 import 'package:pet_geo/view/stories/stories.dart';
 
 class EventsFeedController extends GetxController {
+  final CollectionReference<Map<String, dynamic>> _adRef = FirebaseFirestore.instance.collection("ads");
+
+  RxList posts = [].obs;
+
+  ///make ad
+  makeAdsPosts(QueryDocumentSnapshot<Map<String, dynamic>> data) {
+    var ad = Ad.fromMap(data.data());
+    posts.add(ad);
+
+    print(data);
+  }
+
+  /// return a truple of streams for stream builder
+  Tuple2<Stream<QuerySnapshot<Map<String, dynamic>>>, Stream<String>> getPostsStream() {
+    MapController mapController = Get.put<MapController>(MapController());
+    var ads = mapController.ads;
+
+    Stream<String> adsStream = Stream.periodic(const Duration(seconds: 1), (count) => "");
+    var res = _adRef.where("id", whereIn: ads.toList()).snapshots();
+
+    return Tuple2<Stream<QuerySnapshot<Map<String, dynamic>>>, Stream<String>>(res, adsStream);
+  }
+
+  // void getPosts() async {
+  //   MapController mapController = Get.put<MapController>(MapController());
+  //   // get near ads
+  //   var ads = await mapController.getAdList();
+
+  //   // print(ads);
+  //   // posts.addAll(ads);
+  //   // update();
+
+  //   // get comunity posts
+
+  //   // get followed users posts
+
+  //   // make objects
+  //   List<Ad> tempAds = [];
+  //   for (var ad in ads) {
+  //     tempAds.add();
+  //   }
+
+  //   // put it in posts list
+
+  //   posts.addAll(tempAds);
+  //   posts.sort((a, b) {
+  //     var dateA = a["created_at"] as Timestamp;
+  //     var dateB = b["created_at"] as Timestamp;
+  //     return dateA.compareTo(dateB);
+  //   });
+  //   update();
+  // }
+
+  // old code
   bool? isGridPostLike = false;
   bool? listView = true;
   bool? newSelectionKitSaved = false;

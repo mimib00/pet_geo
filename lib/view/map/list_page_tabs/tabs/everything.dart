@@ -89,7 +89,7 @@ class _TilesState extends State<Tiles> {
                 onTap: () {
                   Get.to(
                     () => SpecificPost(
-                      showBluePin: true,
+                      location: widget.data.location,
                     ),
                   );
                 },

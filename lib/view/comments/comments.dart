@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_geo/model/ad_model.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
 import 'package:pet_geo/view/user_profile/user_profile_with_offer_help.dart';
 import 'package:pet_geo/view/widget/custom_app_bar_2.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
-import 'package:pet_geo/view/widget/send_box.dart';
 
 class Comments extends StatefulWidget {
-  const Comments({Key? key}) : super(key: key);
+  final List comments;
+  final Ad? ad;
+  const Comments({
+    Key? key,
+    required this.comments,
+    final this.ad,
+  }) : super(key: key);
 
   @override
   State<Comments> createState() => _CommentsState();
@@ -16,6 +22,12 @@ class Comments extends StatefulWidget {
 
 class _CommentsState extends State<Comments> {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+
+  TextEditingController controller = TextEditingController();
+
+  // getCommentOwner() {
+  //   widget.comments
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -36,27 +48,109 @@ class _CommentsState extends State<Comments> {
       ),
       body: Stack(
         children: [
-          ListView(
+          ListView.builder(
             physics: const BouncingScrollPhysics(),
-            children: [
-              CommentsTiles(
-                personImage: 'assets/images/profile.png',
-                comment: 'А есть девочки?',
-                time: '1 ч.',
-              ),
-              CommentsTiles(
-                personImage: 'assets/images/profile.png',
-                comment: 'Да, осталась 1',
-                time: '20 мин.',
-              ),
-            ],
+            itemCount: 1,
+            itemBuilder: (context, index) {
+              return CommentTile(
+                comment: Comment(),
+              );
+            },
           ),
-          SendBox(
-            hintText: 'Напишите комментарий',
-          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 45,
+                color: kPrimaryColor,
+                child: Center(
+                  child: TextField(
+                    controller: controller,
+                    cursorColor: const Color(0xffBEBEBE),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Roboto',
+                      color: kDarkGreyColor,
+                    ),
+                    decoration: InputDecoration(
+                      suffixIcon: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          if (widget.ad != null) {
+                            widget.ad!.postComment(controller.text.trim());
+                            controller.clear();
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          }
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(right: 10),
+                              decoration: BoxDecoration(
+                                color: const Color(0xfff2f2f2),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              width: 86,
+                              height: 30,
+                              child: Center(
+                                child: MyText(
+                                  text: 'Send'.toUpperCase(),
+                                  size: 10,
+                                  color: kDarkGreyColor,
+                                  weight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      hintText: 'Comment',
+                      hintStyle: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Roboto',
+                        color: Color(0xffBEBEBE),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50),
+                        borderSide: const BorderSide(
+                          color: kSecondaryColor,
+                          width: 2.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50),
+                        borderSide: const BorderSide(
+                          color: kSecondaryColor,
+                          width: 2.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
+  }
+}
+
+class CommentTile extends StatelessWidget {
+  final Comment comment;
+  const CommentTile({
+    Key? key,
+    required this.comment,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile();
   }
 }
 

@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pet_geo/controller/map_controller/map_controller.dart';
 import 'package:pet_geo/view/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
 import 'package:pet_geo/view/filter/filter.dart';
 import 'package:pet_geo/view/widget/logo.dart';
-import 'package:pet_geo/view/widget/search_box.dart';
 
 // ignore: must_be_immutable
 class SpecificPost extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-  bool? showBluePin, showGreenPin, showGreyPin;
-  VoidCallback? bluePinOnTap;
+
+  final Map<String, dynamic> location;
 
   SpecificPost({
     Key? key,
-    this.showGreenPin = false,
-    this.showBluePin = false,
-    this.showGreyPin = false,
-    this.bluePinOnTap,
+    required this.location,
   }) : super(key: key);
 
   @override
@@ -98,56 +95,29 @@ class SpecificPost extends StatelessWidget {
             onTap: () => logic.showFilterResults(true),
           ),
           drawer: const MyDrawer(),
-          body: Stack(
-            children: [
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                child: Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(9),
-                      child: Image.asset(
-                        'assets/images/IFFfTVE9CMQ 1 (1).png',
-                        width: Get.width,
-                        height: Get.height,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    showGreenPin == true
-                        ? Positioned(
-                            left: Get.width * 0.160,
-                            top: Get.height * 0.2,
-                            child: GestureDetector(
-                              onTap: () => Get.back(),
-                              child: Image.asset(
-                                'assets/images/Group 98.png',
-                                height: 72,
-                              ),
-                            ),
-                          )
-                        : const SizedBox(),
-                    showBluePin == true
-                        ? Positioned(
-                            right: Get.width * 0.22,
-                            top: Get.height * 0.325,
-                            child: GestureDetector(
-                              onTap: bluePinOnTap ?? () => Get.back(),
-                              child: Image.asset(
-                                'assets/images/Group 99.png',
-                                height: 72,
-                              ),
-                            ),
-                          )
-                        : const SizedBox(),
-                  ],
+          body: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(location["lat"], location["long"]),
+                  zoom: 14.4746,
                 ),
+                markers: {
+                  Marker(
+                    markerId: const MarkerId("widget.pet!.id!"),
+                    position: LatLng(location["lat"], location["long"]),
+                    consumeTapEvents: true,
+                  ),
+                },
+                zoomControlsEnabled: false,
+                scrollGesturesEnabled: false,
+                rotateGesturesEnabled: false,
+                zoomGesturesEnabled: false,
+                tiltGesturesEnabled: false,
               ),
-              logic.search == true
-                  ? SearchBox(
-                      hintText: 'Что хотите найти?',
-                    )
-                  : const SizedBox(),
-            ],
+            ),
           ),
         );
       },
