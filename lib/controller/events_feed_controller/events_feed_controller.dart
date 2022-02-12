@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 import 'package:pet_geo/controller/map_controller/map_controller.dart';
 import 'package:pet_geo/model/ad_model.dart';
 import 'package:pet_geo/model/events_feed_model/events_feed_model.dart';
@@ -12,29 +11,39 @@ import 'package:pet_geo/view/bottom_sheets/share.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/stories/create_story.dart';
 import 'package:pet_geo/view/stories/stories.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 class EventsFeedController extends GetxController {
   final CollectionReference<Map<String, dynamic>> _adRef = FirebaseFirestore.instance.collection("ads");
 
   RxList posts = [].obs;
+  // RxList streams = [].obs;
+
+  // @override
+  // void onInit() {
+  //   getPostsStream();
+  //   super.onInit();
+  // }
 
   ///make ad
-  makeAdsPosts(QueryDocumentSnapshot<Map<String, dynamic>> data) {
+  void makeAdsPosts(QueryDocumentSnapshot<Map<String, dynamic>> data) {
     var ad = Ad.fromMap(data.data());
     posts.add(ad);
-
-    print(data);
   }
 
   /// return a truple of streams for stream builder
-  Tuple2<Stream<QuerySnapshot<Map<String, dynamic>>>, Stream<String>> getPostsStream() {
+  Stream<List<QuerySnapshot<Map<String, dynamic>>>> getPostsStream() {
     MapController mapController = Get.put<MapController>(MapController());
     var ads = mapController.ads;
 
     Stream<String> adsStream = Stream.periodic(const Duration(seconds: 1), (count) => "");
     var res = _adRef.where("id", whereIn: ads.toList()).snapshots();
+    var res2 = _adRef.where("id", whereIn: ads.toList()).snapshots();
+    final combined = res.combineLatestAll([
+      res2
+    ]);
 
-    return Tuple2<Stream<QuerySnapshot<Map<String, dynamic>>>, Stream<String>>(res, adsStream);
+    return combined;
   }
 
   // void getPosts() async {

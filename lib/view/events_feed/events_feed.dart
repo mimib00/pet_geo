@@ -18,8 +18,7 @@ class EventsFeed extends StatefulWidget {
   State<EventsFeed> createState() => _EventsFeedState();
 }
 
-class _EventsFeedState extends State<EventsFeed>
-    with SingleTickerProviderStateMixin {
+class _EventsFeedState extends State<EventsFeed> with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   @override
@@ -37,8 +36,7 @@ class _EventsFeedState extends State<EventsFeed>
             elevation: 0,
             centerTitle: true,
             leading: Padding(
-              padding:
-                  EdgeInsets.only(top: logic.storiesHandler == true ? 0 : 20),
+              padding: EdgeInsets.only(top: logic.storiesHandler == true ? 0 : 20),
               child: Center(
                 child: GestureDetector(
                   onTap: () => _key.currentState!.openDrawer(),
@@ -51,35 +49,27 @@ class _EventsFeedState extends State<EventsFeed>
               ),
             ),
             title: Padding(
-              padding:
-                  EdgeInsets.only(top: logic.storiesHandler == true ? 0 : 20),
+              padding: EdgeInsets.only(top: logic.storiesHandler == true ? 0 : 20),
               child: ColorFiltered(
-                colorFilter:
-                    const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
                 child: textLogo(24),
               ),
             ),
             actions: [
               Padding(
-                padding:
-                    EdgeInsets.only(top: logic.storiesHandler == true ? 0 : 20),
+                padding: EdgeInsets.only(top: logic.storiesHandler == true ? 0 : 20),
                 child: Center(
                   child: GestureDetector(
                     onTap: () => logic.showListView(),
                     child: Image.asset(
-                      logic.listView == true
-                          ? 'assets/images/grid_view.png'
-                          : 'assets/images/list_view.png',
+                      logic.listView == true ? 'assets/images/grid_view.png' : 'assets/images/list_view.png',
                       height: 22,
                     ),
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    right: 15,
-                    left: 20,
-                    top: logic.storiesHandler == true ? 0 : 20),
+                padding: EdgeInsets.only(right: 15, left: 20, top: logic.storiesHandler == true ? 0 : 20),
                 child: Center(
                   child: GestureDetector(
                     onTap: () => _key.currentState!.openEndDrawer(),
@@ -99,8 +89,7 @@ class _EventsFeedState extends State<EventsFeed>
                 : PreferredSize(
                     preferredSize: const Size(0, 0),
                     child: ListTile(
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 10),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                       leading: GestureDetector(
                         onTap: () {
                           Get.offAll(
@@ -128,9 +117,7 @@ class _EventsFeedState extends State<EventsFeed>
                     margin: EdgeInsets.only(
                       top: logic.storiesHandler == true ? 65 : 10,
                     ),
-                    child: logic.listView == true
-                        ? const ListViewType()
-                        : const GridViewType(),
+                    child: logic.listView == true ? const ListViewType() : const GridViewType(),
                   ),
                   logic.storiesHandler == true
                       ? SearchBox(

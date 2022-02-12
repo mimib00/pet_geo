@@ -1,9 +1,10 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 import 'package:pet_geo/controller/events_feed_controller/events_feed_controller.dart';
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/model/ad_model.dart';
@@ -16,52 +17,73 @@ import 'package:pet_geo/view/widget/my_text.dart';
 class ListViewType extends StatelessWidget {
   const ListViewType({Key? key}) : super(key: key);
 
+  // EventsFeedController controller = Get.put<EventsFeedController>(EventsFeedController());
+
   @override
   Widget build(BuildContext context) {
-    return GetX<EventsFeedController>(
-      builder: (logic) {
-        return StreamBuilder2<QuerySnapshot<Map<String, dynamic>>, String>(
-            streams: logic.getPostsStream(),
-            builder: (context, snapshots) {
-              if (snapshots.item1.data == null) return Container();
-              if (snapshots.item1.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+    return GetBuilder<EventsFeedController>(builder: (controller) {
+      return StreamBuilder<List<QuerySnapshot<Map<String, dynamic>>>>(
+        stream: controller.getPostsStream(),
+        builder: (context, snapshot) {
+          if (snapshot.data == null) return Container();
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-              var ads = snapshots.item1.data!.docs;
-              for (var ad in ads) {
-                logic.makeAdsPosts(ad);
-              }
-              return ListView.builder(
-                padding: const EdgeInsets.only(
-                  bottom: 30,
-                ),
-                physics: const BouncingScrollPhysics(),
-                itemCount: 1,
-                itemBuilder: (context, index) {
-                  // print(ads[index].data());
-                  var post = logic.posts[index];
-                  return Post(post: post);
-                },
-              );
-            });
-        // return ListView.builder(
-        //   padding: const EdgeInsets.only(
-        //     bottom: 30,
-        //   ),
-        //   physics: const BouncingScrollPhysics(),
-        //   shrinkWrap: true,
-        //   itemCount: logic.posts.length,
-        //   itemBuilder: (context, index) {
-        //     var post = logic.posts[index];
+          var ads = snapshot.data;
 
-        //     return Post(post: post);
-        //   },
-        // );
-      },
-    );
+          for (var ad in ads![0].docs) {
+            controller.makeAdsPosts(ad);
+          }
+          for (var ad in ads[1].docs) {
+            controller.makeAdsPosts(ad);
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.only(
+              bottom: 30,
+            ),
+            physics: const BouncingScrollPhysics(),
+            itemCount: controller.posts.length,
+            itemBuilder: (context, index) {
+              print(ads[index]);
+              var post = controller.posts[index];
+              return Post(post: post);
+            },
+          );
+
+          // return StreamBuilder<String>(
+          //   stream: controller.streams[1],
+          //   builder: (context, snapshot2) {
+          //     print(snapshot2.data == null);
+          //     if (snapshot2.data == null) return Container();
+          //     if (snapshot2.connectionState == ConnectionState.waiting) {
+          //       return const Center(
+          //         child: CircularProgressIndicator(),
+          //       );
+          //     }
+          //     var ads2 = snapshot2.data!;
+          //     print("ADS2: $ads2");
+          //     // for (var ad in ads) {
+          //     //   controller.makeAdsPosts(ad);
+          //     // }
+          //     return ListView.builder(
+          //       padding: const EdgeInsets.only(
+          //         bottom: 30,
+          //       ),
+          //       physics: const BouncingScrollPhysics(),
+          //       itemCount: controller.posts.length,
+          //       itemBuilder: (context, index) {
+          //         var post = controller.posts[index];
+          //         return Post(post: post);
+          //       },
+          //     );
+          //   },
+          // );
+        },
+      );
+    });
   }
 }
 
