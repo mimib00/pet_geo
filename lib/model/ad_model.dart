@@ -51,7 +51,7 @@ class Ad {
         location: data["location"] != null ? data["location"] as Map<String, dynamic> : {},
         age: data['age'] == null || data['age'] == "Animal type" ? 'Unknown' : data['age'],
         likes: data["likes"] ?? [],
-        comments: data["likes"] ?? [],
+        comments: data["comments"] ?? [],
         createdAt: data["created_at"],
       );
 
@@ -121,33 +121,44 @@ class Ad {
       );
     }
   }
+
+  deleteComment(Comment comment) {
+    if (id != null) {
+      FirebaseFirestore.instance.collection('ads').doc(id).update(
+        {
+          "comments": FieldValue.arrayRemove(
+            [
+              comment.toMap()
+            ],
+          )
+        },
+      );
+    }
+  }
 }
 
 class Comment {
-  final String? id;
   final DocumentReference<Map<String, dynamic>>? owner;
   final String text;
   final Timestamp? createdAt;
 
   Comment({
-    this.id,
     this.owner,
     this.text = '',
     this.createdAt,
   });
 
-  factory Comment.fromMap(Map<String, dynamic> data, {String? id}) => Comment(
-        id: id,
+  factory Comment.fromMap(
+    Map<String, dynamic> data,
+  ) =>
+      Comment(
         owner: data["owner"],
         text: data["text"],
         createdAt: data["created_at"],
       );
   Map<String, dynamic> toMap() => {
-        "id": id,
-        "data": {
-          "text": text,
-          "owner": owner,
-          "created_at": createdAt,
-        }
+        "text": text,
+        "owner": owner,
+        "created_at": createdAt,
       };
 }

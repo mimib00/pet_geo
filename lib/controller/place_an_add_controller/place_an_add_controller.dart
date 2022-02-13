@@ -160,7 +160,7 @@ class PlaceAnAdController extends GetxController {
           },
           "photo_url": imageUrl,
           "owner_id": authController.user.value!.id!,
-          "created_at": Timestamp.now(),
+          "created_at": FieldValue.serverTimestamp(),
           "likes": [],
           "comments": [],
           ...ad

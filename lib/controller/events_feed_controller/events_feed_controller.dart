@@ -35,36 +35,6 @@ class EventsFeedController extends GetxController {
     return combined;
   }
 
-  // void getPosts() async {
-  //   MapController mapController = Get.put<MapController>(MapController());
-  //   // get near ads
-  //   var ads = await mapController.getAdList();
-
-  //   // print(ads);
-  //   // posts.addAll(ads);
-  //   // update();
-
-  //   // get comunity posts
-
-  //   // get followed users posts
-
-  //   // make objects
-  //   List<Ad> tempAds = [];
-  //   for (var ad in ads) {
-  //     tempAds.add();
-  //   }
-
-  //   // put it in posts list
-
-  //   posts.addAll(tempAds);
-  //   posts.sort((a, b) {
-  //     var dateA = a["created_at"] as Timestamp;
-  //     var dateB = b["created_at"] as Timestamp;
-  //     return dateA.compareTo(dateB);
-  //   });
-  //   update();
-  // }
-
   // old code
   bool? isGridPostLike = false;
   bool? listView = true;
