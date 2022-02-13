@@ -34,12 +34,12 @@ class ListViewType extends StatelessWidget {
 
           var ads = snapshot.data;
 
-          for (var ad in ads![0].docs) {
-            controller.makeAdsPosts(ad);
+          if (controller.posts.isEmpty) {
+            for (var ad in ads![0].docs) {
+              controller.makeAdsPosts(ad);
+            }
           }
-          for (var ad in ads[1].docs) {
-            controller.makeAdsPosts(ad);
-          }
+
           return ListView.builder(
             padding: const EdgeInsets.only(
               bottom: 30,
@@ -47,40 +47,10 @@ class ListViewType extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             itemCount: controller.posts.length,
             itemBuilder: (context, index) {
-              print(ads[index]);
               var post = controller.posts[index];
               return Post(post: post);
             },
           );
-
-          // return StreamBuilder<String>(
-          //   stream: controller.streams[1],
-          //   builder: (context, snapshot2) {
-          //     print(snapshot2.data == null);
-          //     if (snapshot2.data == null) return Container();
-          //     if (snapshot2.connectionState == ConnectionState.waiting) {
-          //       return const Center(
-          //         child: CircularProgressIndicator(),
-          //       );
-          //     }
-          //     var ads2 = snapshot2.data!;
-          //     print("ADS2: $ads2");
-          //     // for (var ad in ads) {
-          //     //   controller.makeAdsPosts(ad);
-          //     // }
-          //     return ListView.builder(
-          //       padding: const EdgeInsets.only(
-          //         bottom: 30,
-          //       ),
-          //       physics: const BouncingScrollPhysics(),
-          //       itemCount: controller.posts.length,
-          //       itemBuilder: (context, index) {
-          //         var post = controller.posts[index];
-          //         return Post(post: post);
-          //       },
-          //     );
-          //   },
-          // );
         },
       );
     });

@@ -17,13 +17,6 @@ class EventsFeedController extends GetxController {
   final CollectionReference<Map<String, dynamic>> _adRef = FirebaseFirestore.instance.collection("ads");
 
   RxList posts = [].obs;
-  // RxList streams = [].obs;
-
-  // @override
-  // void onInit() {
-  //   getPostsStream();
-  //   super.onInit();
-  // }
 
   ///make ad
   void makeAdsPosts(QueryDocumentSnapshot<Map<String, dynamic>> data) {
@@ -36,12 +29,8 @@ class EventsFeedController extends GetxController {
     MapController mapController = Get.put<MapController>(MapController());
     var ads = mapController.ads;
 
-    Stream<String> adsStream = Stream.periodic(const Duration(seconds: 1), (count) => "");
     var res = _adRef.where("id", whereIn: ads.toList()).snapshots();
-    var res2 = _adRef.where("id", whereIn: ads.toList()).snapshots();
-    final combined = res.combineLatestAll([
-      res2
-    ]);
+    final combined = res.combineLatestAll([]);
 
     return combined;
   }
