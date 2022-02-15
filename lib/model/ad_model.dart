@@ -80,7 +80,7 @@ class Ad {
       FirebaseFirestore.instance.collection('ads').doc(id).update(
         {
           "likes": FieldValue.arrayUnion([
-            user.id
+            FirebaseFirestore.instance.collection("users").doc(user.id)
           ])
         },
       );
@@ -94,7 +94,7 @@ class Ad {
       FirebaseFirestore.instance.collection('ads').doc(id).update(
         {
           "likes": FieldValue.arrayRemove([
-            user.id
+            FirebaseFirestore.instance.collection("users").doc(user.id)
           ])
         },
       );

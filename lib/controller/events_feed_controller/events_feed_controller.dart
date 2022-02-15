@@ -7,11 +7,11 @@ import 'package:pet_geo/model/ad_model.dart';
 import 'package:pet_geo/model/events_feed_model/events_feed_model.dart';
 import 'package:pet_geo/model/events_feed_model/save_post_model.dart';
 import 'package:pet_geo/model/events_feed_model/stories_model.dart';
+import 'package:pet_geo/model/user_model.dart';
 import 'package:pet_geo/view/bottom_sheets/share.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/stories/create_story.dart';
 import 'package:pet_geo/view/stories/stories.dart';
-import 'package:stream_transform/stream_transform.dart';
 
 class EventsFeedController extends GetxController {
   final CollectionReference<Map<String, dynamic>> _adRef = FirebaseFirestore.instance.collection("ads");
@@ -25,14 +25,25 @@ class EventsFeedController extends GetxController {
   }
 
   /// return a truple of streams for stream builder
-  Stream<List<QuerySnapshot<Map<String, dynamic>>>> getPostsStream() {
+  List<Stream<QuerySnapshot<Map<String, dynamic>>>> getPostsStream() {
     MapController mapController = Get.put<MapController>(MapController());
     var ads = mapController.ads;
 
     var res = _adRef.where("id", whereIn: ads.toList()).snapshots();
-    final combined = res.combineLatestAll([]);
-
+    final combined = [
+      res
+    ];
     return combined;
+  }
+
+  Future<Users?> getLikeOwner(DocumentReference<Map<String, dynamic>> ref) async {
+    var data = await ref.get();
+    if (data.data() != null) {
+      var user = Users.fromMap(data.data()!, id: data.id);
+      return user;
+    } else {
+      return null;
+    }
   }
 
   // old code

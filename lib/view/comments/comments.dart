@@ -52,6 +52,7 @@ class _CommentsState extends State<Comments> {
             physics: const BouncingScrollPhysics(),
             itemCount: widget.comments.length,
             itemBuilder: (context, index) {
+              if (widget.comments[index] == null) return const SizedBox.shrink();
               var comment = Comment.fromMap(widget.comments[index]);
               return CommentTile(
                 comment: comment,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/view/animal_communities/animal_communities.dart';
-import 'package:pet_geo/view/chat/messages.dart';
+import 'package:pet_geo/view/chat/likes_page.dart';
 import 'package:pet_geo/view/bottom_sheets/options_for_user_profile.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
@@ -188,11 +188,7 @@ class _UserProfileWithOferHelpState extends State<UserProfileWithOferHelp> with 
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     GestureDetector(
-                                      onTap: () => Get.to(
-                                        () => Messages(
-                                          title: 'Друзья',
-                                        ),
-                                      ),
+                                      onTap: () => Get.to(() => LikesPage(likes: [])),
                                       child: Row(
                                         children: [
                                           Image.asset(

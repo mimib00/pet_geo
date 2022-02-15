@@ -1,7 +1,7 @@
 import 'package:bordered_text/bordered_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pet_geo/view/chat/messages.dart';
+import 'package:pet_geo/view/chat/likes_page.dart';
 import 'package:pet_geo/view/bottom_sheets/share.dart';
 import 'package:pet_geo/view/bottom_sheets/turn_on_notifications.dart';
 import 'package:pet_geo/view/chat/community_chat/community_chat.dart';
@@ -219,11 +219,7 @@ class _PetNewsCommunityProfileState extends State<PetNewsCommunityProfile> with 
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               GestureDetector(
-                                                onTap: () => Get.to(
-                                                  () => Messages(
-                                                    title: 'Подписчики',
-                                                  ),
-                                                ),
+                                                onTap: () => Get.to(() => LikesPage(likes: [])),
                                                 child: Row(
                                                   children: [
                                                     Image.asset(

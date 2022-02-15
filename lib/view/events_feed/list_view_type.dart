@@ -9,7 +9,9 @@ import 'package:pet_geo/controller/events_feed_controller/events_feed_controller
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/model/ad_model.dart';
 import 'package:pet_geo/model/user_model.dart';
+import 'package:pet_geo/packages/advanced_stream_builder/lib/src/advanced_builder.dart';
 import 'package:pet_geo/view/bottom_sheets/share.dart';
+import 'package:pet_geo/view/chat/likes_page.dart';
 import 'package:pet_geo/view/comments/comments.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
@@ -22,8 +24,8 @@ class ListViewType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<EventsFeedController>(builder: (controller) {
-      return StreamBuilder<List<QuerySnapshot<Map<String, dynamic>>>>(
-        stream: controller.getPostsStream(),
+      return AdvancedStreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        streams: controller.getPostsStream(),
         builder: (context, snapshot) {
           if (snapshot.data == null) return Container();
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -31,7 +33,6 @@ class ListViewType extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-
           var ads = snapshot.data;
 
           if (controller.posts.isEmpty) {
@@ -98,7 +99,7 @@ class _AdPostState extends State<AdPost> {
   @override
   void initState() {
     AuthController controller = Get.find<AuthController>();
-    isLiked = widget.ad.likes.contains(controller.user.value!.id!);
+    isLiked = widget.ad.likes.contains(FirebaseFirestore.instance.collection("users").doc(controller.user.value!.id!));
     super.initState();
   }
 
@@ -343,7 +344,9 @@ class _AdPostState extends State<AdPost> {
                         ],
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          print("save");
+                        },
                         child: Image.asset(
                           'assets/images/Vector (16).png',
                           height: 20,
@@ -353,6 +356,29 @@ class _AdPostState extends State<AdPost> {
                     ],
                   ),
                 ),
+                GestureDetector(
+                  onTap: () => Get.to(() => LikesPage(likes: widget.ad.likes)),
+                  child: MyText(
+                    text: 'Нравится: ${widget.ad.likes.length}',
+                    size: 12,
+                    weight: FontWeight.w700,
+                    fontFamily: 'Roboto',
+                    color: kDarkGreyColor,
+                    paddingLeft: 15,
+                  ),
+                ),
+//             GestureDetector(
+//               onTap: () => Get.to(() => const Comments()),
+//               child: MyText(
+//                 text: 'Посмотреть все комментарии (2)',
+//                 size: 12,
+//                 fontFamily: 'Roboto',
+//                 color: kInputBorderColor,
+//                 paddingLeft: 15.0,
+//                 paddingTop: 10.0,
+//                 paddingBottom: 10.0,
+//               ),
+//             ),
               ],
             );
           } catch (e) {

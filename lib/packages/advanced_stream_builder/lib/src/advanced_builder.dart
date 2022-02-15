@@ -5,7 +5,8 @@ class AdvancedStreamBuilder<T> extends StatelessWidget {
   final List<Stream<T>> streams;
   final AsyncWidgetBuilder<List<T>> builder;
 
-  /// This widget let's you build UI from more then 1 stream/n
+  /// This widget let's you build UI from more then 1 stream
+  ///
   /// streams are stored as a list so you have to loop throgh to access them all.
   const AdvancedStreamBuilder({
     Key? key,
