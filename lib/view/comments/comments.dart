@@ -29,10 +29,6 @@ class _CommentsState extends State<Comments> {
 
   TextEditingController controller = TextEditingController();
 
-  // getCommentOwner() {
-  //   widget.comments
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
