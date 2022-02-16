@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/controller/bindings/auth_binding.dart';
@@ -30,16 +32,95 @@ import 'package:pet_geo/view/user/user.dart';
 import 'package:pet_geo/view/user_profile/user_profile_profile_image/profile_image.dart';
 import 'package:pet_geo/view/user_profile/user_profile_with_offer_help.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+const AndroidNotificationChannel androidNotificationChannel = AndroidNotificationChannel(
+  "high_importance_channel",
+  "High Importance Notification",
+  description: "This channel is used for important notifications",
+  importance: Importance.high,
+  playSound: true,
+);
+
+Future<void> firebaseMessagingBackgoundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await GetStorage.init();
+
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgoundHandler);
+  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(androidNotificationChannel);
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
+
   runApp(const PetGeo());
 }
 
-class PetGeo extends StatelessWidget {
+class PetGeo extends StatefulWidget {
   const PetGeo({Key? key}) : super(key: key);
+
+  @override
+  State<PetGeo> createState() => _PetGeoState();
+}
+
+class _PetGeoState extends State<PetGeo> {
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? androidNotification = message.notification?.android;
+
+      if (notification != null && androidNotification != null) {
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              androidNotificationChannel.id,
+              androidNotificationChannel.name,
+              channelDescription: androidNotificationChannel.description,
+              color: Colors.blue,
+              playSound: true,
+              icon: "@mipmap/ic_launcher",
+            ),
+          ),
+        );
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? androidNotification = message.notification?.android;
+
+      if (notification != null && androidNotification != null) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(notification.title!),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(notification.body!)
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

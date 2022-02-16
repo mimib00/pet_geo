@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/model/user_model.dart';
@@ -11,6 +12,7 @@ import 'package:phonenumbers/phonenumbers.dart';
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference<Map<String, dynamic>> _userRef = FirebaseFirestore.instance.collection("users");
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   Rx<User?> _currentUser = Rx<User?>(null);
 
@@ -29,6 +31,7 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     _currentUser.bindStream(_auth.authStateChanges());
+
     super.onInit();
   }
 
@@ -127,6 +130,14 @@ class AuthController extends GetxController {
   void getUserData(String uid) async {
     try {
       // fetch the data
+      _firebaseMessaging.getToken().then((token) {
+        _userRef.doc(_currentUser.value!.uid).set(
+          {
+            "token": token
+          },
+          SetOptions(merge: true),
+        );
+      });
       _userRef.doc(uid).get().then((snapshot) {
         if (!snapshot.exists) throw "User doesn't exist, Please register";
         isNewUser(snapshot.data()!);

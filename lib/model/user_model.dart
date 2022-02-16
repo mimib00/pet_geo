@@ -16,6 +16,8 @@ class Users {
 
   final List friends;
 
+  final List invites;
+
   Users({
     this.id,
     this.email = '',
@@ -24,6 +26,7 @@ class Users {
     this.friends = const [],
     this.pets = const [],
     this.photoUrl = '',
+    this.invites = const [],
   });
 
   /// Craetes A Users object from a map.
@@ -35,6 +38,7 @@ class Users {
         photoUrl: data["photo"] ?? "",
         pets: data["pets"] ?? [],
         friends: data["friends"] ?? [],
+        invites: data["invited"] ?? [],
       );
 
   /// Creates a Map from a Users object.
@@ -46,7 +50,8 @@ class Users {
           "photo": photoUrl,
           "pets": pets,
           "friends": friends,
-          "phone": phone
+          "phone": phone,
+          "invited": invites,
         }
       };
 }

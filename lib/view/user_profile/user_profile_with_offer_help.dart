@@ -1,5 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_geo/controller/user_controller/auth_controller.dart';
+import 'package:pet_geo/model/pet_model.dart';
+import 'package:pet_geo/model/user_model.dart';
 import 'package:pet_geo/view/animal_communities/animal_communities.dart';
 import 'package:pet_geo/view/chat/likes_page.dart';
 import 'package:pet_geo/view/bottom_sheets/options_for_user_profile.dart';
@@ -11,6 +16,309 @@ import 'package:pet_geo/view/user_profile/user_profile_profile_image/profile_ima
 import 'package:pet_geo/view/widget/logo.dart';
 import 'package:pet_geo/view/widget/my_button.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
+import 'package:http/http.dart' as http;
+
+class UserProfile extends StatelessWidget {
+  final Users user;
+  final bool isMe;
+  UserProfile({
+    Key? key,
+    required this.user,
+    this.isMe = false,
+  }) : super(key: key);
+
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+
+  AuthController authController = Get.find<AuthController>();
+
+  Future<List<Pet>> getPets() async {
+    List<Pet> pets = [];
+    for (DocumentReference<Map<String, dynamic>> pet in user.pets) {
+      var data = await pet.get();
+      pets.add(Pet.fromMap(data.data()!, id: data.id));
+    }
+    return pets;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _key,
+      drawer: const MyDrawer(),
+      appBar: AppBar(
+        toolbarHeight: 140,
+        elevation: 0,
+        centerTitle: true,
+        leading: Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Center(
+            child: GestureDetector(
+              onTap: () => _key.currentState!.openDrawer(),
+              child: Image.asset(
+                'assets/images/Logo PG.png',
+                height: 35,
+                color: kPrimaryColor,
+              ),
+            ),
+          ),
+        ),
+        title: Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: ColorFiltered(
+            colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
+            child: textLogo(24),
+          ),
+        ),
+        actions: const [
+          SizedBox()
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size(0, 0),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+            leading: GestureDetector(
+              onTap: () => Get.back(),
+              child: Image.asset(
+                'assets/images/back_button.png',
+                height: 35,
+              ),
+            ),
+            minLeadingWidth: 70.0,
+            title: GestureDetector(
+              onTap: () {},
+              child: MyText(
+                paddingRight: 35.0,
+                text: user.name,
+                size: 18,
+                fontFamily: 'Roboto',
+                color: kPrimaryColor,
+                align: TextAlign.center,
+              ),
+            ),
+            trailing: Visibility(
+              visible: authController.user.value!.id! != user.id!,
+              child: GestureDetector(
+                onTap: () => Get.bottomSheet(
+                  OptionsForUserProfile(),
+                  backgroundColor: kPrimaryColor,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                    ),
+                  ),
+                  enableDrag: true,
+                ),
+                child: Image.asset(
+                  'assets/images/Settings.png',
+                  height: 35,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      body: Container(
+        color: kLightGreyColor,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              FutureBuilder<List<Pet>>(
+                  future: getPets(),
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null || snapshot.data!.isEmpty) return Container();
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    return Card(
+                      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                      elevation: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Stack(
+                          children: [
+                            SizedBox(
+                              height: 160,
+                              width: Get.width,
+                              child: ListView.builder(
+                                physics: const BouncingScrollPhysics(),
+                                padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                                itemCount: snapshot.data!.length,
+                                reverse: true,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  var pet = snapshot.data![index];
+                                  return GestureDetector(
+                                    onTap: () {},
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(5),
+                                            child: CachedNetworkImage(
+                                              imageUrl: pet.photoUrl,
+                                              height: 79,
+                                              width: 79,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(left: 20, top: 40),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    flex: 3,
+                                    child: Container(),
+                                  ),
+                                  Expanded(
+                                    flex: 8,
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                        top: 45,
+                                        right: 15,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () => Get.to(() => LikesPage(likes: [])),
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/images/Friends.png',
+                                                  height: 30,
+                                                ),
+                                                MyText(
+                                                  text: user.friends.length,
+                                                  size: 19,
+                                                  weight: FontWeight.w700,
+                                                  color: kSecondaryColor,
+                                                  paddingLeft: 10.0,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () => Get.to(() => AnimalCommunities()),
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/images/Community.png',
+                                                  height: 30,
+                                                ),
+                                                MyText(
+                                                  text: snapshot.data!.length,
+                                                  size: 19,
+                                                  weight: FontWeight.w700,
+                                                  color: kSecondaryColor,
+                                                  paddingLeft: 10.0,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Obx(() {
+                                            return authController.user.value!.invites.contains(FirebaseFirestore.instance.collection("users").doc(user.id))
+                                                ? MyButton(
+                                                    onPressed: () async {
+                                                      var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/cancel');
+                                                      await http.post(url, body: {
+                                                        "uid": authController.user.value!.id,
+                                                        "friend": user.id,
+                                                      });
+                                                      authController.getUserData(authController.user.value!.id!);
+                                                    },
+                                                    text: 'Cancel Request',
+                                                    textSize: 12,
+                                                    weight: FontWeight.w500,
+                                                    btnBgColor: kSecondaryColor,
+                                                    height: 30,
+                                                    textColor: kPrimaryColor,
+                                                    radius: 5.0,
+                                                  )
+                                                : MyButton(
+                                                    onPressed: () async {
+                                                      var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/add');
+                                                      await http.post(url, body: {
+                                                        "uid": authController.user.value!.id,
+                                                        "friend": user.id,
+                                                      });
+                                                      authController.getUserData(authController.user.value!.id!);
+                                                    },
+                                                    text: 'Add Friend',
+                                                    textSize: 12,
+                                                    weight: FontWeight.w500,
+                                                    btnBgColor: kSecondaryColor,
+                                                    height: 30,
+                                                    textColor: kPrimaryColor,
+                                                    radius: 5.0,
+                                                  );
+                                          }),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => Get.to(() => const ProfileImage()),
+                              child: Container(
+                                margin: const EdgeInsets.only(left: 15, top: 30),
+                                height: 100,
+                                width: 100,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: CachedNetworkImage(
+                                    imageUrl: user.photoUrl,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Container(
+                                      margin: const EdgeInsets.only(left: 15, top: 30),
+                                      height: 100,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        color: kPrimaryColor,
+                                        border: Border.all(
+                                          color: kLightGreyColor,
+                                          width: 3.0,
+                                        ),
+                                        borderRadius: BorderRadius.circular(100),
+                                      ),
+                                      child: Center(
+                                        child: Image.asset(
+                                          'assets/images/Group 30.png',
+                                          height: 45,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 // ignore: must_be_immutable
 class UserProfileWithOferHelp extends StatefulWidget {

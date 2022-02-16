@@ -14,6 +14,7 @@ import 'package:pet_geo/view/bottom_sheets/share.dart';
 import 'package:pet_geo/view/chat/likes_page.dart';
 import 'package:pet_geo/view/comments/comments.dart';
 import 'package:pet_geo/view/constant/constant.dart';
+import 'package:pet_geo/view/user_profile/user_profile_with_offer_help.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
 class ListViewType extends StatelessWidget {
@@ -214,43 +215,53 @@ class _AdPostState extends State<AdPost> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 15),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: kInputBorderColor.withOpacity(0.3),
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    Get.to(
+                      UserProfile(
+                        user: owner,
                       ),
-                    ),
-                  ),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(180),
-                      child: CachedNetworkImage(
-                        imageUrl: owner.photoUrl,
-                        width: 42,
-                        height: 42,
-                        fit: BoxFit.fill,
-                        placeholder: (context, url) => Image.asset(
-                          'assets/images/Group 30.png',
-                          height: 20,
-                          color: kPrimaryColor,
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 15),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: kInputBorderColor.withOpacity(0.3),
                         ),
                       ),
                     ),
-                    title: MyText(
-                      text: owner.name,
-                      size: 12,
-                      color: kDarkGreyColor,
-                      weight: FontWeight.w700,
-                      fontFamily: 'Roboto',
-                    ),
-                    subtitle: MyText(
-                      text: time.toString(),
-                      size: 12,
-                      color: kInputBorderColor,
-                      fontFamily: 'Roboto',
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(180),
+                        child: CachedNetworkImage(
+                          imageUrl: owner.photoUrl,
+                          width: 42,
+                          height: 42,
+                          fit: BoxFit.fill,
+                          placeholder: (context, url) => Image.asset(
+                            'assets/images/Group 30.png',
+                            height: 20,
+                            color: kPrimaryColor,
+                          ),
+                        ),
+                      ),
+                      title: MyText(
+                        text: owner.name,
+                        size: 12,
+                        color: kDarkGreyColor,
+                        weight: FontWeight.w700,
+                        fontFamily: 'Roboto',
+                      ),
+                      subtitle: MyText(
+                        text: time.toString(),
+                        size: 12,
+                        color: kInputBorderColor,
+                        fontFamily: 'Roboto',
+                      ),
                     ),
                   ),
                 ),
