@@ -219,7 +219,7 @@ class _PetGeoGuestProfileState extends State<PetGeoGuestProfile> with SingleTick
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               GestureDetector(
-                                                onTap: () => Get.to(() => LikesPage(likes: [])),
+                                                onTap: () => Get.to(() => LikesPage(likes: const [])),
                                                 child: Row(
                                                   children: [
                                                     Image.asset(

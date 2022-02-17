@@ -136,7 +136,7 @@ class _CommentOnProfileImageState extends State<CommentOnProfileImage> {
                 ),
               ),
               GestureDetector(
-                onTap: () => Get.to(() => LikesPage(likes: [])),
+                onTap: () => Get.to(() => LikesPage(likes: const [])),
                 child: MyText(
                   text: 'Нравится: 55',
                   size: 12,

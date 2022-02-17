@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -128,7 +130,194 @@ class UserProfile extends StatelessWidget {
               FutureBuilder<List<Pet>>(
                   future: getPets(),
                   builder: (context, snapshot) {
-                    if (snapshot.data == null || snapshot.data!.isEmpty) return Container();
+                    if (snapshot.data == null || snapshot.data!.isEmpty) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        elevation: 0,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: Stack(
+                            children: [
+                              SizedBox(
+                                height: 160,
+                                width: Get.width,
+                                child: ListView.builder(
+                                  physics: const BouncingScrollPhysics(),
+                                  padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                                  itemCount: 0,
+                                  reverse: true,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) {
+                                    return Container();
+                                  },
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(left: 20, top: 40),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Container(),
+                                    ),
+                                    Expanded(
+                                      flex: 8,
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                          top: 45,
+                                          right: 15,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () => Get.to(() => LikesPage(likes: const [])),
+                                              child: Row(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/Friends.png',
+                                                    height: 30,
+                                                  ),
+                                                  MyText(
+                                                    text: user.friends.length,
+                                                    size: 19,
+                                                    weight: FontWeight.w700,
+                                                    color: kSecondaryColor,
+                                                    paddingLeft: 10.0,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () => Get.to(() => AnimalCommunities()),
+                                              child: Row(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/Community.png',
+                                                    height: 30,
+                                                  ),
+                                                  MyText(
+                                                    text: snapshot.data!.length,
+                                                    size: 19,
+                                                    weight: FontWeight.w700,
+                                                    color: kSecondaryColor,
+                                                    paddingLeft: 10.0,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Obx(
+                                              () {
+                                                return authController.user.value!.invites.contains(FirebaseFirestore.instance.collection("users").doc(user.id))
+                                                    ? MyButton(
+                                                        onPressed: () async {
+                                                          try {
+                                                            var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/cancel');
+                                                            var res = await http.post(url, body: {
+                                                              "uid": authController.user.value!.id,
+                                                              "friend": user.id,
+                                                            });
+                                                            if (res.statusCode != 200) throw res.statusCode.toString();
+                                                            authController.getUserData(authController.user.value!.id!);
+                                                          } catch (e) {
+                                                            Get.snackbar(
+                                                              "Error",
+                                                              e.toString(),
+                                                              snackPosition: SnackPosition.BOTTOM,
+                                                              margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                                                              colorText: Colors.white,
+                                                              backgroundColor: Colors.red[400],
+                                                            );
+                                                          }
+                                                        },
+                                                        text: 'Cancel Request',
+                                                        textSize: 12,
+                                                        weight: FontWeight.w500,
+                                                        btnBgColor: kSecondaryColor,
+                                                        height: 30,
+                                                        textColor: kPrimaryColor,
+                                                        radius: 5.0,
+                                                      )
+                                                    : MyButton(
+                                                        onPressed: () async {
+                                                          try {
+                                                            var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/add');
+                                                            var res = await http.post(url, body: {
+                                                              "uid": authController.user.value!.id,
+                                                              "friend": user.id,
+                                                            });
+                                                            print(res.body);
+                                                            if (res.statusCode != 200) throw res.statusCode.toString();
+                                                            authController.getUserData(authController.user.value!.id!);
+                                                          } catch (e) {
+                                                            Get.snackbar(
+                                                              "Error",
+                                                              e.toString(),
+                                                              snackPosition: SnackPosition.BOTTOM,
+                                                              margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                                                              colorText: Colors.white,
+                                                              backgroundColor: Colors.red[400],
+                                                            );
+                                                          }
+                                                        },
+                                                        text: 'Add Friend',
+                                                        textSize: 12,
+                                                        weight: FontWeight.w500,
+                                                        btnBgColor: kSecondaryColor,
+                                                        height: 30,
+                                                        textColor: kPrimaryColor,
+                                                        radius: 5.0,
+                                                      );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () => Get.to(() => const ProfileImage()),
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 15, top: 30),
+                                  height: 100,
+                                  width: 100,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: CachedNetworkImage(
+                                      imageUrl: user.photoUrl,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Container(
+                                        margin: const EdgeInsets.only(left: 15, top: 30),
+                                        height: 100,
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                          color: kPrimaryColor,
+                                          border: Border.all(
+                                            color: kLightGreyColor,
+                                            width: 3.0,
+                                          ),
+                                          borderRadius: BorderRadius.circular(100),
+                                        ),
+                                        child: Center(
+                                          child: Image.asset(
+                                            'assets/images/Group 30.png',
+                                            height: 45,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
                         child: CircularProgressIndicator(),
@@ -194,7 +383,7 @@ class UserProfile extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           GestureDetector(
-                                            onTap: () => Get.to(() => LikesPage(likes: [])),
+                                            onTap: () => Get.to(() => LikesPage(likes: const [])),
                                             child: Row(
                                               children: [
                                                 Image.asset(
@@ -229,43 +418,69 @@ class UserProfile extends StatelessWidget {
                                               ],
                                             ),
                                           ),
-                                          Obx(() {
-                                            return authController.user.value!.invites.contains(FirebaseFirestore.instance.collection("users").doc(user.id))
-                                                ? MyButton(
-                                                    onPressed: () async {
-                                                      var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/cancel');
-                                                      await http.post(url, body: {
-                                                        "uid": authController.user.value!.id,
-                                                        "friend": user.id,
-                                                      });
-                                                      authController.getUserData(authController.user.value!.id!);
-                                                    },
-                                                    text: 'Cancel Request',
-                                                    textSize: 12,
-                                                    weight: FontWeight.w500,
-                                                    btnBgColor: kSecondaryColor,
-                                                    height: 30,
-                                                    textColor: kPrimaryColor,
-                                                    radius: 5.0,
-                                                  )
-                                                : MyButton(
-                                                    onPressed: () async {
-                                                      var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/add');
-                                                      await http.post(url, body: {
-                                                        "uid": authController.user.value!.id,
-                                                        "friend": user.id,
-                                                      });
-                                                      authController.getUserData(authController.user.value!.id!);
-                                                    },
-                                                    text: 'Add Friend',
-                                                    textSize: 12,
-                                                    weight: FontWeight.w500,
-                                                    btnBgColor: kSecondaryColor,
-                                                    height: 30,
-                                                    textColor: kPrimaryColor,
-                                                    radius: 5.0,
-                                                  );
-                                          }),
+                                          Obx(
+                                            () {
+                                              return authController.user.value!.invites.contains(FirebaseFirestore.instance.collection("users").doc(user.id))
+                                                  ? MyButton(
+                                                      onPressed: () async {
+                                                        try {
+                                                          var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/cancel');
+                                                          var res = await http.post(url, body: {
+                                                            "uid": authController.user.value!.id,
+                                                            "friend": user.id,
+                                                          });
+                                                          if (res.statusCode != 200) throw res.statusCode.toString();
+                                                          authController.getUserData(authController.user.value!.id!);
+                                                        } catch (e) {
+                                                          Get.snackbar(
+                                                            "Error",
+                                                            e.toString(),
+                                                            snackPosition: SnackPosition.BOTTOM,
+                                                            margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                                                            colorText: Colors.white,
+                                                            backgroundColor: Colors.red[400],
+                                                          );
+                                                        }
+                                                      },
+                                                      text: 'Cancel Request',
+                                                      textSize: 12,
+                                                      weight: FontWeight.w500,
+                                                      btnBgColor: kSecondaryColor,
+                                                      height: 30,
+                                                      textColor: kPrimaryColor,
+                                                      radius: 5.0,
+                                                    )
+                                                  : MyButton(
+                                                      onPressed: () async {
+                                                        try {
+                                                          var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/add');
+                                                          var res = await http.post(url, body: {
+                                                            "uid": authController.user.value!.id,
+                                                            "friend": user.id,
+                                                          });
+                                                          if (res.statusCode != 200) throw res.statusCode.toString();
+                                                          authController.getUserData(authController.user.value!.id!);
+                                                        } catch (e) {
+                                                          Get.snackbar(
+                                                            "Error",
+                                                            e.toString(),
+                                                            snackPosition: SnackPosition.BOTTOM,
+                                                            margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                                                            colorText: Colors.white,
+                                                            backgroundColor: Colors.red[400],
+                                                          );
+                                                        }
+                                                      },
+                                                      text: 'Add Friend',
+                                                      textSize: 12,
+                                                      weight: FontWeight.w500,
+                                                      btnBgColor: kSecondaryColor,
+                                                      height: 30,
+                                                      textColor: kPrimaryColor,
+                                                      radius: 5.0,
+                                                    );
+                                            },
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -320,7 +535,6 @@ class UserProfile extends StatelessWidget {
   }
 }
 
-// ignore: must_be_immutable
 class UserProfileWithOferHelp extends StatefulWidget {
   bool? haveSecondTab;
 
@@ -496,7 +710,7 @@ class _UserProfileWithOferHelpState extends State<UserProfileWithOferHelp> with 
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     GestureDetector(
-                                      onTap: () => Get.to(() => LikesPage(likes: [])),
+                                      onTap: () => Get.to(() => LikesPage(likes: const [])),
                                       child: Row(
                                         children: [
                                           Image.asset(

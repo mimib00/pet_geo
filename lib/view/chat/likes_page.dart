@@ -1,16 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pet_geo/controller/community_controller/community_contoller.dart';
 import 'package:pet_geo/controller/events_feed_controller/events_feed_controller.dart';
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/model/user_model.dart';
-import 'package:pet_geo/view/chat/chat_screen.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
 import 'package:pet_geo/view/widget/custom_app_bar_2.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
-import 'package:pet_geo/view/widget/search_box.dart';
 
 class LikesPage extends StatelessWidget {
   final List likes;

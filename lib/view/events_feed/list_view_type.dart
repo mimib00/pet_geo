@@ -218,11 +218,7 @@ class _AdPostState extends State<AdPost> {
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    Get.to(
-                      UserProfile(
-                        user: owner,
-                      ),
-                    );
+                    Get.to(() => UserProfile(user: owner));
                   },
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -355,9 +351,7 @@ class _AdPostState extends State<AdPost> {
                         ],
                       ),
                       GestureDetector(
-                        onTap: () {
-                          print("save");
-                        },
+                        onTap: () {},
                         child: Image.asset(
                           'assets/images/Vector (16).png',
                           height: 20,
