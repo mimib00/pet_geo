@@ -1,19 +1,15 @@
-
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class NotificationsModel {
+  final String title;
+  final String msg;
+  final String time;
+  VoidCallback? onTap;
+
   NotificationsModel({
-    this.name,
-    this.notificationMsg,
-    this.notificationThing,
-    this.time,
-    this.haveNewNotification = false,
-    this.haveFriendRequest = false,
+    this.title = '',
+    this.msg = '',
+    this.time = '',
     this.onTap,
   });
-
-  // ignore: prefer_typing_uninitialized_variables
-  var name, notificationMsg, time, notificationThing;
-  bool? haveNewNotification, haveFriendRequest;
-  VoidCallback? onTap;
 }

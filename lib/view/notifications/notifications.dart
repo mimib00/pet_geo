@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/controller/notifications_controller/notifications_controller.dart';
+import 'package:pet_geo/model/notifications_model/notifications_model.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
 import 'package:pet_geo/view/friend_requests/friend_requests.dart';
@@ -10,13 +11,13 @@ import 'package:pet_geo/view/widget/my_text.dart';
 class Notifications extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-   Notifications({Key? key}) : super(key: key);
+  Notifications({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<NotificationsController>(
       init: NotificationsController(),
-      builder: (logic) {
+      builder: (controller) {
         return Scaffold(
           key: _key,
           drawer: const MyDrawer(),
@@ -25,28 +26,85 @@ class Notifications extends StatelessWidget {
             haveTitle: true,
             onTitleTap: () {},
             showSearch: () {},
-            title: 'Уведомления',
+            title: 'notifications_title'.tr,
             globalKey: _key,
           ),
           body: ListView.builder(
             physics: const BouncingScrollPhysics(),
-            itemCount: logic.getNotificationModel.length,
+            itemCount: controller.notification.length,
             itemBuilder: (context, index) {
-              var data = logic.getNotificationModel[index];
-              return NotificationsTiles(
-                name: data.name,
-                time: data.time,
-                notificationMsg: data.notificationMsg,
-                notificationThing: data.notificationThing,
-                haveNewNotification: data.haveNewNotification,
-                haveFriendRequest: data.haveFriendRequest,
-                onTap: data.onTap,
-              );
+              if (index == 0) {
+                return FriendRequestTile(
+                  notification: controller.notification[index],
+                  requests: controller.requests.length,
+                );
+              } else {
+                return NotificationTile(
+                  notification: controller.notification[index],
+                );
+              }
             },
           ),
         );
       },
     );
+  }
+}
+
+class FriendRequestTile extends StatelessWidget {
+  final NotificationsModel notification;
+  final int requests;
+  const FriendRequestTile({
+    Key? key,
+    required this.notification,
+    this.requests = 0,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: notification.onTap,
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(100),
+        child: Image.asset(
+          'assets/images/People PH.png',
+          height: 47,
+          width: 47,
+          fit: BoxFit.cover,
+        ),
+      ),
+      title: MyText(
+        text: 'Friend Requests',
+        size: 15,
+        fontFamily: 'Roboto',
+        color: kDarkGreyColor,
+      ),
+      subtitle: MyText(
+        text: '$requests request',
+        size: 10,
+        color: kInputBorderColor,
+        align: TextAlign.start,
+        fontFamily: 'Roboto',
+      ),
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+        size: 20,
+        color: kInputBorderColor,
+      ),
+    );
+  }
+}
+
+class NotificationTile extends StatelessWidget {
+  final NotificationsModel notification;
+  const NotificationTile({
+    Key? key,
+    required this.notification,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
 

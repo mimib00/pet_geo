@@ -20,26 +20,39 @@ import 'package:pet_geo/view/widget/my_button.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 import 'package:http/http.dart' as http;
 
-class UserProfile extends StatelessWidget {
+class UserProfile extends StatefulWidget {
   final Users user;
   final bool isMe;
-  UserProfile({
+  const UserProfile({
     Key? key,
     required this.user,
     this.isMe = false,
   }) : super(key: key);
 
+  @override
+  State<UserProfile> createState() => _UserProfileState();
+}
+
+class _UserProfileState extends State<UserProfile> {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   AuthController authController = Get.find<AuthController>();
 
   Future<List<Pet>> getPets() async {
     List<Pet> pets = [];
-    for (DocumentReference<Map<String, dynamic>> pet in user.pets) {
+    for (DocumentReference<Map<String, dynamic>> pet in widget.user.pets) {
       var data = await pet.get();
       pets.add(Pet.fromMap(data.data()!, id: data.id));
     }
     return pets;
+  }
+
+  late bool invited;
+
+  @override
+  void initState() {
+    invited = widget.user.invites.contains(FirebaseFirestore.instance.collection("users").doc(authController.user.value!.id));
+    super.initState();
   }
 
   @override
@@ -90,7 +103,7 @@ class UserProfile extends StatelessWidget {
               onTap: () {},
               child: MyText(
                 paddingRight: 35.0,
-                text: user.name,
+                text: widget.user.name,
                 size: 18,
                 fontFamily: 'Roboto',
                 color: kPrimaryColor,
@@ -98,7 +111,7 @@ class UserProfile extends StatelessWidget {
               ),
             ),
             trailing: Visibility(
-              visible: authController.user.value!.id! != user.id!,
+              visible: authController.user.value!.id! != widget.user.id!,
               child: GestureDetector(
                 onTap: () => Get.bottomSheet(
                   OptionsForUserProfile(),
@@ -180,7 +193,7 @@ class UserProfile extends StatelessWidget {
                                                     height: 30,
                                                   ),
                                                   MyText(
-                                                    text: user.friends.length,
+                                                    text: widget.user.friends.length,
                                                     size: 19,
                                                     weight: FontWeight.w700,
                                                     color: kSecondaryColor,
@@ -207,69 +220,71 @@ class UserProfile extends StatelessWidget {
                                                 ],
                                               ),
                                             ),
-                                            Obx(
-                                              () {
-                                                return authController.user.value!.invites.contains(FirebaseFirestore.instance.collection("users").doc(user.id))
-                                                    ? MyButton(
-                                                        onPressed: () async {
-                                                          try {
-                                                            var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/cancel');
-                                                            var res = await http.post(url, body: {
-                                                              "uid": authController.user.value!.id,
-                                                              "friend": user.id,
-                                                            });
-                                                            if (res.statusCode != 200) throw res.statusCode.toString();
-                                                            authController.getUserData(authController.user.value!.id!);
-                                                          } catch (e) {
-                                                            Get.snackbar(
-                                                              "Error",
-                                                              e.toString(),
-                                                              snackPosition: SnackPosition.BOTTOM,
-                                                              margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
-                                                              colorText: Colors.white,
-                                                              backgroundColor: Colors.red[400],
-                                                            );
-                                                          }
-                                                        },
-                                                        text: 'Cancel Request',
-                                                        textSize: 12,
-                                                        weight: FontWeight.w500,
-                                                        btnBgColor: kSecondaryColor,
-                                                        height: 30,
-                                                        textColor: kPrimaryColor,
-                                                        radius: 5.0,
-                                                      )
-                                                    : MyButton(
-                                                        onPressed: () async {
-                                                          try {
-                                                            var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/add');
-                                                            var res = await http.post(url, body: {
-                                                              "uid": authController.user.value!.id,
-                                                              "friend": user.id,
-                                                            });
-                                                            print(res.body);
-                                                            if (res.statusCode != 200) throw res.statusCode.toString();
-                                                            authController.getUserData(authController.user.value!.id!);
-                                                          } catch (e) {
-                                                            Get.snackbar(
-                                                              "Error",
-                                                              e.toString(),
-                                                              snackPosition: SnackPosition.BOTTOM,
-                                                              margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
-                                                              colorText: Colors.white,
-                                                              backgroundColor: Colors.red[400],
-                                                            );
-                                                          }
-                                                        },
-                                                        text: 'Add Friend',
-                                                        textSize: 12,
-                                                        weight: FontWeight.w500,
-                                                        btnBgColor: kSecondaryColor,
-                                                        height: 30,
-                                                        textColor: kPrimaryColor,
-                                                        radius: 5.0,
-                                                      );
-                                              },
+                                            Visibility(
+                                              visible: authController.user.value!.id != widget.user.id,
+                                              child: invited
+                                                  ? MyButton(
+                                                      onPressed: () async {
+                                                        try {
+                                                          var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/cancel');
+                                                          await http.post(url, body: {
+                                                            "uid": authController.user.value!.id,
+                                                            "friend": widget.user.id,
+                                                          });
+                                                          setState(() {
+                                                            invited = false;
+                                                          });
+                                                        } catch (e) {
+                                                          Get.snackbar(
+                                                            "Error",
+                                                            e.toString(),
+                                                            snackPosition: SnackPosition.BOTTOM,
+                                                            margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                                                            colorText: Colors.white,
+                                                            backgroundColor: Colors.red[400],
+                                                          );
+                                                        }
+                                                      },
+                                                      text: 'Cancel Request',
+                                                      textSize: 12,
+                                                      weight: FontWeight.w500,
+                                                      btnBgColor: kSecondaryColor,
+                                                      height: 30,
+                                                      textColor: kPrimaryColor,
+                                                      radius: 5.0,
+                                                    )
+                                                  : MyButton(
+                                                      onPressed: () async {
+                                                        try {
+                                                          var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/add');
+                                                          var res = await http.post(url, body: {
+                                                            "uid": authController.user.value!.id,
+                                                            "friend": widget.user.id,
+                                                          });
+
+                                                          if (res.statusCode == 409) throw "Friend request has already been sent to this user";
+                                                          setState(() {
+                                                            invited = true;
+                                                          });
+                                                        } catch (e) {
+                                                          Get.snackbar(
+                                                            "Error",
+                                                            e.toString(),
+                                                            snackPosition: SnackPosition.BOTTOM,
+                                                            margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                                                            colorText: Colors.white,
+                                                            backgroundColor: Colors.red[400],
+                                                          );
+                                                        }
+                                                      },
+                                                      text: 'Add Friend',
+                                                      textSize: 12,
+                                                      weight: FontWeight.w500,
+                                                      btnBgColor: kSecondaryColor,
+                                                      height: 30,
+                                                      textColor: kPrimaryColor,
+                                                      radius: 5.0,
+                                                    ),
                                             ),
                                           ],
                                         ),
@@ -287,7 +302,7 @@ class UserProfile extends StatelessWidget {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(100),
                                     child: CachedNetworkImage(
-                                      imageUrl: user.photoUrl,
+                                      imageUrl: widget.user.photoUrl,
                                       fit: BoxFit.cover,
                                       placeholder: (context, url) => Container(
                                         margin: const EdgeInsets.only(left: 15, top: 30),
@@ -391,7 +406,7 @@ class UserProfile extends StatelessWidget {
                                                   height: 30,
                                                 ),
                                                 MyText(
-                                                  text: user.friends.length,
+                                                  text: widget.user.friends.length,
                                                   size: 19,
                                                   weight: FontWeight.w700,
                                                   color: kSecondaryColor,
@@ -420,14 +435,14 @@ class UserProfile extends StatelessWidget {
                                           ),
                                           Obx(
                                             () {
-                                              return authController.user.value!.invites.contains(FirebaseFirestore.instance.collection("users").doc(user.id))
+                                              return authController.user.value!.invites.contains(FirebaseFirestore.instance.collection("users").doc(widget.user.id))
                                                   ? MyButton(
                                                       onPressed: () async {
                                                         try {
                                                           var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/cancel');
                                                           var res = await http.post(url, body: {
                                                             "uid": authController.user.value!.id,
-                                                            "friend": user.id,
+                                                            "friend": widget.user.id,
                                                           });
                                                           if (res.statusCode != 200) throw res.statusCode.toString();
                                                           authController.getUserData(authController.user.value!.id!);
@@ -456,7 +471,7 @@ class UserProfile extends StatelessWidget {
                                                           var url = Uri.parse('https://europe-west2-petgeo-6f1ef.cloudfunctions.net/friend/add');
                                                           var res = await http.post(url, body: {
                                                             "uid": authController.user.value!.id,
-                                                            "friend": user.id,
+                                                            "friend": widget.user.id,
                                                           });
                                                           if (res.statusCode != 200) throw res.statusCode.toString();
                                                           authController.getUserData(authController.user.value!.id!);
@@ -497,7 +512,7 @@ class UserProfile extends StatelessWidget {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(100),
                                   child: CachedNetworkImage(
-                                    imageUrl: user.photoUrl,
+                                    imageUrl: widget.user.photoUrl,
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) => Container(
                                       margin: const EdgeInsets.only(left: 15, top: 30),
