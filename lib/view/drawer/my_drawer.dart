@@ -96,9 +96,7 @@ class _MyDrawerState extends State<MyDrawer> {
                             (pet) => GestureDetector(
                               onTap: () {
                                 Get.to(
-                                  () => PetsProfile(
-                                    pet: pet,
-                                  ),
+                                  () => PetsProfile(pet: pet),
                                 );
                               },
                               child: ClipRRect(

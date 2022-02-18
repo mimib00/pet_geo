@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/model/ad_model.dart';
+import 'package:pet_geo/model/post_model.dart';
 import 'package:pet_geo/model/user_model.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
@@ -14,10 +15,12 @@ import 'package:pet_geo/view/widget/my_text.dart';
 class Comments extends StatefulWidget {
   final List comments;
   final Ad? ad;
+  final PostModel? post;
   const Comments({
     Key? key,
     required this.comments,
     final this.ad,
+    final this.post,
   }) : super(key: key);
 
   @override
@@ -57,7 +60,11 @@ class _CommentsState extends State<Comments> {
               return CommentTile(
                 comment: comment,
                 onDelete: () {
-                  widget.ad!.deleteComment(comment);
+                  if (widget.ad != null) {
+                    widget.ad!.deleteComment(comment);
+                  } else if (widget.post != null) {
+                    widget.post!.deleteComment(comment);
+                  }
                 },
               );
             },
@@ -85,6 +92,10 @@ class _CommentsState extends State<Comments> {
                         onTap: () {
                           if (widget.ad != null) {
                             widget.ad!.postComment(controller.text.trim());
+                            controller.clear();
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          } else if (widget.post != null) {
+                            widget.post!.postComment(controller.text.trim());
                             controller.clear();
                             FocusScope.of(context).requestFocus(FocusNode());
                           }

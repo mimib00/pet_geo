@@ -14,6 +14,7 @@ import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
 import 'package:pet_geo/view/filter/filter.dart';
 import 'package:pet_geo/view/offer_help/offer_help.dart';
+import 'package:pet_geo/view/pets_profile/pets_profile.dart';
 import 'package:pet_geo/view/user_profile/user_profile_profile_image/profile_image.dart';
 import 'package:pet_geo/view/widget/logo.dart';
 import 'package:pet_geo/view/widget/my_button.dart';
@@ -357,7 +358,11 @@ class _UserProfileState extends State<UserProfile> {
                                 itemBuilder: (context, index) {
                                   var pet = snapshot.data![index];
                                   return GestureDetector(
-                                    onTap: () {},
+                                    onTap: () => Get.to(
+                                      () => PetsProfile(
+                                        pet: pet,
+                                      ),
+                                    ),
                                     child: Column(
                                       children: [
                                         Padding(

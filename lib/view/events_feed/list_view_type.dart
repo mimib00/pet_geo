@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:pet_geo/controller/events_feed_controller/events_feed_controller.dart';
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/model/ad_model.dart';
+import 'package:pet_geo/model/post_model.dart';
 import 'package:pet_geo/model/user_model.dart';
 import 'package:pet_geo/packages/advanced_stream_builder/lib/src/advanced_builder.dart';
 import 'package:pet_geo/view/bottom_sheets/share.dart';
@@ -24,38 +25,40 @@ class ListViewType extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<EventsFeedController>(builder: (controller) {
-      return AdvancedStreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        streams: controller.getPostsStream(),
-        builder: (context, snapshot) {
-          if (snapshot.data == null) return Container();
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          var ads = snapshot.data;
-
-          if (controller.posts.isEmpty) {
-            for (var ad in ads![0].docs) {
-              controller.makeAdsPosts(ad);
+    return GetBuilder<EventsFeedController>(
+      builder: (controller) {
+        return AdvancedStreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          streams: controller.getPostsStream(),
+          builder: (context, snapshot) {
+            if (snapshot.data == null) return Container();
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             }
-          }
+            var ads = snapshot.data;
 
-          return ListView.builder(
-            padding: const EdgeInsets.only(
-              bottom: 30,
-            ),
-            physics: const BouncingScrollPhysics(),
-            itemCount: controller.posts.length,
-            itemBuilder: (context, index) {
-              var post = controller.posts[index];
-              return Post(post: post);
-            },
-          );
-        },
-      );
-    });
+            if (controller.posts.isEmpty) {
+              for (var ad in ads![0].docs) {
+                controller.makeAdsPosts(ad);
+              }
+            }
+
+            return ListView.builder(
+              padding: const EdgeInsets.only(
+                bottom: 30,
+              ),
+              physics: const BouncingScrollPhysics(),
+              itemCount: controller.posts.length,
+              itemBuilder: (context, index) {
+                var post = controller.posts[index];
+                return Post(post: post);
+              },
+            );
+          },
+        );
+      },
+    );
   }
 }
 
@@ -73,9 +76,211 @@ class Post extends StatelessWidget {
       case "Ad":
         child = AdPost(ad: post);
         break;
+      case "PostModel":
+        child = UserPost(post: post);
+        break;
       default:
     }
     return child;
+  }
+}
+
+class UserPost extends StatefulWidget {
+  final PostModel post;
+  const UserPost({
+    Key? key,
+    required this.post,
+  }) : super(key: key);
+
+  @override
+  _UserPostState createState() => _UserPostState();
+}
+
+class _UserPostState extends State<UserPost> {
+  Future<Users> getOwner() async {
+    var temp = await widget.post.owner!.get();
+    return Users.fromMap(temp.data()!, id: temp.id);
+  }
+
+  late bool isLiked = false;
+
+  @override
+  void initState() {
+    AuthController controller = Get.find<AuthController>();
+    isLiked = widget.post.likes.contains(FirebaseFirestore.instance.collection("users").doc(controller.user.value!.id!));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Users>(
+      future: getOwner(),
+      builder: (context, snapshot) {
+        try {
+          if (snapshot.hasError) throw snapshot.error.toString();
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          var owner = snapshot.data!;
+          var time = DateFormat("MMMM d, H:m").format(widget.post.createdAt!.toDate());
+          Widget type = const Text('');
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Get.to(() => UserProfile(user: owner));
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 15),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: kInputBorderColor.withOpacity(0.3),
+                      ),
+                    ),
+                  ),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(180),
+                      child: CachedNetworkImage(
+                        imageUrl: owner.photoUrl,
+                        width: 42,
+                        height: 42,
+                        fit: BoxFit.fill,
+                        placeholder: (context, url) => Image.asset(
+                          'assets/images/Group 30.png',
+                          height: 20,
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                    ),
+                    title: MyText(
+                      text: owner.name,
+                      size: 12,
+                      color: kDarkGreyColor,
+                      weight: FontWeight.w700,
+                      fontFamily: 'Roboto',
+                    ),
+                    subtitle: MyText(
+                      text: time.toString(),
+                      size: 12,
+                      color: kInputBorderColor,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                ),
+              ),
+              type,
+              MyText(
+                text: widget.post.caption,
+                size: 14,
+                fontFamily: 'Roboto',
+                color: kDarkGreyColor,
+                paddingLeft: 15,
+                paddingTop: 15,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  alignment: WrapAlignment.spaceBetween,
+                  children: [
+                    Wrap(
+                      spacing: 22.0,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (isLiked) {
+                              widget.post.unLike();
+                              setState(() {
+                                isLiked = false;
+                              });
+                            } else {
+                              widget.post.like();
+                              setState(() {
+                                isLiked = true;
+                              });
+                            }
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: Icon(
+                            isLiked ? Icons.favorite : Icons.favorite_border_rounded,
+                            size: 25,
+                            color: isLiked ? Colors.red : Colors.black,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => Get.to(
+                            () => Comments(
+                              comments: widget.post.comments,
+                              post: widget.post,
+                            ),
+                          ),
+                          child: Image.asset(
+                            'assets/images/comment.png',
+                            height: 20,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => Get.bottomSheet(
+                            const Share(),
+                            backgroundColor: kPrimaryColor,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15),
+                              ),
+                            ),
+                            enableDrag: true,
+                          ),
+                          child: Image.asset(
+                            'assets/images/share.png',
+                            height: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Image.asset(
+                        'assets/images/Vector (16).png',
+                        height: 20,
+                        color: kDarkGreyColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () => Get.to(() => LikesPage(likes: widget.post.likes)),
+                child: MyText(
+                  text: 'Нравится: ${widget.post.likes.length}',
+                  size: 12,
+                  weight: FontWeight.w700,
+                  fontFamily: 'Roboto',
+                  color: kDarkGreyColor,
+                  paddingLeft: 15,
+                ),
+              ),
+            ],
+          );
+        } catch (e) {
+          Get.snackbar(
+            "Error",
+            e.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+            margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+            colorText: Colors.white,
+            backgroundColor: Colors.red[400],
+          );
+        }
+        return Container();
+      },
+    );
   }
 }
 

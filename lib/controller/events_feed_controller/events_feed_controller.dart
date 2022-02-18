@@ -7,6 +7,7 @@ import 'package:pet_geo/model/ad_model.dart';
 import 'package:pet_geo/model/events_feed_model/events_feed_model.dart';
 import 'package:pet_geo/model/events_feed_model/save_post_model.dart';
 import 'package:pet_geo/model/events_feed_model/stories_model.dart';
+import 'package:pet_geo/model/post_model.dart';
 import 'package:pet_geo/model/user_model.dart';
 import 'package:pet_geo/view/bottom_sheets/share.dart';
 import 'package:pet_geo/view/constant/constant.dart';
@@ -15,6 +16,7 @@ import 'package:pet_geo/view/stories/stories.dart';
 
 class EventsFeedController extends GetxController {
   final CollectionReference<Map<String, dynamic>> _adRef = FirebaseFirestore.instance.collection("ads");
+  final CollectionReference<Map<String, dynamic>> _postRef = FirebaseFirestore.instance.collection("posts");
 
   RxList posts = [].obs;
 
@@ -24,8 +26,14 @@ class EventsFeedController extends GetxController {
     posts.add(ad);
   }
 
+  void makeUserPost(QueryDocumentSnapshot<Map<String, dynamic>> data) {
+    var post = PostModel.fromMap(data.data(), data.id);
+    posts.add(post);
+  }
+
   /// return a truple of streams for stream builder
   List<Stream<QuerySnapshot<Map<String, dynamic>>>> getPostsStream() {
+    posts.clear();
     MapController mapController = Get.put<MapController>(MapController());
     var ads = mapController.ads;
 
@@ -44,6 +52,19 @@ class EventsFeedController extends GetxController {
     } else {
       return null;
     }
+  }
+
+  List<Stream<QuerySnapshot<Map<String, dynamic>>>> getUserPosts(Users user) {
+    posts.clear();
+    var ads = _adRef.where("owner", isEqualTo: FirebaseFirestore.instance.collection("users").doc(user.id)).snapshots();
+    var post = _postRef.where("owner", isEqualTo: FirebaseFirestore.instance.collection("users").doc(user.id)).snapshots();
+
+    final combined = [
+      ads,
+      post
+    ];
+
+    return combined;
   }
 
   // old code

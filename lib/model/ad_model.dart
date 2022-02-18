@@ -114,7 +114,7 @@ class Ad {
         {
           "comments": FieldValue.arrayUnion(
             [
-              comment.toMap()["data"]
+              comment.toMap()
             ],
           ),
         },
