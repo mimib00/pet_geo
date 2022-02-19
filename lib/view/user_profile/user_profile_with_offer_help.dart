@@ -249,7 +249,7 @@ class _UserProfileState extends State<UserProfile> {
                                                         height: 30,
                                                       ),
                                                       MyText(
-                                                        text: snapshot.data!.length,
+                                                        text: 0,
                                                         size: 19,
                                                         weight: FontWeight.w700,
                                                         color: kSecondaryColor,

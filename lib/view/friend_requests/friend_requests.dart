@@ -5,7 +5,6 @@ import 'package:pet_geo/controller/notifications_controller/notifications_contro
 import 'package:pet_geo/model/user_model.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
-import 'package:pet_geo/view/friend_requests/request_response.dart';
 import 'package:pet_geo/view/widget/custom_app_bar_2.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 

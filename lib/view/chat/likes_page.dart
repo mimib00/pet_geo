@@ -75,34 +75,35 @@ class UserMessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: kInputBorderColor.withOpacity(0.3),
+    return GestureDetector(
+      onTap: () {},
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: kInputBorderColor.withOpacity(0.3),
+            ),
           ),
         ),
-      ),
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(180),
-          child: CachedNetworkImage(
-            imageUrl: user.photoUrl,
-            height: 40,
-            width: 40,
-            fit: BoxFit.cover,
+        child: ListTile(
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(180),
+            child: CachedNetworkImage(
+              imageUrl: user.photoUrl,
+              height: 40,
+              width: 40,
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        title: MyText(
-          text: user.name,
-          size: 12,
-          color: kDarkGreyColor,
-          fontFamily: 'Roboto',
-        ),
-        trailing: Visibility(
-          visible: !itsMe,
-          child: GestureDetector(
-            onTap: () {},
+          title: MyText(
+            text: user.name,
+            size: 12,
+            color: kDarkGreyColor,
+            fontFamily: 'Roboto',
+          ),
+          trailing: Visibility(
+            visible: !itsMe,
             child: Image.asset('assets/images/msg.png', height: 20),
           ),
         ),
