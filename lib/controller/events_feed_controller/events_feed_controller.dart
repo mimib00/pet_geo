@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/controller/map_controller/map_controller.dart';
+import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/model/ad_model.dart';
 import 'package:pet_geo/model/events_feed_model/events_feed_model.dart';
 import 'package:pet_geo/model/events_feed_model/save_post_model.dart';
@@ -35,11 +36,15 @@ class EventsFeedController extends GetxController {
   List<Stream<QuerySnapshot<Map<String, dynamic>>>> getPostsStream() {
     posts.clear();
     MapController mapController = Get.put<MapController>(MapController());
+    AuthController authController = Get.put<AuthController>(AuthController());
     var ads = mapController.ads;
+    var user = authController.user.value!;
 
-    var res = _adRef.where("id", whereIn: ads.toList()).snapshots();
+    var adPost = _adRef.where("id", whereIn: ads.toList()).snapshots();
+    var post = _postRef.where("owner", whereIn: user.friends).snapshots();
     final combined = [
-      res
+      adPost,
+      post
     ];
     return combined;
   }

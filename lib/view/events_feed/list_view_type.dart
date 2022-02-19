@@ -36,14 +36,19 @@ class ListViewType extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             }
-            var ads = snapshot.data;
+            var temp = snapshot.data?.asMap();
+            if (temp == null) return Container();
+            var ads = temp[0];
+            var posts = temp[1];
 
             if (controller.posts.isEmpty) {
-              for (var ad in ads![0].docs) {
+              for (var ad in ads!.docs) {
                 controller.makeAdsPosts(ad);
               }
+              for (var post in posts!.docs) {
+                controller.makeUserPost(post);
+              }
             }
-
             return ListView.builder(
               padding: const EdgeInsets.only(
                 bottom: 30,
@@ -216,7 +221,7 @@ class _UserPostState extends State<UserPost> {
                         GestureDetector(
                           onTap: () => Get.to(
                             () => Comments(
-                              comments: widget.post.comments,
+                              postId: widget.post.id,
                               post: widget.post,
                             ),
                           ),
@@ -527,7 +532,7 @@ class _AdPostState extends State<AdPost> {
                           GestureDetector(
                             onTap: () => Get.to(
                               () => Comments(
-                                comments: widget.ad.comments,
+                                adId: widget.ad.id,
                                 ad: widget.ad,
                               ),
                             ),

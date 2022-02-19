@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -13,12 +14,15 @@ import 'package:pet_geo/view/widget/custom_app_bar_2.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
 class Comments extends StatefulWidget {
-  final List comments;
+  final String? adId;
+  final String? postId;
+  // final List comments;
   final Ad? ad;
   final PostModel? post;
   const Comments({
     Key? key,
-    required this.comments,
+    this.adId,
+    this.postId,
     final this.ad,
     final this.post,
   }) : super(key: key);
@@ -31,6 +35,27 @@ class _CommentsState extends State<Comments> {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   TextEditingController controller = TextEditingController();
+
+  final CollectionReference<Map<String, dynamic>> _adRef = FirebaseFirestore.instance.collection("ads");
+  final CollectionReference<Map<String, dynamic>> _postRef = FirebaseFirestore.instance.collection("posts");
+
+  Future<List<Comment>> getComments() async {
+    List<Comment> comments = [];
+    if (widget.adId != null) {
+      var ads = await _adRef.doc(widget.adId).get();
+      List temp = ads.data()!["comments"];
+      for (var comment in temp) {
+        comments.add(Comment.fromMap(comment));
+      }
+    } else if (widget.postId != null) {
+      var posts = await _postRef.doc(widget.postId).get();
+      List temp = posts.data()!["comments"];
+      for (var comment in temp) {
+        comments.add(Comment.fromMap(comment));
+      }
+    }
+    return comments;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,20 +76,21 @@ class _CommentsState extends State<Comments> {
       ),
       body: Stack(
         children: [
-          ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            itemCount: widget.comments.length,
-            itemBuilder: (context, index) {
-              if (widget.comments[index] == null) return const SizedBox.shrink();
-              var comment = Comment.fromMap(widget.comments[index]);
-              return CommentTile(
-                comment: comment,
-                onDelete: () {
-                  if (widget.ad != null) {
-                    widget.ad!.deleteComment(comment);
-                  } else if (widget.post != null) {
-                    widget.post!.deleteComment(comment);
-                  }
+          FutureBuilder<List<Comment>>(
+            future: getComments(),
+            builder: (context, snapshot) {
+              if (snapshot.data == null) return Container();
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  var comment = snapshot.data![index];
+                  return CommentTile(comment: comment);
                 },
               );
             },

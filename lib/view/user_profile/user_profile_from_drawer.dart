@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 import 'package:pet_geo/controller/events_feed_controller/events_feed_controller.dart';
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/model/pet_model.dart';
