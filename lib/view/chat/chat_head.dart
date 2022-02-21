@@ -86,7 +86,7 @@ class ChatHeadTiles extends StatelessWidget {
         ),
       ),
       child: ListTile(
-        onTap: () => Get.to(() => const ChatScreen()),
+        onTap: () => Get.to(() => ChatScreen()),
         leading: Container(
           width: 37,
           height: 37,

@@ -11,7 +11,7 @@ import 'package:pet_geo/view/widget/search_box.dart';
 class LikesUpdated extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-   LikesUpdated({Key? key}) : super(key: key);
+  LikesUpdated({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +32,7 @@ class LikesUpdated extends StatelessWidget {
           body: Stack(
             children: [
               ListView.builder(
-                padding: EdgeInsets.only(
-                    top: logic.search == true ? 70 : 10, bottom: 10),
+                padding: EdgeInsets.only(top: logic.search == true ? 70 : 10, bottom: 10),
                 physics: const BouncingScrollPhysics(),
                 itemCount: logic.msgs.length,
                 itemBuilder: (context, index) {
@@ -46,8 +45,8 @@ class LikesUpdated extends StatelessWidget {
               ),
               logic.search == true
                   ? SearchBox(
-                hintText: 'Поиск',
-              )
+                      hintText: 'Поиск',
+                    )
                   : const SizedBox(),
             ],
           ),
@@ -105,22 +104,22 @@ class MessagesTiles extends StatelessWidget {
         ),
         trailing: add == true
             ? GestureDetector(
-          onTap: () {},
-          child: Image.asset(
-            'assets/images/fill follow.png',
-            height: 35,
-          ),
-        )
+                onTap: () {},
+                child: Image.asset(
+                  'assets/images/fill follow.png',
+                  height: 35,
+                ),
+              )
             : GestureDetector(
-          onTap: () => Get.to(() => const ChatScreen()),
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: Image.asset(
-              'assets/images/msg.png',
-              height: 15,
-            ),
-          ),
-        ),
+                onTap: () => Get.to(() => ChatScreen()),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Image.asset(
+                    'assets/images/msg.png',
+                    height: 15,
+                  ),
+                ),
+              ),
       ),
     );
   }

@@ -11,7 +11,7 @@ import 'package:pet_geo/view/widget/search_box.dart';
 class Likes extends StatelessWidget {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-   Likes({Key? key}) : super(key: key);
+  Likes({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +32,7 @@ class Likes extends StatelessWidget {
           body: Stack(
             children: [
               ListView.builder(
-                padding: EdgeInsets.only(
-                    top: logic.search == true ? 70 : 10, bottom: 10),
+                padding: EdgeInsets.only(top: logic.search == true ? 70 : 10, bottom: 10),
                 physics: const BouncingScrollPhysics(),
                 itemCount: logic.getLikesModel.length,
                 itemBuilder: (context, index) {
@@ -93,7 +92,7 @@ class LikeTiles extends StatelessWidget {
           fontFamily: 'Roboto',
         ),
         trailing: GestureDetector(
-          onTap: () => Get.to(() => const ChatScreen()),
+          onTap: () => Get.to(() => ChatScreen()),
           child: Image.asset(
             'assets/images/msg.png',
             height: 15,
