@@ -51,7 +51,8 @@ class ChatController extends GetxController {
       await _chatRef.doc(id).collection("chat").add(data);
       await _chatRef.doc(id).update(
         {
-          "last_message": message
+          "last_message": data["msg"],
+          "time": data["time"],
         },
       );
     } catch (e) {
@@ -71,6 +72,23 @@ class ChatController extends GetxController {
       var me = authController.user.value!;
       var id = getId(me.id!, user.id!);
       return _chatRef.doc(id).collection("chat").orderBy("time", descending: true).snapshots();
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+    return null;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>>? getChats() {
+    try {
+      var me = authController.user.value!;
+      return _chatRef.where("users", arrayContains: _userRef.doc(me.id)).snapshots();
     } catch (e) {
       Get.snackbar(
         "Error",

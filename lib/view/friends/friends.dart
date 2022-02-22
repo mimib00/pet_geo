@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:pet_geo/controller/chat_controller/chat_controller.dart';
 import 'package:pet_geo/controller/friends_controller/friends_controller.dart';
 import 'package:pet_geo/model/user_model.dart';
-import 'package:pet_geo/view/chat/chat_head.dart';
 import 'package:pet_geo/view/chat/chat_screen.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';

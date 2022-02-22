@@ -140,7 +140,7 @@ class _MyDrawerState extends State<MyDrawer> {
             icon: 'assets/images/Mail.png',
             iconSize: 30,
             title: 'messages_title'.tr,
-            onTap: () => Get.to(() => ChatHead()),
+            onTap: () => Get.to(() => Inbox()),
           ),
           DrawerTiles(
             icon: 'assets/images/Friends.png',

@@ -62,7 +62,8 @@ class ChatScreen extends StatelessWidget {
                       itemCount: data.length,
                       itemBuilder: (context, index) {
                         var temp = data[index].data();
-                        Timestamp tempTime = temp["time"];
+                        var tempTime = temp["time"];
+                        if (tempTime == null) return Container();
                         DateTime time = tempTime.toDate();
 
                         return ChatBubble(
