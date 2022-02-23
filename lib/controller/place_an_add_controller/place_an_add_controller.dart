@@ -42,6 +42,7 @@ class PlaceAnAdController extends GetxController {
   RxString selectedAnimal = 'type_title'.obs;
   RxString adType = ''.obs;
   RxString age = 'age_title'.obs;
+  RxString payment = 'способ '.obs;
 
   XFile? _image;
 
@@ -70,6 +71,11 @@ class PlaceAnAdController extends GetxController {
     kSecondaryColor,
     kYellowColor,
     kBrownColor,
+  ].obs;
+  RxList typesOfPaymentMethods = [
+    'Бонусами',
+    'Возмездно',
+    'Безвозмездно',
   ].obs;
 
   void currentCategory(var index) {
@@ -159,8 +165,9 @@ class PlaceAnAdController extends GetxController {
             "long": mapController.latLng.value.longitude,
           },
           "photo_url": imageUrl,
-          "owner_id": authController.user.value!.id!,
+          "owner": FirebaseFirestore.instance.collection("users").doc(authController.user.value!.id!),
           "created_at": FieldValue.serverTimestamp(),
+          "payment": payment.value,
           "likes": [],
           "comments": [],
           ...ad
@@ -194,6 +201,7 @@ class PlaceAnAdController extends GetxController {
   void selectGender(int index) => selectedGender.value = gender[index];
   void selectType(int index) => selectedAnimal.value = petTypes[index];
   void selectAge(int index) => age.value = ages[index];
+  void selectPayment(int index) => payment.value = typesOfPaymentMethods[index];
 
   void getImage(bool fromCamera) async {
     final ImagePicker _picker = ImagePicker();

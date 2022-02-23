@@ -211,40 +211,46 @@ class PlaceAnAddWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: payment == true
-                          ? Container(
-                              padding: const EdgeInsets.only(
-                                bottom: 7,
-                                left: 20,
-                                right: 5,
-                              ),
-                              decoration: const BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    width: 1,
-                                    color: kInputBorderColor,
+                          ? GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => Get.bottomSheet(
+                                PaymentMethod(),
+                                backgroundColor: kPrimaryColor,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15),
+                                    topRight: Radius.circular(15),
                                   ),
                                 ),
+                                enableDrag: true,
                               ),
-                              child: GestureDetector(
-                                onTap: () => Get.bottomSheet(
-                                  PaymentMethod(),
-                                  backgroundColor: kPrimaryColor,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15),
-                                      topRight: Radius.circular(15),
+                              child: Container(
+                                padding: const EdgeInsets.only(
+                                  bottom: 7,
+                                  left: 20,
+                                  right: 5,
+                                ),
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      width: 1,
+                                      color: kInputBorderColor,
                                     ),
                                   ),
-                                  enableDrag: true,
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    MyText(
-                                      text: 'Способ'.toUpperCase(),
-                                      size: 12,
-                                      weight: FontWeight.w600,
-                                      color: kDarkGreyColor,
+                                    Obx(
+                                      () {
+                                        PlaceAnAdController controller = Get.find<PlaceAnAdController>();
+                                        return MyText(
+                                          text: controller.payment.value.toUpperCase(),
+                                          size: 12,
+                                          weight: FontWeight.w600,
+                                          color: kDarkGreyColor,
+                                        );
+                                      },
                                     ),
                                     Image.asset(
                                       'assets/images/Polygon 2.png',

@@ -18,6 +18,7 @@ class Ad {
   final List likes;
   final List comments;
   final Timestamp? createdAt;
+  final String payment;
 
   Ad({
     this.id,
@@ -30,6 +31,7 @@ class Ad {
     this.photoUrl = '',
     this.color = '',
     this.age = '',
+    this.payment = '',
     this.owner,
     this.location = const {},
     this.comments = const [],
@@ -53,6 +55,7 @@ class Ad {
         likes: data["likes"] ?? [],
         comments: data["comments"] ?? [],
         createdAt: data["created_at"],
+        payment: data["payment"] ?? '',
       );
 
   Map<String, dynamic> toMap() => {
@@ -71,6 +74,7 @@ class Ad {
         "likes": likes,
         "comments": comments,
         "created_at": createdAt,
+        "payment": payment,
       };
 
   like() {

@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_geo/controller/place_an_add_controller/place_an_add_controller.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
 // ignore: must_be_immutable
 class PaymentMethod extends StatelessWidget {
-  List typesOfPaymentMethods = [
-    'Бонусами',
-    'Возмездно',
-    'Безвозмездно',
-  ];
-
   PaymentMethod({Key? key}) : super(key: key);
+
+  final PlaceAnAdController controller = Get.put<PlaceAnAdController>(PlaceAnAdController());
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +18,15 @@ class PaymentMethod extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.only(bottom: 20, top: 20),
         itemBuilder: (context, index) => ListTile(
-          onTap: () => Get.back(),
+          onTap: () => {
+            controller.selectPayment(index),
+            Get.back()
+          },
           title: Center(
             child: MyText(
               size: 15,
               color: kDarkGreyColor,
-              text: typesOfPaymentMethods[index],
+              text: controller.typesOfPaymentMethods[index],
             ),
           ),
         ),
@@ -34,7 +34,7 @@ class PaymentMethod extends StatelessWidget {
           height: 1,
           color: kLightGreyColor,
         ),
-        itemCount: typesOfPaymentMethods.length,
+        itemCount: controller.typesOfPaymentMethods.length,
       ),
     );
   }
