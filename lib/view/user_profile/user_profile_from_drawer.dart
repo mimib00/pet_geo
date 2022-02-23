@@ -17,6 +17,7 @@ import 'package:pet_geo/view/friends/friends.dart';
 import 'package:pet_geo/view/pets_profile/pets_profile.dart';
 import 'package:pet_geo/view/widget/logo.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
+import 'package:pet_geo/view/widget/profile_picture.dart';
 
 class UserProfileFromDrawer extends StatefulWidget {
   const UserProfileFromDrawer({Key? key}) : super(key: key);
@@ -270,57 +271,24 @@ class _UserProfileFromDrawerState extends State<UserProfileFromDrawer> with Sing
                               ),
                               enableDrag: true,
                             ),
-                            child: user.photoUrl.isEmpty
-                                ? Container(
-                                    margin: const EdgeInsets.only(left: 15, top: 30),
-                                    height: 100,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                      color: kPrimaryColor,
-                                      border: Border.all(
-                                        color: kLightGreyColor,
-                                        width: 3.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    child: Center(
-                                      child: Image.asset(
-                                        'assets/images/Group 30.png',
-                                        height: 45,
-                                      ),
-                                    ),
-                                  )
-                                : Container(
-                                    margin: const EdgeInsets.only(left: 15, top: 30),
-                                    height: 100,
-                                    width: 100,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(100),
-                                      child: CachedNetworkImage(
-                                        imageUrl: controller.user.value!.photoUrl,
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, url) => Container(
-                                          margin: const EdgeInsets.only(left: 15, top: 30),
-                                          height: 100,
-                                          width: 100,
-                                          decoration: BoxDecoration(
-                                            color: kPrimaryColor,
-                                            border: Border.all(
-                                              color: kLightGreyColor,
-                                              width: 3.0,
-                                            ),
-                                            borderRadius: BorderRadius.circular(100),
-                                          ),
-                                          child: Center(
-                                            child: Image.asset(
-                                              'assets/images/Group 30.png',
-                                              height: 45,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 15, top: 30),
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: kPrimaryColor,
+                                border: Border.all(
+                                  color: kLightGreyColor,
+                                  width: 3.0,
+                                ),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: ProfilePicture(
+                                user: user,
+                                height: 100,
+                                width: 100,
+                              ),
+                            ),
                           ),
                         ],
                       ),

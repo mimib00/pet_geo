@@ -16,6 +16,7 @@ import 'package:pet_geo/view/qr/choose_to_pay.dart';
 import 'package:pet_geo/view/settings/settings.dart';
 import 'package:pet_geo/view/user_profile/user_profile_from_drawer.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
+import 'package:pet_geo/view/widget/profile_picture.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);
@@ -47,36 +48,7 @@ class _MyDrawerState extends State<MyDrawer> {
           ),
           ListTile(
             onTap: () => Get.to(() => const UserProfileFromDrawer()),
-            leading: authController.user.value!.photoUrl.isEmpty
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Image.asset(
-                      'assets/images/People PH.png',
-                      height: 47,
-                      width: 47,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                : SizedBox(
-                    height: 47,
-                    width: 47,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: CachedNetworkImage(
-                        imageUrl: authController.user.value!.photoUrl,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: Image.asset(
-                            'assets/images/People PH.png',
-                            height: 47,
-                            width: 47,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+            leading: ProfilePicture(user: authController.user.value!),
             title: MyText(
               text: authController.user.value!.name,
               size: 15,
