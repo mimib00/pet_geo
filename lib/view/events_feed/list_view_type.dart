@@ -42,11 +42,15 @@ class ListViewType extends StatelessWidget {
             var posts = temp[1];
 
             if (controller.posts.isEmpty) {
-              for (var ad in ads!.docs) {
-                controller.makeAdsPosts(ad);
+              if (ads != null && ads.docs.isNotEmpty) {
+                for (var ad in ads.docs) {
+                  controller.makeAdsPosts(ad);
+                }
               }
-              for (var post in posts!.docs) {
-                controller.makeUserPost(post);
+              if (posts != null && posts.docs.isNotEmpty) {
+                for (var post in posts.docs) {
+                  controller.makeUserPost(post);
+                }
               }
             }
             return ListView.builder(

@@ -20,14 +20,6 @@ class AuthController extends GetxController {
 
   User? get currentUser => _currentUser.value;
 
-  List petImages = [
-    'assets/images/Depositphotos_3549727_xl-2015 1.png',
-    'assets/images/Depositphotos_37645053_ds 1.png',
-    'assets/images/Depositphotos_278797182_ds 1.png',
-    'assets/images/Depositphotos_28583659_ds 1.png',
-    'assets/images/Depositphotos_37645053_ds 1.png',
-  ];
-
   @override
   void onInit() {
     _currentUser.bindStream(_auth.authStateChanges());
@@ -76,6 +68,7 @@ class AuthController extends GetxController {
                 };
                 saveUserData(data);
               }
+              Get.back();
             },
             child: const Text("Submit"),
             style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.black)),
@@ -169,6 +162,9 @@ class AuthController extends GetxController {
       _userRef.doc(credential.user!.uid).set(data).then((value) {
         user.value = Users.fromMap(data, id: credential.user!.uid);
       });
+      credential.user!.sendEmailVerification().then((value) => logout());
+
+      Get.back();
     } catch (e) {
       Get.back();
       Get.snackbar(
@@ -188,6 +184,11 @@ class AuthController extends GetxController {
       // login user
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       if (currentUser == null) return;
+
+      if (!currentUser!.emailVerified) {
+        logout();
+        throw "check your email to verify it";
+      }
 
       // fetch user data from firestore
       getUserData(currentUser!.uid);

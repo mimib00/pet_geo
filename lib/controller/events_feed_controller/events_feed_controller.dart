@@ -41,6 +41,12 @@ class EventsFeedController extends GetxController {
     var user = authController.user.value!;
 
     var adPost = _adRef.where("id", whereIn: ads.toList()).snapshots();
+    if (user.friends.isEmpty) {
+      final combined = [
+        adPost,
+      ];
+      return combined;
+    }
     var post = _postRef.where("owner", whereIn: user.friends).snapshots();
     final combined = [
       adPost,
