@@ -6,6 +6,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/model/user_model.dart';
+import 'package:pet_geo/view/bottom_nav_bar/bottom_nav_bar.dart';
+import 'package:pet_geo/view/root.dart';
+import 'package:pet_geo/view/user/user.dart';
 import 'package:pet_geo/view/widget/custom_text_field.dart';
 import 'package:phonenumbers/phonenumbers.dart';
 
@@ -18,12 +21,18 @@ class AuthController extends GetxController {
 
   Rx<Users?> user = Users().obs;
 
-  User? get currentUser => _currentUser.value;
+  Rx<User?> get currentUser => _currentUser;
 
   @override
   void onInit() {
-    _currentUser.bindStream(_auth.authStateChanges());
-
+    _auth.authStateChanges().listen((users) {
+      if (users == null) {
+        Get.offAll(() => const Authentication());
+      } else {
+        getUserData(users.uid);
+        Get.offAll(() => BottomNavBar(currentIndex: 3));
+      }
+    });
     super.onInit();
   }
 
@@ -131,12 +140,11 @@ class AuthController extends GetxController {
           SetOptions(merge: true),
         );
       });
-      _userRef.doc(uid).get().then((snapshot) {
-        if (!snapshot.exists) throw "User doesn't exist, Please register";
-        isNewUser(snapshot.data()!);
-        user.value = Users.fromMap(snapshot.data()!, id: uid);
-        update();
-      });
+      var snapshot = await _userRef.doc(uid).get();
+      if (!snapshot.exists) throw "User doesn't exist, Please register";
+      isNewUser(snapshot.data()!);
+      user.value = Users.fromMap(snapshot.data()!, id: uid);
+      update();
     } catch (e) {
       Get.snackbar(
         "Error",
@@ -183,15 +191,17 @@ class AuthController extends GetxController {
     try {
       // login user
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      if (currentUser == null) return;
+      if (_currentUser.value == null) return;
 
-      if (!currentUser!.emailVerified) {
+      if (!_currentUser.value!.emailVerified) {
         logout();
         throw "check your email to verify it";
       }
 
       // fetch user data from firestore
-      getUserData(currentUser!.uid);
+      getUserData(_currentUser.value!.uid);
+      update();
+      Get.back();
     } catch (e) {
       Get.back();
       Get.snackbar(

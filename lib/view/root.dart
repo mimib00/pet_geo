@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
@@ -9,14 +10,30 @@ class Root extends GetWidget<AuthController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      var user = Get.find<AuthController>().currentUser;
-      if (user != null) {
-        controller.getUserData(user.uid);
-        return BottomNavBar(currentIndex: 3);
-      } else {
-        return const Authentication();
-      }
-    });
+    return Container();
+    // // return GetBuilder<AuthController>(
+    // //   builder: (controller) {
+    // //     var user = controller.currentUser;
+
+    // //     if (user.value != null) {
+    // //       controller.getUserData(user.value!.uid);
+    // //       return BottomNavBar(currentIndex: 3);
+    // //     } else {
+    // //       return const Authentication();
+    // //     }
+    // //   },
+    // // );
+    // return Obx(() {
+    //   FirebaseAuth.instance.authStateChanges().listen((user) {
+    //     if (user.value != null) {
+    //       controller.getUserData(user.value!.uid);
+    //       return BottomNavBar(currentIndex: 3);
+    //     } else {
+    //       return const Authentication();
+    //     }
+    //   });
+    //   // var user = Get.find<AuthController>().currentUser;
+
+    // });
   }
 }

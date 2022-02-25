@@ -151,7 +151,7 @@ class AdDetails extends StatelessWidget {
               AdInfoTile(label: "type_title".tr, text: ad.animalType.tr),
               AdInfoTile(label: "gender_title".tr, text: ad.gender.tr),
               AdInfoTile(label: "breed_title".tr, text: ad.breed.tr),
-              AdInfoTile(label: "color_title".tr, text: ad.color)
+              ad.color.isEmpty ? AdInfoTile(label: "Payment".tr, text: ad.payment) : AdInfoTile(label: "color_title".tr, text: ad.color),
             ],
           ),
 
@@ -201,19 +201,3 @@ class AdInfoTile extends StatelessWidget {
     );
   }
 }
-
-// child: ListTile(
-        //   col
-        //   trailing: IconButton(
-        //     onPressed: () => controller.togglePanel(false),
-        //     icon: const Icon(Icons.close),
-        //   ),
-        //   contentPadding: EdgeInsets.zero,
-        //   leading: CachedNetworkImage(
-        //     color: Colors.red,
-        //     imageUrl: ad.photoUrl,
-        //     width: 100,
-        //     height: 200,
-        //     fit: BoxFit.fitWidth,
-        //   ),
-        // ),
