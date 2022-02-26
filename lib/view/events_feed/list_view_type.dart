@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:pet_geo/controller/events_feed_controller/events_feed_controller.dart';
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/model/ad_model.dart';
+import 'package:pet_geo/model/folder_model.dart';
 import 'package:pet_geo/model/post_model.dart';
 import 'package:pet_geo/model/user_model.dart';
 import 'package:pet_geo/packages/advanced_stream_builder/lib/src/advanced_builder.dart';
@@ -16,6 +17,7 @@ import 'package:pet_geo/view/chat/likes_page.dart';
 import 'package:pet_geo/view/comments/comments.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/user_profile/user_profile_with_offer_help.dart';
+import 'package:pet_geo/view/widget/folder_button.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 import 'package:pet_geo/view/widget/profile_picture.dart';
 
@@ -310,6 +312,9 @@ class _AdPostState extends State<AdPost> {
     super.initState();
   }
 
+  bool isSaved = false;
+
+  final EventsFeedController logic = Get.put<EventsFeedController>(EventsFeedController());
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Users>(
@@ -547,13 +552,27 @@ class _AdPostState extends State<AdPost> {
                           ),
                         ],
                       ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Image.asset(
-                          'assets/images/Vector (16).png',
-                          height: 20,
-                          color: kDarkGreyColor,
-                        ),
+                      Obx(
+                        () {
+                          return GestureDetector(
+                            onTap: () => Get.bottomSheet(
+                              SaveFolders(),
+                              backgroundColor: kPrimaryColor,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(15),
+                                  topRight: Radius.circular(15),
+                                ),
+                              ),
+                              enableDrag: true,
+                            ),
+                            child: Icon(
+                              logic.simplePostSave.value == true ? Icons.bookmark : Icons.bookmark_outline,
+                              size: 30,
+                              color: kDarkGreyColor,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -569,18 +588,6 @@ class _AdPostState extends State<AdPost> {
                     paddingLeft: 15,
                   ),
                 ),
-//             GestureDetector(
-//               onTap: () => Get.to(() => const Comments()),
-//               child: MyText(
-//                 text: 'Посмотреть все комментарии (2)',
-//                 size: 12,
-//                 fontFamily: 'Roboto',
-//                 color: kInputBorderColor,
-//                 paddingLeft: 15.0,
-//                 paddingTop: 10.0,
-//                 paddingBottom: 10.0,
-//               ),
-//             ),
               ],
             );
           } catch (e) {
@@ -595,5 +602,43 @@ class _AdPostState extends State<AdPost> {
           }
           return Container();
         });
+  }
+}
+
+class SaveFolders extends StatelessWidget {
+  SaveFolders({Key? key}) : super(key: key);
+  final EventsFeedController logic = Get.find<EventsFeedController>();
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<QuerySnapshot<Map<String, dynamic>>?>(
+      future: logic.getFolders(),
+      builder: (context, snapshot) {
+        if (snapshot.data == null) return Container();
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        var data = snapshot.data!.docs;
+        return Column(
+          children: [
+            AddFolder(),
+            Expanded(
+              child: ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  // List<DocumentReference<Map<String, dynamic>>> posts = data[index].data()["posts"];
+                  var folder = Folder(id: data[index].id, name: data[index].data()["name"], posts: data[index].data()["posts"].cast<DocumentReference<Map<String, dynamic>>>());
+                  return FolderButton(
+                    folder: folder,
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -18,6 +18,7 @@ import 'package:pet_geo/view/stories/stories.dart';
 class EventsFeedController extends GetxController {
   final CollectionReference<Map<String, dynamic>> _adRef = FirebaseFirestore.instance.collection("ads");
   final CollectionReference<Map<String, dynamic>> _postRef = FirebaseFirestore.instance.collection("posts");
+  final AuthController authController = Get.find<AuthController>();
 
   RxList posts = [].obs;
 
@@ -78,11 +79,66 @@ class EventsFeedController extends GetxController {
     return combined;
   }
 
+  void savePost(String postId) async {
+    try {
+      var user = authController.user.value!;
+      FirebaseFirestore.instance.collection("users").doc(user.id).collection("saved").add({});
+      print(postId);
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>?> getFolders() async {
+    try {
+      var user = authController.user.value!;
+      var res = await FirebaseFirestore.instance.collection("users").doc(user.id).collection("saved").get();
+      return res;
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+    return null;
+  }
+
+  void createFolder(String name) async {
+    try {
+      var user = authController.user.value!;
+      Map<String, dynamic> data = {
+        "name": name,
+        "posts": []
+      };
+      FirebaseFirestore.instance.collection("users").doc(user.id).collection("saved").add(data);
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+  }
+
   // old code
   bool? isGridPostLike = false;
   bool? listView = true;
   bool? newSelectionKitSaved = false;
-  bool? simplePostSave = false;
+  RxBool simplePostSave = false.obs;
   bool? hidePopupAfterSavingKit = true;
   var saveButtonColor = kInputBorderColor;
   TextEditingController newSelectionKitName = TextEditingController();
@@ -235,13 +291,12 @@ class EventsFeedController extends GetxController {
 
   Future hidePopup() async {
     hidePopupAfterSavingKit = true;
-    simplePostSave = false;
+    simplePostSave.value = false;
     update();
   }
 
   void simplySavePost() {
-    simplePostSave = !simplePostSave!;
-    update();
+    simplePostSave.value = !simplePostSave.value;
   }
 
   void saveSelectionKit() {

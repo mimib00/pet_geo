@@ -194,6 +194,10 @@ class AuthController extends GetxController {
       _userRef.doc(credential.user!.uid).set(data).then((value) {
         user.value = Users.fromMap(data, id: credential.user!.uid);
       });
+      _userRef.doc(credential.user!.uid).collection("saved").add({
+        "name": "Genral",
+        "posts": []
+      });
       credential.user!.sendEmailVerification().then((value) => logout());
 
       Get.back();
