@@ -28,6 +28,7 @@ import 'package:pet_geo/view/place_an_add/place_an_add.dart';
 import 'package:pet_geo/view/place_an_add/place_an_add_widget.dart';
 import 'package:pet_geo/view/root.dart';
 import 'package:pet_geo/view/settings/settings.dart';
+import 'package:pet_geo/view/splash_screen/splash_screen.dart';
 import 'package:pet_geo/view/stories/stories.dart';
 import 'package:pet_geo/view/user/user.dart';
 import 'package:pet_geo/view/user_profile/user_profile_profile_image/profile_image.dart';
@@ -129,26 +130,6 @@ class _PetGeoState extends State<PetGeo> {
     return GetMaterialApp(
       initialBinding: AuthBinding(),
       onInit: () {
-        Connectivity().checkConnectivity().then((connectivityResult) async {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-            var firstTime = prefs.getBool("first_time");
-            if (firstTime == null || firstTime == true) {
-              Get.offAll(() => OnBoardingScreen());
-            } else {
-              Get.offAll(() => const Root());
-            }
-          } else {
-            Get.defaultDialog(
-              title: "No Internet connection",
-              content: SizedBox(
-                height: Get.height * .1,
-                child: const Center(child: Text("Please connect then retry again")),
-              ),
-              barrierDismissible: false,
-            );
-          }
-        });
         String pathToReference = "petAds";
         Geofire.initialize(pathToReference);
       },
@@ -174,7 +155,7 @@ class _PetGeoState extends State<PetGeo> {
       fallbackLocale: const Locale("en"),
       translations: Translation(),
       getPages: [
-        // GetPage(name: '/splash_screen', page: () => const SplashScreen()),
+        GetPage(name: '/splash_screen', page: () => const SplashScreen()),
         GetPage(name: '/on_boarding_screen', page: () => OnBoardingScreen()),
         GetPage(name: '/user', page: () => const Authentication()),
         GetPage(name: '/bottom_nav_bar', page: () => BottomNavBar()),

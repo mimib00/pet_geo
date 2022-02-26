@@ -1,16 +1,19 @@
 // ignore_for_file: prefer_final_fields
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/model/user_model.dart';
 import 'package:pet_geo/view/bottom_nav_bar/bottom_nav_bar.dart';
+import 'package:pet_geo/view/on_boarding_screen/on_boarding_screen.dart';
 import 'package:pet_geo/view/root.dart';
 import 'package:pet_geo/view/user/user.dart';
 import 'package:pet_geo/view/widget/custom_text_field.dart';
 import 'package:phonenumbers/phonenumbers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -25,14 +28,35 @@ class AuthController extends GetxController {
 
   @override
   void onInit() {
-    _auth.authStateChanges().listen((users) {
-      if (users == null) {
-        Get.offAll(() => const Authentication());
+    Connectivity().checkConnectivity().then((connectivityResult) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+        var firstTime = prefs.getBool("first_time");
+
+        if (firstTime == null || firstTime == true) {
+          Get.offAll(() => OnBoardingScreen());
+        } else {
+          _auth.authStateChanges().listen((users) {
+            if (users == null) {
+              Get.offAll(() => const Authentication());
+            } else {
+              getUserData(users.uid);
+              Get.offAll(() => BottomNavBar(currentIndex: 3));
+            }
+          });
+        }
       } else {
-        getUserData(users.uid);
-        Get.offAll(() => BottomNavBar(currentIndex: 3));
+        Get.defaultDialog(
+          title: "No Internet connection",
+          content: SizedBox(
+            height: Get.height * .1,
+            child: const Center(child: Text("Please connect then retry again")),
+          ),
+          barrierDismissible: false,
+        );
       }
     });
+
     super.onInit();
   }
 

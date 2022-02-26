@@ -1,48 +1,39 @@
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+import 'package:pet_geo/view/widget/logo.dart';
+import 'package:pet_geo/view/widget/my_text.dart';
 
-// import 'package:pet_geo/controller/splash_screen_controller/splash_screen_controller.dart';
-// import 'package:pet_geo/controller/user_controller/auth_controller.dart';
-// import 'package:pet_geo/view/widget/logo.dart';
-// import 'package:pet_geo/view/widget/my_text.dart';
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({Key? key}) : super(key: key);
 
-// class SplashScreen extends StatelessWidget {
-//   const SplashScreen({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return GetBuilder<AuthController>(
-//       init: SplashScreenController(),
-//       builder: (logic) {
-//         return Scaffold(
-//           body: Padding(
-//             padding: const EdgeInsets.symmetric(vertical: 30),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.stretch,
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 Container(),
-//                 Column(
-//                   children: [
-//                     logo(180),
-//                     const SizedBox(
-//                       height: 20,
-//                     ),
-//                     textLogo(30),
-//                   ],
-//                 ),
-//                 Center(
-//                   child: MyText(
-//                     text: 'Your Pet Space App',
-//                     size: 14,
-//                     fontFamily: 'Robboto',
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(),
+            Column(
+              children: [
+                logo(180),
+                const SizedBox(
+                  height: 20,
+                ),
+                textLogo(30),
+              ],
+            ),
+            Center(
+              child: MyText(
+                text: 'Your Pet Space App',
+                size: 14,
+                fontFamily: 'Robboto',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
