@@ -9,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:pet_geo/model/user_model.dart';
 import 'package:pet_geo/view/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:pet_geo/view/on_boarding_screen/on_boarding_screen.dart';
-import 'package:pet_geo/view/root.dart';
 import 'package:pet_geo/view/user/user.dart';
 import 'package:pet_geo/view/widget/custom_text_field.dart';
 import 'package:phonenumbers/phonenumbers.dart';
@@ -28,34 +27,70 @@ class AuthController extends GetxController {
 
   @override
   void onInit() {
-    Connectivity().checkConnectivity().then((connectivityResult) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-        var firstTime = prefs.getBool("first_time");
-
-        if (firstTime == null || firstTime == true) {
-          Get.offAll(() => OnBoardingScreen());
-        } else {
-          _auth.authStateChanges().listen((users) {
-            if (users == null) {
-              Get.offAll(() => const Authentication());
+    _auth.authStateChanges().listen(
+      (users) {
+        _currentUser.value = users;
+        if (users == null) {
+          Connectivity().checkConnectivity().then((connectivityResult) async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+              var firstTime = prefs.getBool("first_time");
+              if (firstTime == null || firstTime == true) {
+                Get.offAll(() => OnBoardingScreen());
+              } else {
+                Get.offAll(() => const Authentication());
+              }
             } else {
-              getUserData(users.uid);
-              Get.offAll(() => BottomNavBar(currentIndex: 3));
+              Get.defaultDialog(
+                title: "No Internet connection",
+                content: SizedBox(
+                  height: Get.height * .1,
+                  child: const Center(child: Text("Please connect then retry again")),
+                ),
+                barrierDismissible: false,
+              );
             }
           });
+        } else {
+          Connectivity().checkConnectivity().then(
+            (connectivityResult) async {
+              if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+                getUserData(users.uid);
+                Get.offAll(() => BottomNavBar(currentIndex: 3));
+              } else {
+                Get.defaultDialog(
+                  title: "No Internet connection",
+                  content: SizedBox(
+                    height: Get.height * .1,
+                    child: const Center(child: Text("Please connect then retry again")),
+                  ),
+                  barrierDismissible: false,
+                );
+              }
+            },
+          );
         }
-      } else {
-        Get.defaultDialog(
-          title: "No Internet connection",
-          content: SizedBox(
-            height: Get.height * .1,
-            child: const Center(child: Text("Please connect then retry again")),
-          ),
-          barrierDismissible: false,
-        );
-      }
-    });
+      },
+    );
+    // Connectivity().checkConnectivity().then((connectivityResult) async {
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+    //     var firstTime = prefs.getBool("first_time");
+
+    //     if (firstTime == null || firstTime == true) {
+    //       Get.offAll(() => OnBoardingScreen());
+    //     } else {}
+    //   } else {
+    //     Get.defaultDialog(
+    //       title: "No Internet connection",
+    //       content: SizedBox(
+    //         height: Get.height * .1,
+    //         child: const Center(child: Text("Please connect then retry again")),
+    //       ),
+    //       barrierDismissible: false,
+    //     );
+    //   }
+    // });
 
     super.onInit();
   }
@@ -99,9 +134,10 @@ class AuthController extends GetxController {
                   "name": name.text.trim(),
                   "phone": "+${phone.country!.prefix}${phone.nationalNumber}"
                 };
+                print(_currentUser.value!.uid);
                 saveUserData(data);
+                Get.back();
               }
-              Get.back();
             },
             child: const Text("Submit"),
             style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.black)),
@@ -139,6 +175,13 @@ class AuthController extends GetxController {
   void saveUserData(Map<String, dynamic> data) async {
     try {
       await _userRef.doc(_currentUser.value!.uid).update(data);
+      var token = await _firebaseMessaging.getToken();
+      _userRef.doc(_currentUser.value!.uid).set(
+        {
+          "token": token
+        },
+        SetOptions(merge: true),
+      );
       getUserData(_currentUser.value!.uid);
     } catch (e) {
       Get.snackbar(
