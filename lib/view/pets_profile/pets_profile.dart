@@ -7,7 +7,6 @@ import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
 import 'package:pet_geo/view/filter/filter.dart';
 import 'package:pet_geo/view/map/specific_post.dart';
-import 'package:pet_geo/view/user_profile/user_profile_with_offer_help.dart';
 import 'package:pet_geo/view/widget/logo.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
@@ -412,9 +411,7 @@ class _PetsProfileState extends State<PetsProfile> with SingleTickerProviderStat
                                     ),
                                   ),
                                   GestureDetector(
-                                    onTap: () => Get.to(
-                                      () => UserProfileWithOferHelp(),
-                                    ),
+                                    onTap: () {},
                                     child: Container(
                                       margin: const EdgeInsets.only(
                                         left: 10.0,

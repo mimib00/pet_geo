@@ -8,6 +8,8 @@ class FriendsController extends GetxController {
 
   Future<List<Users>> getFriends() async {
     var user = authController.user.value!;
+    await authController.getUserData(user.id!);
+
     List<Users> friends = [];
     for (DocumentReference<Map<String, dynamic>> friend in user.friends) {
       var temp = await friend.get();

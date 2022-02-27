@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/controller/map_controller/map_controller.dart';
@@ -79,11 +78,19 @@ class EventsFeedController extends GetxController {
     return combined;
   }
 
-  void savePost(String postId) async {
+  void savePost(DocumentReference<Map<String, dynamic>> post, String collectionId) async {
     try {
       var user = authController.user.value!;
-      FirebaseFirestore.instance.collection("users").doc(user.id).collection("saved").add({});
-      print(postId);
+      await FirebaseFirestore.instance.collection("users").doc(user.id).collection("saved").doc(collectionId).update(
+        {
+          "posts": FieldValue.arrayUnion(
+            [
+              post
+            ],
+          )
+        },
+      );
+      Get.back();
     } catch (e) {
       Get.snackbar(
         "Error",

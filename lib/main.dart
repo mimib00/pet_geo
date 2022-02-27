@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -31,11 +30,8 @@ import 'package:pet_geo/view/settings/settings.dart';
 import 'package:pet_geo/view/splash_screen/splash_screen.dart';
 import 'package:pet_geo/view/stories/stories.dart';
 import 'package:pet_geo/view/user/user.dart';
-import 'package:pet_geo/view/user_profile/user_profile_profile_image/profile_image.dart';
-import 'package:pet_geo/view/user_profile/user_profile_with_offer_help.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 const AndroidNotificationChannel androidNotificationChannel = AndroidNotificationChannel(
   "high_importance_channel",
@@ -164,9 +160,7 @@ class _PetGeoState extends State<PetGeo> {
         GetPage(name: '/place_an_add_widget', page: () => PlaceAnAddWidget()),
         GetPage(name: '/found_a_pet', page: () => FoundAPet()),
         GetPage(name: '/events_feed', page: () => const EventsFeed()),
-        GetPage(name: '/profile_image', page: () => const ProfileImage()),
         GetPage(name: '/pet_geo_guest_profile', page: () => const PetGeoGuestProfile()),
-        GetPage(name: '/user_profile_with_offer_help', page: () => UserProfileWithOferHelp()),
         GetPage(name: '/pets_profile', page: () => const PetsProfile()),
         GetPage(name: '/settings', page: () => Settings()),
         GetPage(name: '/animal_communities', page: () => AnimalCommunities()),

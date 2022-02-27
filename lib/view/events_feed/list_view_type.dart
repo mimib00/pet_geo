@@ -29,6 +29,7 @@ class ListViewType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<EventsFeedController>(
+      init: EventsFeedController(),
       builder: (controller) {
         return AdvancedStreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           streams: controller.getPostsStream(),
@@ -556,7 +557,9 @@ class _AdPostState extends State<AdPost> {
                         () {
                           return GestureDetector(
                             onTap: () => Get.bottomSheet(
-                              SaveFolders(),
+                              SaveFolders(
+                                ad: widget.ad,
+                              ),
                               backgroundColor: kPrimaryColor,
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
@@ -606,7 +609,11 @@ class _AdPostState extends State<AdPost> {
 }
 
 class SaveFolders extends StatelessWidget {
-  SaveFolders({Key? key}) : super(key: key);
+  final Ad ad;
+  SaveFolders({
+    Key? key,
+    required this.ad,
+  }) : super(key: key);
   final EventsFeedController logic = Get.find<EventsFeedController>();
   @override
   Widget build(BuildContext context) {
@@ -628,10 +635,14 @@ class SaveFolders extends StatelessWidget {
               child: ListView.builder(
                 itemCount: data.length,
                 itemBuilder: (context, index) {
-                  // List<DocumentReference<Map<String, dynamic>>> posts = data[index].data()["posts"];
-                  var folder = Folder(id: data[index].id, name: data[index].data()["name"], posts: data[index].data()["posts"].cast<DocumentReference<Map<String, dynamic>>>());
+                  var folder = Folder(
+                    id: data[index].id,
+                    name: data[index].data()["name"],
+                    posts: data[index].data()["posts"].cast<DocumentReference<Map<String, dynamic>>>(),
+                  );
                   return FolderButton(
                     folder: folder,
+                    post: FirebaseFirestore.instance.collection("ads").doc(ad.id),
                   );
                 },
               ),

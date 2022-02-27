@@ -134,7 +134,6 @@ class AuthController extends GetxController {
                   "name": name.text.trim(),
                   "phone": "+${phone.country!.prefix}${phone.nationalNumber}"
                 };
-                print(_currentUser.value!.uid);
                 saveUserData(data);
                 Get.back();
               }
@@ -196,7 +195,7 @@ class AuthController extends GetxController {
   }
 
   /// Fetches user's data from database.
-  void getUserData(String uid) async {
+  Future<void> getUserData(String uid) async {
     try {
       // fetch the data
       _firebaseMessaging.getToken().then((token) {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/view/constant/constant.dart';
-import 'package:pet_geo/view/user_profile/user_profile_with_offer_help.dart';
 import 'package:pet_geo/view/widget/custom_app_bar_1.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
@@ -26,7 +25,10 @@ class Congrats extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('assets/images/Events Logo.png',height: 80,),
+                  Image.asset(
+                    'assets/images/Events Logo.png',
+                    height: 80,
+                  ),
                   MyText(
                     paddingTop: 40.0,
                     size: 24,
@@ -63,7 +65,7 @@ class Congrats extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    onPressed: () => Get.off(() => UserProfileWithOferHelp()),
+                    onPressed: () {},
                     child: MyText(
                       text: 'Вернуться на страницу',
                       size: 16,

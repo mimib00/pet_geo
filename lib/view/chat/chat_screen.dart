@@ -6,7 +6,6 @@ import 'package:pet_geo/controller/chat_controller/chat_controller.dart';
 import 'package:pet_geo/model/user_model.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
-import 'package:pet_geo/view/user_profile/user_profile_with_offer_help.dart';
 import 'package:pet_geo/view/widget/custom_app_bar_2.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
@@ -33,11 +32,7 @@ class ChatScreen extends StatelessWidget {
           appBar: CustomAppBar2(
             haveSearch: false,
             haveTitle: true,
-            onTitleTap: () => Get.to(
-              () => UserProfileWithOferHelp(
-                haveSecondTab: true,
-              ),
-            ),
+            onTitleTap: () {},
             showSearch: () {},
             title: user!.name,
             globalKey: _key,

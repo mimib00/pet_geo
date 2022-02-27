@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,21 +9,19 @@ import 'package:pet_geo/view/widget/my_text.dart';
 
 class FolderButton extends StatelessWidget {
   final Folder folder;
+  final DocumentReference<Map<String, dynamic>>? post;
 
-  const FolderButton({
+  FolderButton({
     Key? key,
     required this.folder,
+    this.post,
   }) : super(key: key);
-
-  Future<DocumentSnapshot<Map<String, dynamic>>> getPostImage() async => await folder.posts[0].get();
+  final EventsFeedController controller = Get.put(EventsFeedController());
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        // select
-        print(folder.id);
-      },
+      onTap: () => controller.savePost(post!, folder.id),
       behavior: HitTestBehavior.opaque,
       child: Card(
         margin: const EdgeInsets.symmetric(
@@ -48,34 +45,18 @@ class FolderButton extends StatelessWidget {
               child: SizedBox(
                 height: 54,
                 width: 54,
-                child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  future: getPostImage(),
-                  builder: (context, snap) {
-                    if (snap.data == null) {
-                      return Container(
-                        height: 54,
-                        width: 54,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: kLightGreyColor,
-                        ),
-                        child: const Icon(
-                          Icons.pets,
-                          color: Colors.black,
-                          size: 35,
-                        ),
-                      );
-                    }
-                    if (snap.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    var data = snap.data!.data();
-                    return CachedNetworkImage(
-                      imageUrl: data?["photo_url"],
-                    );
-                  },
+                child: Container(
+                  height: 54,
+                  width: 54,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: kLightGreyColor,
+                  ),
+                  child: const Icon(
+                    Icons.pets,
+                    color: Colors.black,
+                    size: 35,
+                  ),
                 ),
               ),
             ),
