@@ -103,6 +103,34 @@ class EventsFeedController extends GetxController {
     }
   }
 
+  void deleteSave(DocumentReference<Map<String, dynamic>> post) async {
+    try {
+      var user = authController.user.value!;
+      var res = await FirebaseFirestore.instance.collection("users").doc(user.id).collection("saved").where('posts', arrayContains: post).get();
+      if (res.docs.isEmpty) return;
+      for (var doc in res.docs) {
+        doc.reference.update(
+          {
+            "posts": FieldValue.arrayRemove(
+              [
+                post
+              ],
+            ),
+          },
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+  }
+
   Future<QuerySnapshot<Map<String, dynamic>>?> getFolders() async {
     try {
       var user = authController.user.value!;
@@ -138,6 +166,16 @@ class EventsFeedController extends GetxController {
         colorText: Colors.white,
         backgroundColor: Colors.red[400],
       );
+    }
+  }
+
+  Future<bool> postSaved(DocumentReference<Map<String, dynamic>> post) async {
+    var user = authController.currentUser.value!;
+    var res = await FirebaseFirestore.instance.collection("users").doc(user.uid).collection("saved").where("posts", arrayContains: post).get();
+    if (res.docs.isEmpty) {
+      return false;
+    } else {
+      return true;
     }
   }
 

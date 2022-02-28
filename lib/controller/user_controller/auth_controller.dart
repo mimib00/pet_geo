@@ -207,8 +207,10 @@ class AuthController extends GetxController {
         );
       });
       var snapshot = await _userRef.doc(uid).get();
+      var saved = await _userRef.doc(uid).collection("saved").get();
       if (!snapshot.exists) throw "User doesn't exist, Please register";
       isNewUser(snapshot.data()!);
+
       user.value = Users.fromMap(snapshot.data()!, id: uid);
       update();
     } catch (e) {

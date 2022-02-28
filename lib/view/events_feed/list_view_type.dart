@@ -306,14 +306,18 @@ class _AdPostState extends State<AdPost> {
   }
 
   late bool isLiked = false;
+  late bool isSaved = false;
   @override
   void initState() {
     AuthController controller = Get.find<AuthController>();
     isLiked = widget.ad.likes.contains(FirebaseFirestore.instance.collection("users").doc(controller.user.value!.id!));
+    saved();
     super.initState();
   }
 
-  bool isSaved = false;
+  saved() async {
+    isSaved = await logic.postSaved(FirebaseFirestore.instance.collection("ads").doc(widget.ad.id));
+  }
 
   final EventsFeedController logic = Get.put<EventsFeedController>(EventsFeedController());
   @override
@@ -326,7 +330,6 @@ class _AdPostState extends State<AdPost> {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-
             var owner = snapshot.data!;
             var time = DateFormat("MMMM d, H:m").format(widget.ad.createdAt!.toDate());
             Widget type = const Text('');
@@ -553,29 +556,30 @@ class _AdPostState extends State<AdPost> {
                           ),
                         ],
                       ),
-                      Obx(
-                        () {
-                          return GestureDetector(
-                            onTap: () => Get.bottomSheet(
-                              SaveFolders(
-                                ad: widget.ad,
-                              ),
-                              backgroundColor: kPrimaryColor,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(15),
-                                  topRight: Radius.circular(15),
-                                ),
-                              ),
-                              enableDrag: true,
+                      GestureDetector(
+                        onTap: () {
+                          Get.bottomSheet(
+                            SaveFolders(
+                              ad: widget.ad,
                             ),
-                            child: Icon(
-                              logic.simplePostSave.value == true ? Icons.bookmark : Icons.bookmark_outline,
-                              size: 30,
-                              color: kDarkGreyColor,
+                            backgroundColor: kPrimaryColor,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15),
+                              ),
                             ),
+                            enableDrag: true,
                           );
+                          setState(() {
+                            isSaved = !isSaved;
+                          });
                         },
+                        child: Icon(
+                          isSaved == true ? Icons.bookmark : Icons.bookmark_outline,
+                          size: 30,
+                          color: kDarkGreyColor,
+                        ),
                       ),
                     ],
                   ),
@@ -610,6 +614,7 @@ class _AdPostState extends State<AdPost> {
 
 class SaveFolders extends StatelessWidget {
   final Ad ad;
+
   SaveFolders({
     Key? key,
     required this.ad,

@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_geo/controller/events_feed_controller/events_feed_controller.dart';
 import 'package:pet_geo/controller/map_controller/map_controller.dart';
 import 'package:pet_geo/model/ad_model.dart';
 import 'package:pet_geo/view/constant/constant.dart';
+import 'package:pet_geo/view/events_feed/list_view_type.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
 import '../../specific_post.dart';
@@ -56,7 +59,21 @@ class Tiles extends StatefulWidget {
 }
 
 class _TilesState extends State<Tiles> {
-  bool? bookMarked = false;
+  final EventsFeedController controller = Get.put<EventsFeedController>(EventsFeedController());
+  late bool isSaved = false;
+  @override
+  void initState() {
+    saved();
+    super.initState();
+  }
+
+  saved() async {
+    var res = await controller.postSaved(FirebaseFirestore.instance.collection("ads").doc(widget.data.id));
+    setState(() {
+      isSaved = res;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -111,8 +128,26 @@ class _TilesState extends State<Tiles> {
               ),
               GestureDetector(
                 onTap: () {
+                  if (!isSaved) {
+                    Get.bottomSheet(
+                      SaveFolders(
+                        ad: widget.data,
+                      ),
+                      backgroundColor: kPrimaryColor,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15),
+                        ),
+                      ),
+                      enableDrag: true,
+                    );
+                  } else {
+                    controller.deleteSave(FirebaseFirestore.instance.collection("ads").doc(widget.data.id));
+                  }
+
                   setState(() {
-                    bookMarked = !bookMarked!;
+                    isSaved = !isSaved;
                   });
                 },
                 child: Container(
@@ -123,9 +158,9 @@ class _TilesState extends State<Tiles> {
                     color: kSecondaryColor,
                   ),
                   child: Center(
-                    child: Image.asset(
-                      bookMarked == true ? 'assets/images/Vector (16).png' : 'assets/images/bookmark.png',
-                      height: 13,
+                    child: Icon(
+                      isSaved == true ? Icons.bookmark : Icons.bookmark_outline,
+                      size: 20,
                       color: kPrimaryColor,
                     ),
                   ),

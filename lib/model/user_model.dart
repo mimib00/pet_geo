@@ -30,16 +30,18 @@ class Users {
   });
 
   /// Craetes A Users object from a map.
-  factory Users.fromMap(Map<String, dynamic> data, {String? id}) => Users(
-        id: id,
-        email: data["email"],
-        name: data["name"] ?? "",
-        phone: data["phone"] ?? "",
-        photoUrl: data["photo"] ?? "",
-        pets: data["pets"] ?? [],
-        friends: data["friends"] ?? [],
-        invites: data["invited"] ?? [],
-      );
+  factory Users.fromMap(Map<String, dynamic> data, {String? id}) {
+    return Users(
+      id: id,
+      email: data["email"],
+      name: data["name"] ?? "",
+      phone: data["phone"] ?? "",
+      photoUrl: data["photo"] ?? "",
+      pets: data["pets"] ?? [],
+      friends: data["friends"] ?? [],
+      invites: data["invited"] ?? [],
+    );
+  }
 
   /// Creates a Map from a Users object.
   Map<String, dynamic> toMap() => {
