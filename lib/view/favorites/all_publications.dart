@@ -1,53 +1,101 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pet_geo/controller/favorite_controller/favorite_controller.dart';
+import 'package:pet_geo/model/ad_model.dart';
+import 'package:pet_geo/model/folder_model.dart';
 import 'package:pet_geo/view/bottom_sheets/share.dart';
 import 'package:pet_geo/view/constant/constant.dart';
-import 'package:pet_geo/view/drawer/my_drawer.dart';
+import 'package:pet_geo/view/events_feed/list_view_type.dart';
 import 'package:pet_geo/view/likes/likes.dart';
-import 'package:pet_geo/view/widget/custom_app_bar_2.dart';
+import 'package:pet_geo/view/widget/logo.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
 class AllPublications extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  final Folder folder;
+  const AllPublications({
+    Key? key,
+    required this.folder,
+  }) : super(key: key);
 
-   AllPublications({Key? key}) : super(key: key);
+  Future<List<Ad>> getPosts() async {
+    List<Ad> ads = [];
+    for (var doc in folder.posts) {
+      var data = await doc.get();
+      var ad = Ad.fromMap(data.data()!);
+      ads.add(ad);
+    }
+    return ads;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<FavoriteController>(
-      init: FavoriteController(),
-      builder: (logic) {
-        return Scaffold(
-          backgroundColor: kLightGreyColor,
-          key: _key,
-          drawer: const MyDrawer(),
-          appBar: CustomAppBar2(
-            haveSearch: false,
-            haveTitle: false,
-            onTitleTap: () {},
-            showSearch: () {},
-            globalKey: _key,
+    return Scaffold(
+      backgroundColor: kLightGreyColor,
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        leading: GestureDetector(
+          onTap: () => Get.back(),
+          child: Image.asset(
+            'assets/images/back_button.png',
           ),
-          body: ListView(
+        ),
+        title: ColorFiltered(
+          colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
+          child: textLogo(24),
+        ),
+      ),
+      body: FutureBuilder<List<Ad>>(
+        future: getPosts(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) throw snapshot.error.toString();
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          print(snapshot.data);
+          return ListView.builder(
             shrinkWrap: true,
-            children: [
-              Center(
-                child: MyText(
-                  paddingTop: 15.0,
-                  paddingBottom: 15.0,
-                  text: 'Все публикации',
-                  size: 18,
-                  weight: FontWeight.w700,
-                  color: kDarkGreyColor,
-                ),
-              ),
-              const PostWidget(),
-            ],
-          ),
-        );
-      },
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              return Post(post: snapshot.data![index]);
+            },
+          );
+        },
+      ),
     );
+    // return GetBuilder<FavoriteController>(
+    //   init: FavoriteController(),
+    //   builder: (logic) {
+    //     return Scaffold(
+    // backgroundColor: kLightGreyColor,
+    // key: _key,
+    // drawer: const MyDrawer(),
+    // appBar: CustomAppBar2(
+    //   haveSearch: false,
+    //   haveTitle: false,
+    //   onTitleTap: () {},
+    //   showSearch: () {},
+    //   globalKey: _key,
+    // ),
+    //       body: ListView(
+    //         shrinkWrap: true,
+    //         children: [
+    //           Center(
+    //             child: MyText(
+    //               paddingTop: 15.0,
+    //               paddingBottom: 15.0,
+    //               text: 'Все публикации',
+    //               size: 18,
+    //               weight: FontWeight.w700,
+    //               color: kDarkGreyColor,
+    //             ),
+    //           ),
+    //           const PostWidget(),
+    //         ],
+    //       ),
+    //     );
+    //   },
+    // );
   }
 }
 
@@ -175,9 +223,7 @@ class _PostWidgetState extends State<PostWidget> {
                               margin: const EdgeInsets.symmetric(horizontal: 3),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
-                                color: currentIndex == index
-                                    ? kPrimaryColor
-                                    : kPrimaryColor.withOpacity(0.3),
+                                color: currentIndex == index ? kPrimaryColor : kPrimaryColor.withOpacity(0.3),
                               ),
                             ),
                           ),

@@ -1,211 +1,250 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pet_geo/controller/favorite_controller/favorite_controller.dart';
+import 'package:pet_geo/controller/events_feed_controller/events_feed_controller.dart';
+import 'package:pet_geo/model/folder_model.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
-import 'package:pet_geo/view/widget/custom_app_bar_2.dart';
-import 'package:pet_geo/view/widget/my_text.dart';
-
-import 'all_publications.dart';
+import 'package:pet_geo/view/favorites/all_publications.dart';
+import 'package:pet_geo/view/widget/custom_text_field.dart';
+import 'package:pet_geo/view/widget/logo.dart';
 
 class Favorites extends StatelessWidget {
+  Favorites({Key? key}) : super(key: key);
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-  final List allAlbum = [
-    'assets/images/download 1.png',
-    'assets/images/a86fed14-d7d7-4494-b968-72598f3bac98 1.png',
-    'assets/images/23977efe-8bfd-442e-b84c-b5bc46293991_org 1.png',
-    'assets/images/scale_1200 1.png',
-  ];
-
-   Favorites({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<FavoriteController>(
-      init: FavoriteController(),
-      builder: (logic) {
+    return GetBuilder<EventsFeedController>(
+      init: EventsFeedController(),
+      builder: (controller) {
         return Scaffold(
           backgroundColor: kLightGreyColor,
           key: _key,
           drawer: const MyDrawer(),
-          appBar: CustomAppBar2(
-            haveSearch: false,
-            haveTitle: false,
-            onTitleTap: () {},
-            showSearch: () {},
-            globalKey: _key,
-          ),
-          body: GridView.builder(
-            shrinkWrap: true,
-            itemCount: logic.getFavoriteModel.length,
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisExtent: 180,
-              crossAxisSpacing: 10.0,
-              mainAxisSpacing: 15.0,
+          appBar: AppBar(
+            elevation: 0,
+            centerTitle: true,
+            leading: Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: Center(
+                child: GestureDetector(
+                  onTap: () => _key.currentState!.openDrawer(),
+                  child: Image.asset(
+                    'assets/images/Logo PG.png',
+                    height: 35,
+                    color: kPrimaryColor,
+                  ),
+                ),
+              ),
             ),
-            itemBuilder: (context, index) {
-              var favoriteData = logic.getFavoriteModel[index];
-              return index == 0
-                  ? allPublications(index)
-                  : index == logic.getFavoriteModel.length - 1
-                      ? Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(2),
-                            border: Border.all(
-                              color: kPrimaryColor,
-                              width: 2.0,
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/images/Icon Add.png',
-                                height: 75,
-                              ),
-                              Center(
-                                child: MyText(
-                                  text: 'Создать папку',
-                                  size: 14,
-                                  weight: FontWeight.w700,
-                                  color: kPrimaryColor,
-                                  fontFamily: 'Roboto',
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 9,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: Image.asset(
-                                  '${favoriteData.thumbnail}',
-                                  fit: BoxFit.cover,
-                                  width: Get.width,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: MyText(
-                                paddingTop: 5.0,
-                                text: '${favoriteData.albumName}',
-                                size: 12,
-                                weight: FontWeight.w700,
-                                fontFamily: 'Roboto',
-                              ),
-                            ),
-                          ],
-                        );
+            title: Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: ColorFiltered(
+                colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
+                child: textLogo(24),
+              ),
+            ),
+          ),
+          body: FutureBuilder<QuerySnapshot<Map<String, dynamic>>?>(
+            future: controller.getFolders(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) throw snapshot.error.toString();
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisExtent: 180,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 15.0,
+                ),
+                padding: const EdgeInsets.all(10),
+                itemCount: snapshot.data!.docs.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == snapshot.data!.docs.length) {
+                    return AddFolder();
+                  } else {
+                    var data = snapshot.data!.docs[index].data();
+
+                    var folder = Folder(id: snapshot.data!.docs[index].id, name: data['name'], posts: data['posts'].cast<DocumentReference<Map<String, dynamic>>>());
+                    return FolderTile(folder: folder);
+                  }
+                },
+              );
             },
           ),
         );
       },
     );
   }
+}
 
-  GestureDetector allPublications(int index) {
+class FolderTile extends StatelessWidget {
+  final Folder folder;
+  const FolderTile({
+    Key? key,
+    required this.folder,
+  }) : super(key: key);
+
+  Future<List<DocumentSnapshot<Map<String, dynamic>>>> getLastPost() async {
+    List<DocumentSnapshot<Map<String, dynamic>>> saved = [];
+    if (folder.posts.isNotEmpty) {
+      for (var doc in folder.posts) {
+        saved.add(await doc.get());
+      }
+
+      return saved;
+    }
+    return saved;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<DocumentSnapshot<Map<String, dynamic>>>>(
+      future: getLastPost(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) throw snapshot.error.toString();
+
+        if (snapshot.data == null || !snapshot.data!.isNotEmpty) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Container(
+                  width: Get.width / 2,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: kLightGreyColor,
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: const Icon(
+                    Icons.pets,
+                    color: Colors.black,
+                    size: 35,
+                  ),
+                ),
+              ),
+              Text(folder.name)
+            ],
+          );
+        }
+
+        Widget child = snapshot.data!.length >= 4
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 5.0,
+                          mainAxisSpacing: 5.0,
+                        ),
+                        itemCount: 4,
+                        itemBuilder: (context, index) => SizedBox(
+                          width: Get.width / 2,
+                          child: CachedNetworkImage(
+                            imageUrl: snapshot.data![index].data()!["photo_url"],
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(folder.name),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      width: Get.width / 2,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: CachedNetworkImage(
+                          imageUrl: snapshot.data!.first.data()!["photo_url"],
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(folder.name)
+                ],
+              );
+        return GestureDetector(
+          onTap: () => Get.to(() => AllPublications(folder: folder)),
+          behavior: HitTestBehavior.opaque,
+          child: child,
+        );
+      },
+    );
+  }
+}
+
+class AddFolder extends StatelessWidget {
+  AddFolder({Key? key}) : super(key: key);
+  final EventsFeedController controller = Get.find<EventsFeedController>();
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Get.to(() => AllPublications()),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 9,
+      onTap: () {
+        final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+        TextEditingController ctrl = TextEditingController();
+        Get.defaultDialog(
+          title: "Add Folder",
+          content: Form(
+            key: _formKey,
             child: Column(
               children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 5,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: Image.asset(
-                            '${allAlbum[0]}',
-                            fit: BoxFit.cover,
-                            width: 86,
-                            height: 82,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 7.0,
-                      ),
-                      Expanded(
-                        flex: 5,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: Image.asset(
-                            '${allAlbum[1]}',
-                            fit: BoxFit.cover,
-                            width: 86,
-                            height: 82,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 7.0,
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 5,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: Image.asset(
-                            '${allAlbum[2]}',
-                            fit: BoxFit.cover,
-                            width: 86,
-                            height: 82,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 7.0,
-                      ),
-                      Expanded(
-                        flex: 5,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: Image.asset(
-                            '${allAlbum[3]}',
-                            fit: BoxFit.cover,
-                            width: 86,
-                            height: 82,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                CustomTextField(
+                  hintText: "Folder Name",
+                  label: "",
+                  controller: ctrl,
+                  validate: (txt) {
+                    if (txt == null || txt.isEmpty) return "You must enter a folder name";
+                    return null;
+                  },
                 ),
               ],
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: MyText(
-              paddingTop: 5.0,
-              text: 'Все публикации',
-              size: 12,
-              weight: FontWeight.w700,
-              fontFamily: 'Roboto',
-            ),
+          contentPadding: const EdgeInsets.all(10),
+          confirm: TextButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                controller.createFolder(ctrl.text.trim());
+                Get.back();
+              }
+            },
+            child: const Text("Save"),
           ),
-        ],
+        );
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: Get.width / 2,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: kLightGreyColor,
+          border: Border.all(color: Colors.grey),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(
+              Icons.add_circle_outline_rounded,
+              color: Colors.black,
+              size: 50,
+            ),
+            Text("Create a folder")
+          ],
+        ),
       ),
     );
   }
