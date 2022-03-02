@@ -10,7 +10,7 @@ class CameraOptions extends StatelessWidget {
     'camera_title'.tr,
     'gallery_title'.tr,
   ];
-  bool profile;
+  final bool profile;
 
   CameraOptions({
     Key? key,

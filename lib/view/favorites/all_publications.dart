@@ -51,7 +51,7 @@ class AllPublications extends StatelessWidget {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
-          print(snapshot.data);
+
           return ListView.builder(
             shrinkWrap: true,
             padding: const EdgeInsets.symmetric(vertical: 20),

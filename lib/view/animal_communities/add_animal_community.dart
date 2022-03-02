@@ -36,7 +36,7 @@ class _AddAnimalCommunityState extends State<AddAnimalCommunity> with SingleTick
   ];
   final List<Widget> tabItems = [
     const CreateShelter(),
-    const CreateAnimalCommunity(),
+    CreateAnimalCommunity(),
   ];
 
   @override
@@ -57,7 +57,7 @@ class _AddAnimalCommunityState extends State<AddAnimalCommunity> with SingleTick
             globalKey: _key,
           ),
           body: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 flex: 2,
@@ -66,7 +66,7 @@ class _AddAnimalCommunityState extends State<AddAnimalCommunity> with SingleTick
                   children: [
                     Container(
                       height: 35,
-                      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      margin: const EdgeInsets.symmetric(horizontal: 15),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
                         border: Border.all(

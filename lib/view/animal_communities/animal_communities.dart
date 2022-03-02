@@ -61,28 +61,31 @@ class AnimalCommunities extends StatelessWidget {
             showSearch: () => logic.showSearch(),
             globalKey: _key,
           ),
-          body: Stack(
+          body: Column(
             children: [
-              ListView.builder(
-                padding: EdgeInsets.only(
-                  top: logic.search == true ? 70 : 0,
+              Visibility(
+                visible: logic.search == true,
+                child: SearchBox(
+                  hintText: 'Поиск по сообществам',
                 ),
-                physics: const BouncingScrollPhysics(),
-                itemCount: logic.getCommunityModel.length,
-                itemBuilder: (context, index) {
-                  var data = logic.getCommunityModel[index];
-                  return CommunityTiles(
-                    communityLogo: data.communityLogo,
-                    communityName: data.communityName,
-                    onTap: data.onTap,
-                  );
-                },
               ),
-              logic.search == true
-                  ? SearchBox(
-                      hintText: 'Поиск по сообществам',
-                    )
-                  : const SizedBox(),
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.only(
+                    top: logic.search == true ? 70 : 0,
+                  ),
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: logic.getCommunityModel.length,
+                  itemBuilder: (context, index) {
+                    var data = logic.getCommunityModel[index];
+                    return CommunityTiles(
+                      communityLogo: data.communityLogo,
+                      communityName: data.communityName,
+                      onTap: data.onTap,
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         );

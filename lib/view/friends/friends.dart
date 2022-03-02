@@ -41,7 +41,7 @@ class Friends extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 );
               }
-              print(snapshot.data);
+
               return ListView.builder(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 physics: const BouncingScrollPhysics(),

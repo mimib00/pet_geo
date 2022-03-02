@@ -39,7 +39,7 @@ class _CreateShelterMoreDetailsState extends State<CreateShelterMoreDetails> wit
   ];
   final List<Widget> tabItems = [
     const CreateShelter(),
-    const CreateAnimalCommunity(),
+    CreateAnimalCommunity(),
   ];
 
   @override
