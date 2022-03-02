@@ -34,7 +34,7 @@ class ListViewType extends StatelessWidget {
         return AdvancedStreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           streams: controller.getPostsStream(),
           builder: (context, snapshot) {
-            if (snapshot.data == null) return Container();
+            if (snapshot.data == null || snapshot.data!.isEmpty) return Container();
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
