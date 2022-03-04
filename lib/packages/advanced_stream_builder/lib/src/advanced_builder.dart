@@ -16,6 +16,7 @@ class AdvancedStreamBuilder<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (streams.isEmpty) return Container();
     var first = streams[0];
     streams.removeAt(0);
     var stream = first.combineLatestAll(streams);
