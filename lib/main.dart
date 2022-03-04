@@ -164,7 +164,6 @@ class _PetGeoState extends State<PetGeo> {
         GetPage(name: '/pets_profile', page: () => const PetsProfile()),
         GetPage(name: '/settings', page: () => Settings()),
         GetPage(name: '/animal_communities', page: () => AnimalCommunities()),
-        GetPage(name: '/pet_news_community_profile', page: () => const PetNewsCommunityProfile()),
         GetPage(name: '/offer_help', page: () => const OfferHelp()),
         GetPage(name: '/likes', page: () => Likes()),
         GetPage(name: '/stories', page: () => const Stories()),

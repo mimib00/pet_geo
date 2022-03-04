@@ -17,6 +17,7 @@ class Users {
   final List friends;
 
   final List invites;
+  final List communities;
 
   Users({
     this.id,
@@ -27,6 +28,7 @@ class Users {
     this.pets = const [],
     this.photoUrl = '',
     this.invites = const [],
+    this.communities = const [],
   });
 
   /// Craetes A Users object from a map.
@@ -40,6 +42,7 @@ class Users {
       pets: data["pets"] ?? [],
       friends: data["friends"] ?? [],
       invites: data["invited"] ?? [],
+      communities: data["communities"] ?? [],
     );
   }
 
@@ -54,6 +57,7 @@ class Users {
           "friends": friends,
           "phone": phone,
           "invited": invites,
+          "communities": communities,
         }
       };
 }

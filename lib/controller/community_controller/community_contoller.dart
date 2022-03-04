@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_geo/controller/user_controller/auth_controller.dart';
+import 'package:pet_geo/model/community_model.dart';
 import 'package:pet_geo/model/community_model/community_model.dart';
 import 'package:pet_geo/view/pet_geo_community_profile_for_mods/pet_geo_community_profile_for_mods.dart';
 import 'package:pet_geo/view/pet_geo_guest_profile/pet_geo_guest_profile.dart';
@@ -23,6 +24,7 @@ class CommunityController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
 
   final CollectionReference<Map<String, dynamic>> _communityRef = FirebaseFirestore.instance.collection("communities");
+  final CollectionReference<Map<String, dynamic>> _postRef = FirebaseFirestore.instance.collection("posts");
   final _storage = FirebaseStorage.instance.ref();
 
   void getImage(bool fromCamera, bool isLogo) async {
@@ -93,7 +95,62 @@ class CommunityController extends GetxController {
     }
   }
 
-  void getCommunities() {}
+  Future<List<Community>> getCommunities() async {
+    try {
+      var user = authController.user.value!;
+      var userRef = FirebaseFirestore.instance.collection("users").doc(user.id);
+      var comunities = await _communityRef.where("owner", isEqualTo: userRef).get();
+      List<Community> comunity = [];
+      if (comunities.docs.isEmpty) return comunity;
+      for (var doc in comunities.docs) {
+        var data = doc.data();
+
+        comunity.add(
+          Community(
+            doc.id,
+            data["name"],
+            data["description"],
+            data["photo"],
+            data["cover"],
+            data["followers"],
+            data["mods"],
+            data["blocked"],
+            data["owner"],
+            data["type"],
+          ),
+        );
+      }
+
+      return comunity;
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+    return [];
+  }
+
+  getCommunityPosts(String id) async {
+    try {
+      var posts = await _postRef.where("owner", isEqualTo: _communityRef.doc(id)).get();
+
+      print(posts.docs.first.data());
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+  }
 
   void restImage(bool isLogo) {
     if (isLogo) {
@@ -122,7 +179,7 @@ class CommunityController extends GetxController {
     CommunityModel(
       communityLogo: 'assets/images/Depositphotos_250473480_ds 1.png',
       communityName: 'PetNews',
-      onTap: () => Get.to(() => const PetNewsCommunityProfile()),
+      // onTap: () => Get.to(() => const PetNewsCommunityProfile()),
     ),
     CommunityModel(
       communityLogo: 'assets/images/Events Logo.png',

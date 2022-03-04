@@ -1,9 +1,14 @@
+import 'package:advanced_stream_builder/advanced_stream_builder.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/controller/community_controller/community_contoller.dart';
+import 'package:pet_geo/model/community_model.dart';
 import 'package:pet_geo/view/animal_communities/add_animal_community.dart';
 import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
+import 'package:pet_geo/view/pet_news_community_profile/pet_new_community_profile.dart';
 import 'package:pet_geo/view/widget/custom_app_bar_2.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 import 'package:pet_geo/view/widget/search_box.dart';
@@ -18,6 +23,7 @@ class AnimalCommunities extends StatelessWidget {
     return GetBuilder<CommunityController>(
       init: CommunityController(),
       builder: (logic) {
+        logic.getCommunities();
         return Scaffold(
           key: _key,
           drawer: const MyDrawer(),
@@ -70,18 +76,27 @@ class AnimalCommunities extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.only(
-                    top: logic.search == true ? 70 : 0,
-                  ),
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: logic.getCommunityModel.length,
-                  itemBuilder: (context, index) {
-                    var data = logic.getCommunityModel[index];
-                    return CommunityTiles(
-                      communityLogo: data.communityLogo,
-                      communityName: data.communityName,
-                      onTap: data.onTap,
+                child: FutureBuilder<List<Community>>(
+                  future: logic.getCommunities(),
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null || snapshot.data!.isEmpty) return Container();
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    return ListView.builder(
+                      padding: EdgeInsets.only(
+                        top: logic.search == true ? 70 : 0,
+                      ),
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return CommunityTiles(
+                          community: snapshot.data![index],
+                          onTap: () => Get.to(() => PetNewsCommunityProfile(community: snapshot.data![index])),
+                        );
+                      },
                     );
                   },
                 ),
@@ -96,16 +111,13 @@ class AnimalCommunities extends StatelessWidget {
 
 // ignore: must_be_immutable
 class CommunityTiles extends StatelessWidget {
-  CommunityTiles({
+  final Community community;
+  final Function()? onTap;
+  const CommunityTiles({
     Key? key,
-    this.communityLogo,
-    this.communityName,
+    required this.community,
     this.onTap,
   }) : super(key: key);
-
-  // ignore: prefer_typing_uninitialized_variables
-  var communityLogo, communityName;
-  VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -120,12 +132,16 @@ class CommunityTiles extends StatelessWidget {
       child: ListTile(
         onTap: onTap,
         contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-        leading: Image.asset(
-          '$communityLogo',
-          height: 40,
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(180),
+          child: CachedNetworkImage(
+            imageUrl: community.photo,
+            height: 50,
+            width: 50,
+          ),
         ),
         title: MyText(
-          text: '$communityName',
+          text: community.name,
           size: 15,
           fontFamily: 'Roboto',
           color: kDarkGreyColor,

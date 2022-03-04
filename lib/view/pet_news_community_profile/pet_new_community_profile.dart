@@ -1,6 +1,10 @@
 import 'package:bordered_text/bordered_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_geo/controller/community_controller/community_contoller.dart';
+import 'package:pet_geo/model/community_model.dart';
 import 'package:pet_geo/view/chat/likes_page.dart';
 import 'package:pet_geo/view/bottom_sheets/share.dart';
 import 'package:pet_geo/view/bottom_sheets/turn_on_notifications.dart';
@@ -9,11 +13,13 @@ import 'package:pet_geo/view/constant/constant.dart';
 import 'package:pet_geo/view/drawer/mod_drawer.dart';
 import 'package:pet_geo/view/drawer/my_drawer.dart';
 import 'package:pet_geo/view/likes/likes.dart';
+import 'package:pet_geo/view/widget/community_picture.dart';
 import 'package:pet_geo/view/widget/logo.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 
 class PetNewsCommunityProfile extends StatefulWidget {
-  const PetNewsCommunityProfile({Key? key}) : super(key: key);
+  final Community community;
+  const PetNewsCommunityProfile({Key? key, required this.community}) : super(key: key);
 
   @override
   State<PetNewsCommunityProfile> createState() => _PetNewsCommunityProfileState();
@@ -87,7 +93,7 @@ class _PetNewsCommunityProfileState extends State<PetNewsCommunityProfile> with 
               onTap: () {},
               child: MyText(
                 paddingRight: 35.0,
-                text: 'PetNews',
+                text: widget.community.name,
                 size: 18,
                 fontFamily: 'Roboto',
                 color: kPrimaryColor,
@@ -170,8 +176,8 @@ class _PetNewsCommunityProfileState extends State<PetNewsCommunityProfile> with 
                                 padding: const EdgeInsets.symmetric(horizontal: 5),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(5),
-                                  child: Image.asset(
-                                    'assets/images/pexels-photo-5745219 1.png',
+                                  child: CachedNetworkImage(
+                                    imageUrl: widget.community.cover,
                                     height: 150,
                                     width: Get.width,
                                     fit: BoxFit.cover,
@@ -185,10 +191,10 @@ class _PetNewsCommunityProfileState extends State<PetNewsCommunityProfile> with 
                               child: BorderedText(
                                 strokeWidth: 2.0,
                                 strokeColor: kBlackColor,
-                                child: const Text(
-                                  'Ваш мир домашних животных',
+                                child: Text(
+                                  widget.community.description,
                                   textAlign: TextAlign.end,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 12,
                                     color: kPrimaryColor,
                                   ),
@@ -227,7 +233,7 @@ class _PetNewsCommunityProfileState extends State<PetNewsCommunityProfile> with 
                                                       height: 30,
                                                     ),
                                                     MyText(
-                                                      text: '0',
+                                                      text: widget.community.followers.length,
                                                       size: 19,
                                                       weight: FontWeight.w700,
                                                       color: kSecondaryColor,
@@ -269,14 +275,8 @@ class _PetNewsCommunityProfileState extends State<PetNewsCommunityProfile> with 
                                 ),
                                 borderRadius: BorderRadius.circular(100),
                               ),
-                              child: Center(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: Image.asset(
-                                    'assets/images/Depositphotos_250473480_ds 1.png',
-                                    height: Get.height,
-                                  ),
-                                ),
+                              child: CommunityPicture(
+                                community: widget.community,
                               ),
                             ),
                           ],
@@ -416,7 +416,9 @@ class _PetNewsCommunityProfileState extends State<PetNewsCommunityProfile> with 
                 controller: tabController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  const Tab1(),
+                  Tab1(
+                    id: widget.community.id,
+                  ),
                   Container(),
                   Container(),
                 ],
@@ -430,9 +432,43 @@ class _PetNewsCommunityProfileState extends State<PetNewsCommunityProfile> with 
 }
 
 class Tab1 extends StatelessWidget {
-  const Tab1({
+  final String id;
+  Tab1({
     Key? key,
+    required this.id,
   }) : super(key: key);
+
+  final CollectionReference<Map<String, dynamic>> _postRef = FirebaseFirestore.instance.collection("posts");
+
+  post(Map<String, dynamic> data) async {
+    try {
+      // post to firestore
+      var snap = await _postRef.add(data);
+
+      var poster = await snap.get();
+
+      if (!poster.exists) throw "Post doesn't exists";
+
+      // add to user list
+      DocumentReference<Map<String, dynamic>> temp = data['owner'];
+      temp.update({
+        "posts": FieldValue.arrayUnion(
+          [
+            _postRef.doc(poster.id)
+          ],
+        )
+      });
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        colorText: Colors.white,
+        backgroundColor: Colors.red[400],
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -441,36 +477,86 @@ class Tab1 extends StatelessWidget {
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
       children: [
+        // Card(
+        //   margin: const EdgeInsets.symmetric(
+        //     horizontal: 5,
+        //   ),
+        //   elevation: 0,
+        //   child: Container(
+        //     height: 56,
+        //     margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        //     child: Center(
+        //       child: TextField(
+        //         cursorColor: kInputBorderColor.withOpacity(0.5),
+        //         decoration: InputDecoration(
+        //           contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+        //           enabledBorder: const OutlineInputBorder(
+        //             borderSide: BorderSide(
+        //               color: kLightGreyColor,
+        //               width: 2.0,
+        //             ),
+        //           ),
+        //           focusedBorder: const OutlineInputBorder(
+        //             borderSide: BorderSide(
+        //               color: kLightGreyColor,
+        //               width: 2.0,
+        //             ),
+        //           ),
+        //           hintText: 'Есть о чем рассказать?',
+        //           hintStyle: TextStyle(
+        //             fontSize: 12,
+        //             fontFamily: 'Roboto',
+        //             color: kInputBorderColor.withOpacity(0.5),
+        //             fontWeight: FontWeight.w500,
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
         Card(
-          margin: const EdgeInsets.symmetric(
-            horizontal: 5,
-          ),
+          margin: const EdgeInsets.all(5),
           elevation: 0,
           child: Container(
             height: 56,
-            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            alignment: Alignment.centerLeft,
+            margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
             child: Center(
               child: TextField(
+                onSubmitted: (value) {
+                  if (value.isNotEmpty) {
+                    // post to firestore
+                    Map<String, dynamic> data = {
+                      "caption": value,
+                      "owner": FirebaseFirestore.instance.collection("communities").doc(id),
+                      "likes": [],
+                      "comments": [],
+                      "created_at": FieldValue.serverTimestamp()
+                    };
+
+                    post(data);
+                  }
+                },
                 cursorColor: kInputBorderColor.withOpacity(0.5),
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                  enabledBorder: const OutlineInputBorder(
+                decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                  enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: kLightGreyColor,
                       width: 2.0,
                     ),
                   ),
-                  focusedBorder: const OutlineInputBorder(
+                  focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: kLightGreyColor,
                       width: 2.0,
                     ),
                   ),
-                  hintText: 'Есть о чем рассказать? ',
+                  hintText: 'What\'s on your mind?',
                   hintStyle: TextStyle(
                     fontSize: 12,
                     fontFamily: 'Roboto',
-                    color: kInputBorderColor.withOpacity(0.5),
+                    color: kInputBorderColor,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -478,12 +564,23 @@ class Tab1 extends StatelessWidget {
             ),
           ),
         ),
-        ListView.builder(
-          itemCount: 1,
-          shrinkWrap: true,
-          physics: const ClampingScrollPhysics(),
-          itemBuilder: (context, index) => const PostWidget(),
-        )
+        Expanded(
+          child: GetBuilder<CommunityController>(
+            init: CommunityController(),
+            builder: (controller) {
+              return FutureBuilder(
+                future: controller.getCommunityPosts(id),
+                builder: (context, snapshot) => const PostWidget(),
+              );
+            },
+          ),
+        ),
+        // ListView.builder(
+        //   itemCount: 1,
+        //   shrinkWrap: true,
+        //   physics: const ClampingScrollPhysics(),
+        //   itemBuilder: (context, index) => const PostWidget(),
+        // )
       ],
     );
   }
