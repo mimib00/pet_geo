@@ -10,12 +10,14 @@ import 'package:pet_geo/controller/user_controller/auth_controller.dart';
 import 'package:pet_geo/model/ad_model.dart';
 import 'package:pet_geo/model/folder_model.dart';
 import 'package:pet_geo/model/post_model.dart';
+import 'package:pet_geo/model/story_model.dart';
 import 'package:pet_geo/model/user_model.dart';
 import 'package:pet_geo/packages/advanced_stream_builder/lib/src/advanced_builder.dart';
 import 'package:pet_geo/view/bottom_sheets/share.dart';
 import 'package:pet_geo/view/chat/likes_page.dart';
 import 'package:pet_geo/view/comments/comments.dart';
 import 'package:pet_geo/view/constant/constant.dart';
+import 'package:pet_geo/view/stories/create_story.dart';
 import 'package:pet_geo/view/user_profile/user_profile_with_offer_help.dart';
 import 'package:pet_geo/view/widget/folder_button.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
@@ -24,13 +26,12 @@ import 'package:pet_geo/view/widget/profile_picture.dart';
 class ListViewType extends StatelessWidget {
   const ListViewType({Key? key}) : super(key: key);
 
-  // EventsFeedController controller = Get.put<EventsFeedController>(EventsFeedController());
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder<EventsFeedController>(
       init: EventsFeedController(),
       builder: (controller) {
+        final AuthController authController = Get.find<AuthController>();
         return AdvancedStreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           streams: controller.getPostsStream(),
           builder: (context, snapshot) {
@@ -57,16 +58,100 @@ class ListViewType extends StatelessWidget {
                 }
               }
             }
-            return ListView.builder(
-              padding: const EdgeInsets.only(
-                bottom: 30,
-              ),
-              physics: const BouncingScrollPhysics(),
-              itemCount: controller.posts.length,
-              itemBuilder: (context, index) {
-                var post = controller.posts[index];
-                return Post(post: post);
-              },
+            return Column(
+              children: [
+                SizedBox(
+                  height: 100,
+                  width: Get.width,
+                  child: ListView(
+                    physics: const BouncingScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20, bottom: 10),
+                        child: GestureDetector(
+                          onTap: () => Get.to(() => const CreateStory()),
+                          behavior: HitTestBehavior.opaque,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 7),
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: kGreenColor,
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: CachedNetworkImage(
+                                imageUrl: authController.user.value!.photoUrl,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20, bottom: 10),
+                        child: SizedBox(
+                          height: 70,
+                          child: FutureBuilder<List<Story>>(
+                            future: controller.getStories(),
+                            builder: (context, snapshot) => ListView.builder(
+                              shrinkWrap: true,
+                              padding: const EdgeInsets.symmetric(horizontal: 7),
+                              itemCount: controller.stories.length,
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                // return GestureDetector(
+                                //   onTap: storiesData.onTap,
+                                //   child: Container(
+                                //     margin: const EdgeInsets.symmetric(horizontal: 7),
+                                //     height: 70,
+                                //     width: 70,
+                                // decoration: BoxDecoration(
+                                //   border: Border.all(
+                                //     color: storiesData.haveNewStory == true ? kGreenColor : Colors.transparent,
+                                //     width: 2.0,
+                                //   ),
+                                //   borderRadius: BorderRadius.circular(100),
+                                // ),
+                                //     child: ClipRRect(
+                                //       borderRadius: BorderRadius.circular(100),
+                                //       child: Image.asset(
+                                //         '${storiesData.storyContent}',
+                                //         fit: BoxFit.cover,
+                                //         height: Get.height,
+                                //       ),
+                                //     ),
+                                //   ),
+                                // );
+
+                                return StoryTile(onTap: () {});
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(
+                      bottom: 30,
+                    ),
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: controller.posts.length,
+                    itemBuilder: (context, index) {
+                      var post = controller.posts[index];
+                      return Post(post: post);
+                    },
+                  ),
+                ),
+              ],
             );
           },
         );
@@ -655,6 +740,34 @@ class SaveFolders extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class StoryTile extends StatelessWidget {
+  final Function()? onTap;
+  const StoryTile({
+    Key? key,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {},
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 7),
+        height: 70,
+        width: 70,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: kGreenColor,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(100),
+        ),
+      ),
     );
   }
 }

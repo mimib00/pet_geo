@@ -8,6 +8,7 @@ import 'package:pet_geo/model/events_feed_model/events_feed_model.dart';
 import 'package:pet_geo/model/events_feed_model/save_post_model.dart';
 import 'package:pet_geo/model/events_feed_model/stories_model.dart';
 import 'package:pet_geo/model/post_model.dart';
+import 'package:pet_geo/model/story_model.dart';
 import 'package:pet_geo/model/user_model.dart';
 import 'package:pet_geo/view/bottom_sheets/share.dart';
 import 'package:pet_geo/view/constant/constant.dart';
@@ -17,6 +18,7 @@ import 'package:pet_geo/view/stories/stories.dart';
 class EventsFeedController extends GetxController {
   final CollectionReference<Map<String, dynamic>> _adRef = FirebaseFirestore.instance.collection("ads");
   final CollectionReference<Map<String, dynamic>> _postRef = FirebaseFirestore.instance.collection("posts");
+  final CollectionReference<Map<String, dynamic>> _storyRef = FirebaseFirestore.instance.collection("stories");
   final AuthController authController = Get.find<AuthController>();
 
   RxList posts = [].obs;
@@ -40,19 +42,23 @@ class EventsFeedController extends GetxController {
     var ads = mapController.ads;
     var user = authController.user.value!;
 
-    var adPost = _adRef.where("id", whereIn: ads.toList()).snapshots();
-    if (user.friends.isEmpty) {
+    if (ads.isNotEmpty) {
+      var adPost = _adRef.where("id", whereIn: ads.toList()).snapshots();
+      if (user.friends.isEmpty) {
+        final combined = [
+          adPost,
+        ];
+        return combined;
+      }
+      var post = _postRef.where("owner", whereIn: user.friends).snapshots();
       final combined = [
         adPost,
+        post
       ];
       return combined;
     }
-    var post = _postRef.where("owner", whereIn: user.friends).snapshots();
-    final combined = [
-      adPost,
-      post
-    ];
-    return combined;
+
+    return [];
   }
 
   Future<Users?> getLikeOwner(DocumentReference<Map<String, dynamic>> ref) async {
@@ -179,6 +185,21 @@ class EventsFeedController extends GetxController {
     }
   }
 
+  Future<List<Story>> getStories() async {
+    var user = authController.user.value!;
+
+    if (user.friends.isNotEmpty) {
+      List<Story> temp = [];
+      var story = await _storyRef.where("owner", whereIn: user.friends).get();
+      for (var doc in story.docs) {
+        temp.add(Story.fromMap(doc.data(), uid: doc.id));
+      }
+      return temp;
+    } else {
+      return [];
+    }
+  }
+
   // old code
   bool? isGridPostLike = false;
   bool? listView = true;
@@ -231,7 +252,7 @@ class EventsFeedController extends GetxController {
     ),
   ];
 
-  List<StoriesModel> stories = [
+  final List<StoriesModel> _stories = [
     StoriesModel(
       haveNewStory: false,
       storyContent: 'assets/images/scale_1200 1.png',
@@ -330,7 +351,7 @@ class EventsFeedController extends GetxController {
 
   List<SavePostModel> get getSavePostModel => savePostModel;
 
-  List<StoriesModel> get getStories => stories;
+  List<StoriesModel> get stories => _stories;
 
   List<EventsFeedGridViewModel> get getGridView => gridView;
 

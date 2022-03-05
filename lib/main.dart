@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/controller/bindings/auth_binding.dart';
+import 'package:pet_geo/controller/camera_controller.dart';
 import 'package:pet_geo/utils/translations.dart';
 import 'package:pet_geo/view/about_us/about_us.dart';
 import 'package:pet_geo/view/about_us/privacy_policy/privacy_policy.dart';
@@ -49,6 +51,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterL
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final cameras = await availableCameras();
   await Firebase.initializeApp();
   await GetStorage.init();
 
@@ -61,20 +64,23 @@ void main() async {
     DeviceOrientation.portraitDown
   ]);
 
-  runApp(const PetGeo());
+  runApp(PetGeo(cameras: cameras));
 }
 
 class PetGeo extends StatefulWidget {
-  const PetGeo({Key? key}) : super(key: key);
+  final List<CameraDescription> cameras;
+  const PetGeo({Key? key, required this.cameras}) : super(key: key);
 
   @override
   State<PetGeo> createState() => _PetGeoState();
 }
 
 class _PetGeoState extends State<PetGeo> {
+  final CamerasController cameraController = Get.put(CamerasController());
   @override
   void initState() {
     super.initState();
+    cameraController.setAvaliableCameras(widget.cameras);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
       AndroidNotification? androidNotification = message.notification?.android;
