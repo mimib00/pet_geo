@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_geo/controller/camera_controller.dart';
-import 'package:pet_geo/controller/events_feed_controller/events_feed_controller.dart';
 import 'package:pet_geo/view/widget/my_button.dart';
 
 class PhotoView extends StatelessWidget {

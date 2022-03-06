@@ -22,9 +22,31 @@ import 'package:pet_geo/view/user_profile/user_profile_with_offer_help.dart';
 import 'package:pet_geo/view/widget/folder_button.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 import 'package:pet_geo/view/widget/profile_picture.dart';
+import 'package:story/story.dart';
 
 class ListViewType extends StatelessWidget {
   const ListViewType({Key? key}) : super(key: key);
+
+  Future<StoryCollenction> getOwnerStory() async {
+    final AuthController authController = Get.find<AuthController>();
+    var user = authController.user.value!;
+    List<Story> story = [];
+    var stories = await FirebaseFirestore.instance
+        .collection("stories")
+        .where(
+          "owner",
+          isEqualTo: FirebaseFirestore.instance.collection("users").doc(user.id),
+        )
+        .where(
+          "created_at",
+          isLessThanOrEqualTo: Timestamp.now(),
+        )
+        .get();
+    for (var doc in stories.docs) {
+      story.add(Story.fromMap(doc.data(), uid: doc.id));
+    }
+    return StoryCollenction(stories: story);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,113 +54,138 @@ class ListViewType extends StatelessWidget {
       init: EventsFeedController(),
       builder: (controller) {
         final AuthController authController = Get.find<AuthController>();
-        return AdvancedStreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-          streams: controller.getPostsStream(),
-          builder: (context, snapshot) {
-            if (snapshot.data == null || snapshot.data!.isEmpty) return Container();
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            var temp = snapshot.data?.asMap();
-            if (temp == null) return Container();
-            var ads = temp[0];
-            var posts = temp[1];
-
-            if (controller.posts.isEmpty) {
-              if (ads != null && ads.docs.isNotEmpty) {
-                for (var ad in ads.docs) {
-                  controller.makeAdsPosts(ad);
-                }
-              }
-              if (posts != null && posts.docs.isNotEmpty) {
-                for (var post in posts.docs) {
-                  controller.makeUserPost(post);
-                }
-              }
-            }
-            return Column(
-              children: [
-                SizedBox(
-                  height: 100,
-                  width: Get.width,
-                  child: ListView(
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 10),
-                        child: GestureDetector(
-                          onTap: () => Get.to(() => const CreateStory()),
-                          behavior: HitTestBehavior.opaque,
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 7),
-                            height: 70,
-                            width: 70,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: kGreenColor,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: CachedNetworkImage(
-                                imageUrl: authController.user.value!.photoUrl,
-                              ),
-                            ),
+        return Column(
+          children: [
+            SizedBox(
+              height: 100,
+              width: Get.width,
+              child: ListView(
+                physics: const BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, bottom: 10),
+                    child: GestureDetector(
+                      onTap: () => Get.to(() => const CreateStory()),
+                      behavior: HitTestBehavior.opaque,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 7),
+                        height: 70,
+                        width: 70,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: CachedNetworkImage(
+                            imageUrl: authController.user.value!.photoUrl,
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 10),
-                        child: SizedBox(
-                          height: 70,
-                          child: FutureBuilder<List<Story>>(
-                            future: controller.getStories(),
-                            builder: (context, snapshot) => ListView.builder(
-                              shrinkWrap: true,
-                              padding: const EdgeInsets.symmetric(horizontal: 7),
-                              itemCount: controller.stories.length,
-                              physics: const BouncingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                // return GestureDetector(
-                                //   onTap: storiesData.onTap,
-                                //   child: Container(
-                                //     margin: const EdgeInsets.symmetric(horizontal: 7),
-                                //     height: 70,
-                                //     width: 70,
-                                // decoration: BoxDecoration(
-                                //   border: Border.all(
-                                //     color: storiesData.haveNewStory == true ? kGreenColor : Colors.transparent,
-                                //     width: 2.0,
-                                //   ),
-                                //   borderRadius: BorderRadius.circular(100),
-                                // ),
-                                //     child: ClipRRect(
-                                //       borderRadius: BorderRadius.circular(100),
-                                //       child: Image.asset(
-                                //         '${storiesData.storyContent}',
-                                //         fit: BoxFit.cover,
-                                //         height: Get.height,
-                                //       ),
-                                //     ),
-                                //   ),
-                                // );
-
-                                return StoryTile(onTap: () {});
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-                Expanded(
+                  FutureBuilder<StoryCollenction>(
+                    future: getOwnerStory(),
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null || snapshot.data!.stories.isEmpty) return const SizedBox.shrink();
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      var data = snapshot.data!.stories;
+                      final list = StoryCollenction.clear(data);
+
+                      return Visibility(
+                        visible: list.stories.isNotEmpty,
+                        child: StoryTile(
+                          onTap: () {},
+                          collenction: snapshot.data!,
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(
+                    height: 70,
+                    child: FutureBuilder<List<StoryCollenction>>(
+                        future: controller.getStories(),
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null || snapshot.data!.isEmpty) return Container();
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                            itemCount: snapshot.data!.length,
+                            physics: const BouncingScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              // var stories = snapshot.data!.where((element) => element.owner ==).toList();
+                              // return GestureDetector(
+                              //   onTap: storiesData.onTap,
+                              //   child: Container(
+                              //     margin: const EdgeInsets.symmetric(horizontal: 7),
+                              //     height: 70,
+                              //     width: 70,
+                              // decoration: BoxDecoration(
+                              //   border: Border.all(
+                              //     color: storiesData.haveNewStory == true ? kGreenColor : Colors.transparent,
+                              //     width: 2.0,
+                              //   ),
+                              //   borderRadius: BorderRadius.circular(100),
+                              // ),
+                              //     child: ClipRRect(
+                              //       borderRadius: BorderRadius.circular(100),
+                              //       child: Image.asset(
+                              //         '${storiesData.storyContent}',
+                              //         fit: BoxFit.cover,
+                              //         height: Get.height,
+                              //       ),
+                              //     ),
+                              //   ),
+                              // );
+                              // print(snapshot.data!.first.stories.first.id);
+                              return StoryTile(
+                                onTap: () {},
+                                collenction: snapshot.data![index],
+                              );
+                            },
+                          );
+                        }),
+                  ),
+                ],
+              ),
+            ),
+            AdvancedStreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              streams: controller.getPostsStream(),
+              builder: (context, snapshot) {
+                if (snapshot.data == null || snapshot.data!.isEmpty) return Container();
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                var temp = snapshot.data?.asMap();
+                if (temp == null) return Container();
+                var ads = temp[0];
+                var posts = temp[1];
+
+                if (controller.posts.isEmpty) {
+                  if (ads != null && ads.docs.isNotEmpty) {
+                    for (var ad in ads.docs) {
+                      controller.makeAdsPosts(ad);
+                    }
+                  }
+                  if (posts != null && posts.docs.isNotEmpty) {
+                    for (var post in posts.docs) {
+                      controller.makeUserPost(post);
+                    }
+                  }
+                }
+                return Expanded(
                   child: ListView.builder(
                     padding: const EdgeInsets.only(
                       bottom: 30,
@@ -150,10 +197,10 @@ class ListViewType extends StatelessWidget {
                       return Post(post: post);
                     },
                   ),
-                ),
-              ],
-            );
-          },
+                );
+              },
+            ),
+          ],
         );
       },
     );
@@ -746,27 +793,109 @@ class SaveFolders extends StatelessWidget {
 
 class StoryTile extends StatelessWidget {
   final Function()? onTap;
-  const StoryTile({
+  final StoryCollenction collenction;
+
+  StoryTile({
     Key? key,
     required this.onTap,
+    required this.collenction,
   }) : super(key: key);
+  final AuthController authController = Get.find<AuthController>();
+
+  Future<Users?> getOwner() async {
+    var user = await collenction.stories.first.owner.get();
+    if (!user.exists || user.data() == null) return null;
+    return Users.fromMap(user.data()!, id: user.id);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {},
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 7),
-        height: 70,
-        width: 70,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: kGreenColor,
-            width: 2.0,
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, bottom: 10),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          Get.to(() => StoryPage(stories: collenction.stories));
+        },
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 7),
+          height: 70,
+          width: 70,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: kGreenColor,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(180),
           ),
-          borderRadius: BorderRadius.circular(100),
+          child: FutureBuilder<Users?>(
+            future: getOwner(),
+            builder: (context, snapshot) {
+              if (snapshot.data == null) return const SizedBox.shrink();
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return ProfilePicture(
+                user: snapshot.data!,
+              );
+            },
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class StoryPage extends StatelessWidget {
+  final List<Story> stories;
+  const StoryPage({
+    Key? key,
+    required this.stories,
+  }) : super(key: key);
+
+  Future<Users?> getUser(Story story) async {
+    var user = await story.owner.get();
+    if (!user.exists || user.data() == null) return null;
+    return Users.fromMap(user.data()!, id: user.id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: StoryPageView(
+        itemBuilder: (context, pageIndex, storyIndex) => FutureBuilder<Users?>(
+            future: getUser(stories[storyIndex]),
+            builder: (context, snapshot) {
+              if (snapshot.data == null) return const SizedBox.shrink();
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              var user = snapshot.data!;
+              final date2 = DateTime.now();
+
+              return Column(
+                children: [
+                  Expanded(
+                    child: CachedNetworkImage(
+                      imageUrl: stories[storyIndex].photo,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  ListTile(
+                    leading: ProfilePicture(user: user),
+                    title: Text(user.name),
+                    trailing: Text("${date2.difference(stories[storyIndex].createdAt.toDate()).inHours.toString()}h"),
+                  )
+                ],
+              );
+            }),
+        pageLength: 1,
+        storyLength: (index) => stories.length,
+        onPageLimitReached: () => Get.back(),
       ),
     );
   }

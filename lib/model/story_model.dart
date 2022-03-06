@@ -20,3 +20,17 @@ class Story {
         data["created_at"],
       );
 }
+
+class StoryCollenction {
+  final List<Story> stories;
+
+  StoryCollenction({
+    this.stories = const [],
+  });
+
+  factory StoryCollenction.clear(List<Story> story) {
+    final date2 = DateTime.now();
+    story.removeWhere((element) => date2.difference(element.createdAt.toDate()).inHours >= 24);
+    return StoryCollenction(stories: story);
+  }
+}

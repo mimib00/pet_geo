@@ -11,7 +11,7 @@ import 'package:pet_geo/view/stories/photo_view.dart';
 import 'user_controller/auth_controller.dart';
 
 class CamerasController extends GetxController {
-  final AuthController authController = Get.find<AuthController>();
+  final AuthController authController = Get.put<AuthController>(AuthController());
   final CollectionReference<Map<String, dynamic>> _storyRef = FirebaseFirestore.instance.collection("stories");
   final _storage = FirebaseStorage.instance.ref();
 

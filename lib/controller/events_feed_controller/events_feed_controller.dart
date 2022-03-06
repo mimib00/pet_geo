@@ -185,15 +185,23 @@ class EventsFeedController extends GetxController {
     }
   }
 
-  Future<List<Story>> getStories() async {
+  Future<List<StoryCollenction>> getStories() async {
     var user = authController.user.value!;
 
     if (user.friends.isNotEmpty) {
-      List<Story> temp = [];
-      var story = await _storyRef.where("owner", whereIn: user.friends).get();
-      for (var doc in story.docs) {
-        temp.add(Story.fromMap(doc.data(), uid: doc.id));
+      List<StoryCollenction> temp = [];
+
+      for (var friend in user.friends) {
+        var story = await _storyRef.where("owner", isEqualTo: friend).get();
+        List<Story> stories = [];
+        for (var doc in story.docs) {
+          stories.add(Story.fromMap(doc.data(), uid: doc.id));
+        }
+        if (stories.isNotEmpty) {
+          temp.add(StoryCollenction(stories: stories));
+        }
       }
+
       return temp;
     } else {
       return [];
