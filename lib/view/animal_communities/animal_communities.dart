@@ -97,6 +97,24 @@ class AnimalCommunities extends StatelessWidget {
                         color: kInputBorderColor,
                       ),
                     ),
+                    // ListTile(
+                    //   onTap: () => Get.to(() => const PetNewsScreen()),
+                    //   leading: ClipRRect(
+                    //     borderRadius: BorderRadius.circular(180),
+                    //     child: Image.asset('assets/images/Depositphotos_250473480_ds 1.png'),
+                    //   ),
+                    //   title: MyText(
+                    //     text: 'PetNews',
+                    //     size: 15,
+                    //     fontFamily: 'Roboto',
+                    //     color: kDarkGreyColor,
+                    //   ),
+                    //   trailing: const Icon(
+                    //     Icons.arrow_forward_ios,
+                    //     size: 20,
+                    //     color: kInputBorderColor,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
