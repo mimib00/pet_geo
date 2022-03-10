@@ -97,56 +97,30 @@ class AnimalCommunities extends StatelessWidget {
                         color: kInputBorderColor,
                       ),
                     ),
-                    // ListTile(
-                    //   onTap: () => Get.to(() => const PetNewsScreen()),
-                    //   leading: ClipRRect(
-                    //     borderRadius: BorderRadius.circular(180),
-                    //     child: Image.asset('assets/images/Depositphotos_250473480_ds 1.png'),
-                    //   ),
-                    //   title: MyText(
-                    //     text: 'PetNews',
-                    //     size: 15,
-                    //     fontFamily: 'Roboto',
-                    //     color: kDarkGreyColor,
-                    //   ),
-                    //   trailing: const Icon(
-                    //     Icons.arrow_forward_ios,
-                    //     size: 20,
-                    //     color: kInputBorderColor,
-                    //   ),
-                    // ),
+                    FutureBuilder<List<Community>>(
+                      future: logic.getCommunities(),
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null || snapshot.data!.isEmpty) return Container();
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return Column(
+                          children: snapshot.data!
+                              .map(
+                                (e) => CommunityTiles(
+                                  community: e,
+                                  onTap: () => Get.to(() => PetNewsCommunityProfile(community: e)),
+                                ),
+                              )
+                              .toList(),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
-
-/*
-              Expanded(
-                child: FutureBuilder<List<Community>>(
-                  future: logic.getCommunities(),
-                  builder: (context, snapshot) {
-                    if (snapshot.data == null || snapshot.data!.isEmpty) return Container();
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    return ListView.builder(
-                      padding: EdgeInsets.only(
-                        top: logic.search == true ? 70 : 0,
-                      ),
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        return CommunityTiles(
-                          community: snapshot.data![index],
-                          onTap: () => Get.to(() => PetNewsCommunityProfile(community: snapshot.data![index])),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-           */
             ],
           ),
         );

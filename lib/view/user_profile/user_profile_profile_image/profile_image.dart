@@ -35,34 +35,6 @@ class _ProfileImageState extends State<ProfileImage> {
             ),
           ],
         ),
-        title: MyText(
-          text: '1 из 7',
-          size: 18,
-          fontFamily: 'Roboto',
-          color: kPrimaryColor,
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: GestureDetector(
-              onTap: () => Get.bottomSheet(
-                ProfileImageBottomSheet(),
-                backgroundColor: kPrimaryColor,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
-                  ),
-                ),
-                enableDrag: true,
-              ),
-              child: const Icon(
-                Icons.more_horiz,
-                color: kPrimaryColor,
-              ),
-            ),
-          ),
-        ],
       ),
       body: SizedBox(
         width: Get.width,

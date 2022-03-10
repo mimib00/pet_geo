@@ -22,6 +22,7 @@ import 'package:pet_geo/view/widget/my_button.dart';
 import 'package:pet_geo/view/widget/my_text.dart';
 import 'package:http/http.dart' as http;
 import 'package:pet_geo/view/widget/profile_picture.dart';
+// import 'package:pet_geo/view/widget/profile_picture.dart';
 
 class UserProfile extends StatefulWidget {
   final Users user;

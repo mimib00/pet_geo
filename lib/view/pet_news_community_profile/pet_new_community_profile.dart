@@ -36,7 +36,7 @@ class _PetNewsCommunityProfileState extends State<PetNewsCommunityProfile> with 
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 3, vsync: this, initialIndex: currentIndex);
+    tabController = TabController(length: 2, vsync: this, initialIndex: currentIndex);
     tabController.addListener(() {
       setState(() {
         currentIndex = tabController.index;
@@ -338,7 +338,7 @@ class _PetNewsCommunityProfileState extends State<PetNewsCommunityProfile> with 
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => Get.to(() => const CommunityChat()),
+                              onTap: () => Get.to(() => CommunityChat(id: widget.community.id)),
                               child: Container(
                                 margin: const EdgeInsets.only(
                                   left: 10.0,
@@ -374,37 +374,6 @@ class _PetNewsCommunityProfileState extends State<PetNewsCommunityProfile> with 
                                 ),
                               ),
                             ),
-                            Container(
-                              margin: const EdgeInsets.only(
-                                left: 10.0,
-                              ),
-                              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                              height: 27,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: currentIndex == 2 ? kSecondaryColor : kPrimaryColor,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/Icon PH.png',
-                                    height: 25,
-                                    color: currentIndex == 2 ? kPrimaryColor : kDarkGreyColor,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  MyText(
-                                    text: 'Фото',
-                                    size: 12,
-                                    paddingRight: 5,
-                                    weight: FontWeight.w500,
-                                    color: currentIndex == 2 ? kPrimaryColor : kDarkGreyColor,
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -422,7 +391,6 @@ class _PetNewsCommunityProfileState extends State<PetNewsCommunityProfile> with 
                   Tab1(
                     id: widget.community.id,
                   ),
-                  Container(),
                   Container(),
                 ],
               ),
