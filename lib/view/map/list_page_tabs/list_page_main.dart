@@ -11,8 +11,6 @@ class ListPageMain extends StatefulWidget {
 class _ListPageMainState extends State<ListPageMain> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    return const Expanded(
-      child: Everything(),
-    );
+    return const Everything();
   }
 }

@@ -17,7 +17,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     return GetBuilder<MapController>(
       init: MapController(),
       builder: (logic) {
-        return const Expanded(child: All());
+        return const All();
       },
     );
   }
